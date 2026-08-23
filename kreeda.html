@@ -437,31 +437,9 @@
   </div>
 </div>
 
-<!-- Vaikunthapali board guide -->
+<!-- Vaikunthapali board guide (content generated per language) -->
 <div class="vp-overlay" id="vp-guide">
-  <div class="modal modal-wide">
-    <button class="close" onclick="closeGuide()">✕</button>
-    <div class="place">BOARD GUIDE · వైకుంఠపాళి</div>
-    <h3>The map of virtue and vice</h3>
-    <h4>About this board</h4>
-    <p>Vaikunthapali descends from <strong>Moksha Patam</strong> ("the ladder to salvation") and the Jain
-    <strong>Gyan Chauper</strong> ("game of knowledge") painted by 19th-century bazaar artists. The board is not a
-    race track but a moral map: every square is a stage of life, ladders are virtues that lift you toward
-    liberation, and snakes are the six inner enemies that pull you back. Square 1 is <strong>Janma</strong> (birth);
-    square 100 is <strong>Vaikuntham</strong>, Vishnu's abode.</p>
-    <h4>The seven ladders — virtues</h4>
-    <table class="vp-table"><tr><th>From → To</th><th>Virtue</th><th>Meaning</th></tr><tbody id="guide-ladders"></tbody></table>
-    <h4>The seven snakes — vices</h4>
-    <table class="vp-table"><tr><th>From → To</th><th>Vice</th><th>Meaning</th></tr><tbody id="guide-snakes"></tbody></table>
-    <h4>Rules played here</h4>
-    <ul style="margin:0; padding-left:18px; font-size:13.5px; line-height:1.8;">
-      <li>Roll the die and advance. A <strong>6 grants one extra roll</strong> — but three 6s in a row forfeit the turn.</li>
-      <li>Landing on a <strong>virtue</strong> climbs its ladder; landing on a <strong>vice</strong> slides down its snake.</li>
-      <li>You must land on 100 <strong>exactly</strong>. Overshoot and you wait for another roll.</li>
-      <li>Travellers may share a square — this is a pilgrimage, not a battle.</li>
-      <li><strong>Solo mode</strong> races the clock; against Kreedu it is a straight race to moksha.</li>
-    </ul>
-  </div>
+  <div class="modal modal-wide" id="vp-guide-body"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -757,7 +735,9 @@ const VP_I18N={
     label:'English', name:'Snakes and Ladders', digits:'0123456789',
     you:'You', roll:'Roll the die',
     janma:{w:'Birth',t:'Janma'}, moksha:{w:'Vaikuntham',t:'Moksha'},
-    virt:{}, vice:{}, mean:{},
+    virt:{Vinaya:'Humility','Dāna':'Charity',Seva:'Service','Śraddha':'Faith','Jñāna':'Knowledge','Dhyāna':'Meditation','Dayā':'Compassion'},
+    vice:{Krodha:'Anger',Matsarya:'Envy',Lobha:'Greed',Moha:'Delusion',Mada:'Pride','Ahaṅkāra':'Ego','Kāma':'Desire'},
+    mean:{Vinaya:'Humility','Dāna':'Charity',Seva:'Service','Śraddha':'Faith','Jñāna':'Knowledge','Dhyāna':'Meditation','Dayā':'Compassion',Krodha:'Anger',Matsarya:'Envy',Lobha:'Greed',Moha:'Delusion',Mada:'Pride','Ahaṅkāra':'Ego','Kāma':'Desire'},
     msg:{
       startVs:'The race is on — from Janma, square 1, to Vaikuntham against Kreedu!',
       startSolo:'The clock is running — the journey begins at Janma, square 1.',
@@ -1052,10 +1032,6 @@ function vpStartTimer(){
 }
 function vpStopTimer(){if(vp.timerId){clearInterval(vp.timerId); vp.timerId=null;}}
 
-const KREEDU_PREROLL=['Kreedu shakes the die…','My turn!','Watch closely now.','Here I go!'];
-const KREEDU_SNAKE=['Oh no — that snake got me!','Backwards I go…','The vices are cruel today!'];
-const KREEDU_LADDER=['Up I climb!','Virtue pays off!','See you at the top!'];
-
 function initVP(mode){
   vp.mode=mode; vpLastMode=mode;
   vp.gen++; vp.over=false; vp.rolling=false; vp.six=0; vp.turn='you';
@@ -1072,9 +1048,7 @@ function initVP(mode){
   placeToken('tok-you',1,-1.1);
   if(vsKreedu)placeToken('tok-kreedu',1,1.1);
   renderDie(0);
-  document.getElementById('vp-event').textContent=vsKreedu
-    ?'The journey begins at Janma — square 1. Race Kreedu to Vaikuntham!'
-    :'The journey begins at Janma — square 1. The clock is running!';
+  document.getElementById('vp-event').textContent=(()=>{const m=vpCur().msg;return vsKreedu?m.startVs:m.startSolo;})();
   updateHUD();
   setRollEnabled(true);
   if(!vsKreedu)vpStartTimer();
@@ -1092,7 +1066,7 @@ function placeToken(id,n,off){
   el.style.left=(c.x+off)+'%';
   el.style.top=c.y+'%';
 }
-function label(e){return e==='you'?'You':'Kreedu';}
+function label(e){return e==='you'?vpCur().you:'Kreedu';}
 function logEvent(msg){document.getElementById('vp-event').textContent=msg;}
 function setRollEnabled(b){
   document.getElementById('vp-roll').disabled=!b;
@@ -1130,7 +1104,8 @@ function rollFor(e){
 function moveEntity(e,v,g){
   const start=vp.pos[e],target=start+v;
   if(target>100){
-    logEvent(`${label(e)} rolled ${v} — needs exactly ${100-start} for Vaikuntham. Staying at ${start}.`);
+    const m=vpCur().msg;
+    logEvent(vf(m.over,{e:label(e),v,goal:vpCur().moksha.w,n:100-start,p:start}));
     endOfTurn(e,v);
     return;
   }
@@ -1148,13 +1123,14 @@ function moveEntity(e,v,g){
 }
 function resolveSquare(e,v,g){
   if(g!==vp.gen||vp.over)return;
-  const t=vp.pos[e];
+  const t=vp.pos[e],m=vpCur().msg;
   if(t===100){winGame(e);return;}
   const lad=VP_LMAP[t],snk=VP_SMAP[t];
   if(lad){
-    logEvent(`${label(e)} landed on ${lad.name} (${lad.te}) — the virtue of ${lad.en} lifts ${e==='you'?'you':'them'} ${t} ↑ ${lad.to}.`);
-    showToast(`${lad.name}! ${t} → ${lad.to}`);
-    if(e==='kreedu')showBubble(KREEDU_LADDER[Math.floor(Math.random()*KREEDU_LADDER.length)]);
+    const nm=`${lad.name} (${vpCur().virt[lad.name]})`;
+    logEvent(vf(m.ladder,{e:label(e),name:nm,a:t,b:lad.to}));
+    showToast(vf(m.toastL,{name:lad.name,a:t,b:lad.to}));
+    if(e==='kreedu')showBubble(pick(vpCur().bubble.ladder));
     vp.pos[e]=lad.to;
     placeToken(e==='you'?'tok-you':'tok-kreedu',lad.to,e==='you'?-1.1:1.1);
     updateHUD();
@@ -1162,30 +1138,33 @@ function resolveSquare(e,v,g){
     return;
   }
   if(snk){
-    logEvent(`${label(e)} landed on ${snk.name} (${snk.te}) — ${snk.en.toLowerCase()} drags ${e==='you'?'you':'them'} down ${t} ↓ ${snk.to}.`);
-    showToast(`${snk.name} bites! ${t} → ${snk.to}`);
-    if(e==='kreedu')showBubble(KREEDU_SNAKE[Math.floor(Math.random()*KREEDU_SNAKE.length)]);
+    const nm=`${snk.name} (${vpCur().vice[snk.name]})`;
+    logEvent(vf(m.snake,{e:label(e),name:nm,a:t,b:snk.to}));
+    showToast(vf(m.toastS,{name:snk.name,a:t,b:snk.to}));
+    if(e==='kreedu')showBubble(pick(vpCur().bubble.snake));
     vp.pos[e]=snk.to;
     placeToken(e==='you'?'tok-you':'tok-kreedu',snk.to,e==='you'?-1.1:1.1);
     updateHUD();
     setTimeout(()=>{if(g===vp.gen&&!vp.over)endOfTurn(e,v);},620);
     return;
   }
-  logEvent(`${label(e)} rolled ${v} and moved to square ${t}.`);
+  logEvent(vf(m.move,{e:label(e),v,p:t}));
   endOfTurn(e,v);
 }
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
 function endOfTurn(e,v){
   if(vp.over)return;
+  const m=vpCur().msg;
   let again=false;
   if(v===6){
     vp.six++;
     if(vp.six>=3){
       vp.six=0;
-      logEvent(`${label(e)} rolled three sixes in a row — greed punished, turn forfeited.`);
-      showToast('Three sixes — the board punishes greed!');
+      logEvent(vf(m.sixes,{e:label(e)}));
+      showToast(vf(m.sixes,{e:label(e)}));
     }else{
       again=true;
-      logEvent(`Six! ${label(e)} rolls again.`);
+      logEvent(vf(m.six,{e:label(e)}));
     }
   }else{
     vp.six=0;
@@ -1211,7 +1190,7 @@ function scheduleKreedu(delay){
   const g=vp.gen;
   setTimeout(()=>{
     if(g!==vp.gen||vp.over||vp.turn!=='kreedu'||vp.rolling)return;
-    if(Math.random()<0.5)showBubble(KREEDU_PREROLL[Math.floor(Math.random()*KREEDU_PREROLL.length)]);
+    if(Math.random()<0.5)showBubble(pick(vpCur().bubble.pre));
     rollFor('kreedu');
   },delay);
 }
@@ -1220,49 +1199,59 @@ function winGame(e){
   setRollEnabled(false);
   updateHUD();
   vpStopTimer();
-  logEvent(`${label(e)} reaches Vaikuntham — moksha attained!`);
-  showToast(`${label(e)} reached Vaikuntham! 🎉`);
+  logEvent(vf(vpCur().msg.win,{e:label(e)}));
+  showToast(vf(vpCur().msg.win,{e:label(e)}));
   const g=vp.gen;
   setTimeout(()=>{if(g===vp.gen)showWinOverlay(e);},700);
 }
 function showWinOverlay(e){
   const youWon=(e==='you');
-  document.getElementById('win-place').textContent=youWon?'VAIKUNTHAM REACHED':'KREEDU REACHES VAIKUNTHAM';
-  document.getElementById('win-title').textContent=youWon
-    ?'Moksha attained!'
-    :(vp.mode==='mascot'?'Kreedu got there first!':'Moksha attained!');
+  const W=vpCur().win;
+  document.getElementById('win-place').textContent=youWon?W.placeYou:W.placeK;
+  document.getElementById('win-title').textContent=(vp.mode==='mascot'&&!youWon)?W.titleK:W.titleYou;
   const noteEl=document.getElementById('win-note');
   if(vp.mode==='solo'){
     let best=null;
     try{best=JSON.parse(localStorage.getItem('kreeda-vp-best'));}catch(err){}
-    let note='Personal best: —';
+    let note;
     if(best==null||vp.elapsed<best){
       try{localStorage.setItem('kreeda-vp-best',JSON.stringify(vp.elapsed));}catch(err){}
-      note='New personal best!';
+      note=W.newBest;
     }else{
-      note='Personal best: '+vpFmt(best);
+      note=vf(W.best,{time:vpFmt(best)});
     }
-    document.getElementById('win-stats').textContent=`Time ${vpFmt(vp.elapsed)} · Rolls ${vp.rolls}`;
+    document.getElementById('win-stats').textContent=vf(W.statsSolo,{time:vpFmt(vp.elapsed),r:vp.rolls});
     noteEl.textContent=note;
   }else{
     document.getElementById('win-stats').textContent=youWon
-      ?`Rolls ${vp.rolls} · Kreedu finished at square ${vp.pos.kreedu}`
-      :`Rolls ${vp.rolls} · You reached square ${vp.pos.you}`;
-    noteEl.textContent=youWon
-      ?'Every virtue held. The vices never stood a chance.'
-      :'The vices bite hard — but every Janma is a new chance. Try again.';
+      ?vf(W.statsVsYou,{r:vp.rolls,p:vp.pos.kreedu})
+      :vf(W.statsVsK,{r:vp.rolls,p:vp.pos.you});
+    noteEl.textContent=youWon?W.noteY:W.noteK;
   }
   document.getElementById('vp-win').classList.add('active');
 }
 function closeWin(){document.getElementById('vp-win').classList.remove('active');}
 
-function buildGuide(){
-  const rows=a=>a.map(x=>`<tr><td>${x.from} → ${x.to}</td><td><strong>${x.name}</strong> <span class="vp-te">${x.te}</span></td><td>${x.en}</td></tr>`).join('');
-  document.getElementById('guide-ladders').innerHTML=rows(VP_LADDERS);
-  document.getElementById('guide-snakes').innerHTML=rows(VP_SNAKES);
+function vpGuideBody(){
+  const L=vpCur(),g=L.guide;
+  const row=x=>{
+    const sc=L.virt[x.name]||L.vice[x.name];
+    return `<tr><td>${x.from} → ${x.to}</td><td><strong>${x.name}</strong> <span class="vp-te">${sc}</span></td><td>${L.mean[x.name]}</td></tr>`;
+  };
+  return `
+    <button class="close" onclick="closeGuide()">✕</button>
+    <div class="place">${g.kicker}</div>
+    <h3>${g.title}</h3>
+    <h4>${g.aboutT}</h4><p>${g.about}</p>
+    <h4>${g.ladT}</h4>
+    <table class="vp-table"><tr><th>${g.th0}</th><th>${g.th1}</th><th>${g.th2}</th></tr>${VP_LADDERS.map(row).join('')}</table>
+    <h4>${g.vicT}</h4>
+    <table class="vp-table"><tr><th>${g.th0}</th><th>${g.th1}</th><th>${g.th2}</th></tr>${VP_SNAKES.map(row).join('')}</table>
+    <h4>${g.rulesT}</h4>
+    <ul style="margin:0; padding-left:18px; font-size:13.5px; line-height:1.8;">${g.rules.map(r=>`<li>${r}</li>`).join('')}</ul>`;
 }
 function openGuide(){
-  buildGuide();
+  document.getElementById('vp-guide-body').innerHTML=vpGuideBody();
   document.getElementById('vp-guide').classList.add('active');
 }
 function closeGuide(){document.getElementById('vp-guide').classList.remove('active');}
