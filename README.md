@@ -47,6 +47,7 @@ Included and working:
   - Traditional rules: 6 grants an extra roll, three 6s forfeit the turn, exact landing required on 100
   - Solo mode races a clock with personal-best tracking; vs-Kreedu mode is a straight race against the mascot AI
   - In-game board guide covering the history of Moksha Patam / Gyan Chauper and the meaning of every virtue and vice
+  - Four languages — తెలుగు (Vaikunthapali), English (Snakes and Ladders), हिंदी (ज्ञान चौपड़) and தமிழ் (பரமபடம்): board labels, Telugu/Devanagari numerals, events, Kreedu's quips, win screens and the full guide all switch with the language; the choice is remembered
 
 Not yet built:
 - Actual boards and logic for the remaining 5 games
