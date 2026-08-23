@@ -276,6 +276,34 @@
   .vp-rollbtn:disabled{opacity:.55; cursor:default;}
   .vp-rollbtn:not(:disabled):hover{transform:translateY(-2px);}
   .vp-event{text-align:center; min-height:22px; margin-top:14px; font-weight:700; font-size:14px; color:var(--maroon);}
+  .vp-hud .spacer{flex:1;}
+  .vp-guide-btn{
+    width:42px; height:42px; border-radius:50%; cursor:pointer;
+    background:var(--teal); color:var(--paper);
+    font-family:'Fraunces',serif; font-size:19px; font-weight:800;
+    border:2.5px solid var(--maroon); flex-shrink:0;
+  }
+  .vp-guide-btn:hover{transform:translateY(-2px);}
+  .vp-overlay{
+    position:fixed; inset:0; background:rgba(43,27,18,.62); display:none;
+    align-items:center; justify-content:center; z-index:60; padding:20px;
+  }
+  .vp-overlay.active{display:flex;}
+  .modal-wide{max-width:540px; max-height:84vh; overflow:auto;}
+  .modal-wide h4{font-family:'Fraunces',serif; color:var(--maroon); margin:18px 0 6px; font-size:16px;}
+  .modal-wide h4:first-of-type{margin-top:4px;}
+  .modal-wide p{font-size:13.5px;}
+  .vp-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .vp-table th{text-align:left; color:var(--maroon); font-weight:800; padding:5px 8px; border-bottom:2px solid var(--maroon);}
+  .vp-table td{padding:5px 8px; border-bottom:1px solid rgba(92,20,15,.25);}
+  .vp-te{color:var(--ink-soft);}
+  .vp-btnrow{display:flex; gap:10px; margin-top:16px;}
+  .vp-mini{
+    flex:1; padding:12px; border-radius:10px; cursor:pointer;
+    background:var(--terracotta); color:var(--paper); font-weight:800; font-size:14px;
+    border:2.5px solid var(--maroon); font-family:'Manrope',sans-serif;
+  }
+  .vp-mini.ghost{background:var(--paper); color:var(--maroon);}
 
 </style>
 </head>
@@ -346,6 +374,9 @@
         <div class="vp-hud">
           <span class="vp-chip" id="hud-you">You · 1</span>
           <span class="vp-chip" id="hud-kreedu">Kreedu · 1</span>
+          <span class="vp-chip" id="hud-timer" style="display:none">⏱ 00:00</span>
+          <span class="spacer"></span>
+          <button class="vp-guide-btn" onclick="openGuide()" title="Board guide">?</button>
         </div>
         <div class="vp-board" id="vp-board">
           <div class="vp-grid" id="vp-grid"></div>
@@ -382,6 +413,47 @@
   </div>
 </div>
 
+<!-- Vaikunthapali win overlay -->
+<div class="vp-overlay" id="vp-win">
+  <div class="modal">
+    <div class="place" id="win-place">VAIKUNTHAM REACHED</div>
+    <h3 id="win-title">Moksha attained!</h3>
+    <p id="win-stats">—</p>
+    <p class="how" id="win-note">—</p>
+    <div class="vp-btnrow">
+      <button class="vp-mini" onclick="closeWin();initVP(vpLastMode)">Play again</button>
+      <button class="vp-mini ghost" onclick="closeWin();leavePlay()">Back to game info</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vaikunthapali board guide -->
+<div class="vp-overlay" id="vp-guide">
+  <div class="modal modal-wide">
+    <button class="close" onclick="closeGuide()">✕</button>
+    <div class="place">BOARD GUIDE · వైకుంఠపాళి</div>
+    <h3>The map of virtue and vice</h3>
+    <h4>About this board</h4>
+    <p>Vaikunthapali descends from <strong>Moksha Patam</strong> ("the ladder to salvation") and the Jain
+    <strong>Gyan Chauper</strong> ("game of knowledge") painted by 19th-century bazaar artists. The board is not a
+    race track but a moral map: every square is a stage of life, ladders are virtues that lift you toward
+    liberation, and snakes are the six inner enemies that pull you back. Square 1 is <strong>Janma</strong> (birth);
+    square 100 is <strong>Vaikuntham</strong>, Vishnu's abode.</p>
+    <h4>The seven ladders — virtues</h4>
+    <table class="vp-table"><tr><th>From → To</th><th>Virtue</th><th>Meaning</th></tr><tbody id="guide-ladders"></tbody></table>
+    <h4>The seven snakes — vices</h4>
+    <table class="vp-table"><tr><th>From → To</th><th>Vice</th><th>Meaning</th></tr><tbody id="guide-snakes"></tbody></table>
+    <h4>Rules played here</h4>
+    <ul style="margin:0; padding-left:18px; font-size:13.5px; line-height:1.8;">
+      <li>Roll the die and advance. A <strong>6 grants one extra roll</strong> — but three 6s in a row forfeit the turn.</li>
+      <li>Landing on a <strong>virtue</strong> climbs its ladder; landing on a <strong>vice</strong> slides down its snake.</li>
+      <li>You must land on 100 <strong>exactly</strong>. Overshoot and you wait for another roll.</li>
+      <li>Travellers may share a square — this is a pilgrimage, not a battle.</li>
+      <li><strong>Solo mode</strong> races the clock; against Kreedu it is a straight race to moksha.</li>
+    </ul>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -413,7 +485,7 @@ const games = [
       {x:52,y:26,place:'UNITED KINGDOM',name:'Snakes and Ladders',fact:'Colonial families carried the board home; publishers stripped the moral squares and made it a race.',how:'Brought back by returning colonial families and printed by British board-game makers.'},
       {x:74,y:24,place:'UNITED STATES',name:'Chutes and Ladders',fact:'Milton Bradley localised it further in the 1940s, swapping snakes for chutes.',how:'Licensed and re-illustrated from the British version.'}
     ],
-    instructions:['<strong>Objective:</strong> Be first to reach square 100 from square 1.','<strong>Move:</strong> Roll the die and advance that many squares.','<strong>Ladders</strong> carry you up, <strong>snakes</strong> pull you down.','<strong>Solo mode:</strong> play against the clock, no opponent needed — true to the original.']
+    instructions:['<strong>Objective:</strong> travel from Janma (birth, square 1) to Vaikuntham (square 100).','<strong>Move:</strong> roll the die and advance; a <strong>6 earns another roll</strong>, but three 6s in a row forfeit the turn.','<strong>Virtues</strong> raise ladders — humility, charity, service, faith, knowledge, meditation, compassion.','<strong>Vices</strong> raise snakes — anger, envy, greed, delusion, pride, ego, desire.','<strong>Moksha rule:</strong> you must land exactly on 100 — overshoot and you wait.','<strong>Solo mode</strong> races the clock; against Kreedu it is a straight race to liberation.']
   },
   {
     id:'puli-meka', name:'Puli Meka Aata', native:'పులి మేక ఆట · Aadu Puli Aatam, Bagh-Chal',
@@ -702,13 +774,24 @@ function vpLadderSVG(l){
 /* ---------------- play placeholder ---------------- */
 const vp={
   mode:'mascot', pos:{you:1,kreedu:1}, turn:'you',
-  rolling:false, six:0, over:false, gen:0, bubbleT:null
+  rolling:false, six:0, over:false, gen:0, bubbleT:null,
+  elapsed:0, rolls:0, timerId:null
 };
 let vpLastMode='mascot';
 
 const VP_LMAP={},VP_SMAP={};
 VP_LADDERS.forEach(l=>VP_LMAP[l.from]=l);
 VP_SNAKES.forEach(s=>VP_SMAP[s.from]=s);
+
+function vpFmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function vpStartTimer(){
+  vpStopTimer();
+  vp.timerId=setInterval(()=>{
+    vp.elapsed++;
+    document.getElementById('hud-timer').textContent='⏱ '+vpFmt(vp.elapsed);
+  },1000);
+}
+function vpStopTimer(){if(vp.timerId){clearInterval(vp.timerId); vp.timerId=null;}}
 
 const KREEDU_PREROLL=['Kreedu shakes the die…','My turn!','Watch closely now.','Here I go!'];
 const KREEDU_SNAKE=['Oh no — that snake got me!','Backwards I go…','The vices are cruel today!'];
@@ -718,22 +801,29 @@ function initVP(mode){
   vp.mode=mode; vpLastMode=mode;
   vp.gen++; vp.over=false; vp.rolling=false; vp.six=0; vp.turn='you';
   vp.pos.you=1; vp.pos.kreedu=1;
+  vp.elapsed=0; vp.rolls=0;
   if(vp.bubbleT){clearTimeout(vp.bubbleT); vp.bubbleT=null;}
   hideBubble();
   buildVPBoard();
   const vsKreedu = mode==='mascot';
   document.getElementById('tok-kreedu').style.display = vsKreedu?'':'none';
   document.getElementById('hud-kreedu').style.display = vsKreedu?'':'none';
+  document.getElementById('hud-timer').style.display = vsKreedu?'none':'';
+  document.getElementById('hud-timer').textContent='⏱ 00:00';
   placeToken('tok-you',1,-1.1);
   if(vsKreedu)placeToken('tok-kreedu',1,1.1);
   renderDie(0);
-  document.getElementById('vp-event').textContent='The journey begins at Janma — square 1.';
+  document.getElementById('vp-event').textContent=vsKreedu
+    ?'The journey begins at Janma — square 1. Race Kreedu to Vaikuntham!'
+    :'The journey begins at Janma — square 1. The clock is running!';
   updateHUD();
   setRollEnabled(true);
+  if(!vsKreedu)vpStartTimer();
 }
 function leavePlay(){
   vp.gen++;
   vp.rolling=false;
+  vpStopTimer();
   if(vp.bubbleT){clearTimeout(vp.bubbleT); vp.bubbleT=null;}
   showView('view-detail');
 }
@@ -764,9 +854,11 @@ function hideBubble(){document.getElementById('vp-bubble').classList.remove('sho
 
 function onVPRoll(){
   if(vp.turn!=='you'||vp.rolling||vp.over)return;
+  vp.rolls++;
   rollFor('you');
 }
 function rollFor(e){
+  if(e==='kreedu')vp.rolls++;
   vp.rolling=true;
   if(e==='you')setRollEnabled(false);
   const v=1+Math.floor(Math.random()*6);
@@ -868,9 +960,64 @@ function winGame(e){
   vp.over=true; vp.rolling=false;
   setRollEnabled(false);
   updateHUD();
+  vpStopTimer();
   logEvent(`${label(e)} reaches Vaikuntham — moksha attained!`);
   showToast(`${label(e)} reached Vaikuntham! 🎉`);
+  const g=vp.gen;
+  setTimeout(()=>{if(g===vp.gen)showWinOverlay(e);},700);
 }
+function showWinOverlay(e){
+  const youWon=(e==='you');
+  document.getElementById('win-place').textContent=youWon?'VAIKUNTHAM REACHED':'KREEDU REACHES VAIKUNTHAM';
+  document.getElementById('win-title').textContent=youWon
+    ?'Moksha attained!'
+    :(vp.mode==='mascot'?'Kreedu got there first!':'Moksha attained!');
+  const noteEl=document.getElementById('win-note');
+  if(vp.mode==='solo'){
+    let best=null;
+    try{best=JSON.parse(localStorage.getItem('kreeda-vp-best'));}catch(err){}
+    let note='Personal best: —';
+    if(best==null||vp.elapsed<best){
+      try{localStorage.setItem('kreeda-vp-best',JSON.stringify(vp.elapsed));}catch(err){}
+      note='New personal best!';
+    }else{
+      note='Personal best: '+vpFmt(best);
+    }
+    document.getElementById('win-stats').textContent=`Time ${vpFmt(vp.elapsed)} · Rolls ${vp.rolls}`;
+    noteEl.textContent=note;
+  }else{
+    document.getElementById('win-stats').textContent=youWon
+      ?`Rolls ${vp.rolls} · Kreedu finished at square ${vp.pos.kreedu}`
+      :`Rolls ${vp.rolls} · You reached square ${vp.pos.you}`;
+    noteEl.textContent=youWon
+      ?'Every virtue held. The vices never stood a chance.'
+      :'The vices bite hard — but every Janma is a new chance. Try again.';
+  }
+  document.getElementById('vp-win').classList.add('active');
+}
+function closeWin(){document.getElementById('vp-win').classList.remove('active');}
+
+function buildGuide(){
+  const rows=a=>a.map(x=>`<tr><td>${x.from} → ${x.to}</td><td><strong>${x.name}</strong> <span class="vp-te">${x.te}</span></td><td>${x.en}</td></tr>`).join('');
+  document.getElementById('guide-ladders').innerHTML=rows(VP_LADDERS);
+  document.getElementById('guide-snakes').innerHTML=rows(VP_SNAKES);
+}
+function openGuide(){
+  buildGuide();
+  document.getElementById('vp-guide').classList.add('active');
+}
+function closeGuide(){document.getElementById('vp-guide').classList.remove('active');}
+document.getElementById('vp-guide').addEventListener('click',e=>{
+  if(e.target.id==='vp-guide')closeGuide();
+});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('view-play').classList.contains('active'))return;
+  if(document.getElementById('vp-game').style.display==='none')return;
+  if((e.code==='Space'||e.code==='Enter'||e.key==='r')&&!document.getElementById('vp-roll').disabled){
+    e.preventDefault();
+    onVPRoll();
+  }
+});
 
 const VP_PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
 function renderDie(v){
