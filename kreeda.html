@@ -277,6 +277,15 @@
   .vp-rollbtn:not(:disabled):hover{transform:translateY(-2px);}
   .vp-event{text-align:center; min-height:22px; margin-top:14px; font-weight:700; font-size:14px; color:var(--maroon);}
   .vp-hud .spacer{flex:1;}
+  .vp-lang{
+    display:flex; gap:4px; padding:4px; border-radius:10px;
+    background:var(--paper); border:2.5px solid var(--maroon);
+  }
+  .vp-lang button{
+    border:none; background:none; padding:7px 11px; border-radius:7px; cursor:pointer;
+    font-weight:800; font-size:12px; color:var(--maroon); font-family:'Manrope',sans-serif;
+  }
+  .vp-lang button.active{background:var(--terracotta); color:var(--paper);}
   .vp-guide-btn{
     width:42px; height:42px; border-radius:50%; cursor:pointer;
     background:var(--teal); color:var(--paper);
@@ -376,6 +385,7 @@
           <span class="vp-chip" id="hud-kreedu">Kreedu · 1</span>
           <span class="vp-chip" id="hud-timer" style="display:none">⏱ 00:00</span>
           <span class="spacer"></span>
+          <div class="vp-lang" id="vp-lang"></div>
           <button class="vp-guide-btn" onclick="openGuide()" title="Board guide">?</button>
         </div>
         <div class="vp-board" id="vp-board">
@@ -421,8 +431,8 @@
     <p id="win-stats">—</p>
     <p class="how" id="win-note">—</p>
     <div class="vp-btnrow">
-      <button class="vp-mini" onclick="closeWin();initVP(vpLastMode)">Play again</button>
-      <button class="vp-mini ghost" onclick="closeWin();leavePlay()">Back to game info</button>
+      <button class="vp-mini" id="win-again" onclick="closeWin();initVP(vpLastMode)">Play again</button>
+      <button class="vp-mini ghost" id="win-back" onclick="closeWin();leavePlay()">Back to game info</button>
     </div>
   </div>
 </div>
@@ -668,27 +678,275 @@ document.getElementById('modal-overlay').addEventListener('click', e=>{
 });
 
 /* ---------------- Vaikunthapali — Moksha Patam board ---------------- */
-const TE_DIGITS='౦౧౨౩౪౫౬౭౮౯';
-const vpTe=n=>String(n).replace(/\d/g,d=>TE_DIGITS[+d]);
-
 const VP_LADDERS=[
-  {from:3,to:22,name:'Vinaya',te:'వినయ',en:'Humility'},
-  {from:8,to:26,name:'Dāna',te:'దానం',en:'Charity'},
-  {from:28,to:55,name:'Seva',te:'సేవ',en:'Service'},
-  {from:36,to:58,name:'Śraddha',te:'శ్రద్ధ',en:'Faith'},
-  {from:51,to:72,name:'Jñāna',te:'జ్ఞానం',en:'Knowledge'},
-  {from:66,to:87,name:'Dhyāna',te:'ధ్యానం',en:'Meditation'},
-  {from:80,to:99,name:'Dayā',te:'దయ',en:'Compassion'}
+  {from:3,to:22,name:'Vinaya',en:'Humility'},
+  {from:8,to:26,name:'Dāna',en:'Charity'},
+  {from:28,to:55,name:'Seva',en:'Service'},
+  {from:36,to:58,name:'Śraddha',en:'Faith'},
+  {from:51,to:72,name:'Jñāna',en:'Knowledge'},
+  {from:66,to:87,name:'Dhyāna',en:'Meditation'},
+  {from:80,to:99,name:'Dayā',en:'Compassion'}
 ];
 const VP_SNAKES=[
-  {from:18,to:6,name:'Krodha',te:'క్రోధం',en:'Anger'},
-  {from:39,to:21,name:'Matsarya',te:'అసూయ',en:'Envy'},
-  {from:49,to:33,name:'Lobha',te:'లోభం',en:'Greed'},
-  {from:64,to:40,name:'Moha',te:'మోహం',en:'Delusion'},
-  {from:78,to:59,name:'Mada',te:'మదం',en:'Pride'},
-  {from:90,to:76,name:'Ahaṅkāra',te:'అహంకారం',en:'Ego'},
-  {from:97,to:82,name:'Kāma',te:'కామం',en:'Desire'}
+  {from:18,to:6,name:'Krodha',en:'Anger'},
+  {from:39,to:21,name:'Matsarya',en:'Envy'},
+  {from:49,to:33,name:'Lobha',en:'Greed'},
+  {from:64,to:40,name:'Moha',en:'Delusion'},
+  {from:78,to:59,name:'Mada',en:'Pride'},
+  {from:90,to:76,name:'Ahaṅkāra',en:'Ego'},
+  {from:97,to:82,name:'Kāma',en:'Desire'}
 ];
+
+/* ---------------- Vaikunthapali i18n ---------------- */
+const VP_I18N={
+  te:{
+    label:'తెలుగు', name:'వైకుంఠపాళి', digits:'౦౧౨౩౪౫౬౭౮౯',
+    you:'నేను', roll:'పాస వెయ్యి',
+    janma:{w:'జన్మ',t:'Janma'}, moksha:{w:'వైకుంఠం',t:'Vaikuntham'},
+    virt:{Vinaya:'వినయ','Dāna':'దానం',Seva:'సేవ','Śraddha':'శ్రద్ధ','Jñāna':'జ్ఞానం','Dhyāna':'ధ్యానం','Dayā':'దయ'},
+    vice:{Krodha:'క్రోధం',Matsarya:'అసూయ',Lobha:'లోభం',Moha:'మోహం',Mada:'మదం','Ahaṅkāra':'అహంకారం','Kāma':'కామం'},
+    mean:{Vinaya:'వినమ్రత','Dāna':'దానశీలం',Seva:'సేవ','Śraddha':'విశ్వాసం','Jñāna':'జ్ఞానం','Dhyāna':'ధ్యానం','Dayā':'జాలి',Krodha:'కోపం',Matsarya:'అసూయ',Lobha:'దురాశ',Moha:'మోహం',Mada:'గర్వం','Ahaṅkāra':'అహంకారం','Kāma':'కామం'},
+    msg:{
+      startVs:'ప్రయాణం జన్మ (గడి 1) నుండి — వైకుంఠానికి క్రీడూతో పరుగు!',
+      startSolo:'ప్రయాణం జన్మ (గడి 1) నుండి — గడియారం మొదలైంది!',
+      move:'{e}: {v} → గడి {p}',
+      over:'{e}: {v} — {goal}కి ఖచ్చితంగా {n} కావాలి, {p} వద్ద ఆగింది',
+      ladder:'{e}: {name} ఎత్తు — {a} ↑ {b}',
+      snake:'{e}: {name} పాము — {a} ↓ {b}',
+      six:'ఆరు! {e} ఇంకోసారి వెయ్యాలి.',
+      sixes:'{e}: వరుసగా మూడు ఆరులు — దురాశకి శిక్ష, టర్న్ పోయింది!',
+      toastL:'{name}! {a} → {b}',
+      toastS:'{name} కుట్టింది! {a} → {b}',
+      win:'{e} వైకుంఠం చేరుకుంది — మోక్షం!'
+    },
+    bubble:{
+      pre:['క్రీడూ పాస విసిరింది…','నా టర్న్!','జాగ్రత్తగా చూడండి.','నేను వెడ్తాను!'],
+      snake:['ఆహా — పాము కుట్టింది!','వెనక్కి పోతున్నా…','ఈరోజు వైసులు రౌద్రంగా ఉన్నాయి!'],
+      ladder:['పైకి ఎగురుతున్నా!','సద్గుణం ఫలిస్తుంది!','పైన కలుద్దాం!']
+    },
+    win:{
+      placeYou:'వైకుంఠం చేరుకున్నారు', placeK:'క్రీడూ వైకుంఠం చేరుకుంది',
+      titleYou:'మోక్షం ప్రాప్తించింది!', titleK:'క్రీడూ ముందు చేరింది!',
+      statsSolo:'సమయం {time} · పాసలు {r}',
+      statsVsYou:'పాసలు {r} · క్రీడూ గడి {p} వద్ద',
+      statsVsK:'పాసలు {r} · మీరు గడి {p} వద్ద',
+      newBest:'కొత్త రికార్డు!', best:'అత్యుత్తమం: {time}',
+      noteY:'ప్రతి సద్గుణం పనిచేసింది.',
+      noteK:'అసద్గుణాలు ఘాటుగా కుట్టాయి — ప్రతి జన్మ కొత్త అవకాశం. మళ్ళీ ప్రయత్నించండి.',
+      again:'మళ్ళీ ఆడు', back:'గేమ్ సమాచారానికి'
+    },
+    guide:{
+      kicker:'పటం మార్గదర్శకం · వైకుంఠపాళి',
+      title:'సద్గుణ-అసద్గుణాల పటము',
+      aboutT:'ఈ పటం గురించి',
+      about:'వైకుంఠపాళి <strong>మోక్ష పటం</strong> ("మోక్షానికి ఎత్తు") నుంచి, 19వ శతాబ్దపు జైన <strong>జ్ఞాన చౌపర్</strong> బజారు చిత్రాల నుంచి వచ్చింది. ఇది పరుగు పటం కాదు — నీతి పటం: ప్రతి గడి జీవిత ఘట్టం; సద్గుణాలు ఎత్తులుగా మోక్షం వైపు లాగుతాయి, అసద్గుణాలు (పాములు) వెనక్కి ఈడ్చుతాయి. గడి 1 <strong>జన్మ</strong>; గడి 100 <strong>వైకుంఠం</strong>.',
+      ladT:'ఏడు ఎత్తులు — సద్గుణాలు',
+      vicT:'ఏడు పాములు — అసద్గుణాలు',
+      th0:'గడి', th1:'పేరు', th2:'అర్థం',
+      rulesT:'ఇక్కడ ఆడే నియమాలు',
+      rules:[
+        'పాస విసిరి ముందుకు సాగండి. <strong>6 వస్తే మరో వేసవి</strong> — కానీ వరుసగా మూడు 6లు టర్న్ ఖరాయి.',
+        '<strong>సద్గుణం</strong> పడితే ఎత్తు ఎక్కుతుంది; <strong>అసద్గుణం</strong> పడితే పాము దింపుతుంది.',
+        '100 మీద <strong>ఖచ్చితంగా</strong> నిలవాలి — ఎక్కువ వస్తే అక్కడే వేచి ఉండాలి.',
+        'ఇద్దరూ ఒకే గడిలో ఉండవచ్చు — ఇది యుద్ధం కాదు, తీర్థయాత్ర.',
+        '<strong>సోలో</strong> మోడ్‌లో గడియారంతో పరుగు; క్రీడూతో నేరుగా పోటీ.'
+      ]
+    }
+  },
+  en:{
+    label:'English', name:'Snakes and Ladders', digits:'0123456789',
+    you:'You', roll:'Roll the die',
+    janma:{w:'Birth',t:'Janma'}, moksha:{w:'Vaikuntham',t:'Moksha'},
+    virt:{}, vice:{}, mean:{},
+    msg:{
+      startVs:'The race is on — from Janma, square 1, to Vaikuntham against Kreedu!',
+      startSolo:'The clock is running — the journey begins at Janma, square 1.',
+      move:'{e} rolled {v} → square {p}',
+      over:'{e} rolled {v} — needs exactly {n} for {goal}; staying at {p}',
+      ladder:'{name} lifts {e}: {a} ↑ {b}',
+      snake:'{name} bites {e}: {a} ↓ {b}',
+      six:'Six! {e} rolls again.',
+      sixes:'{e} rolled three sixes — greed punished, turn forfeited!',
+      toastL:'{name}! {a} → {b}',
+      toastS:'{name} bites! {a} → {b}',
+      win:'{e} reaches Vaikuntham — moksha attained!'
+    },
+    bubble:{
+      pre:['Kreedu shakes the die…','My turn!','Watch closely now.','Here I go!'],
+      snake:['Oh no — that snake got me!','Backwards I go…','The vices are cruel today!'],
+      ladder:['Up I climb!','Virtue pays off!','See you at the top!']
+    },
+    win:{
+      placeYou:'VAIKUNTHAM REACHED', placeK:'KREEDU REACHES VAIKUNTHAM',
+      titleYou:'Moksha attained!', titleK:'Kreedu got there first!',
+      statsSolo:'Time {time} · Rolls {r}',
+      statsVsYou:'Rolls {r} · Kreedu finished at square {p}',
+      statsVsK:'Rolls {r} · You reached square {p}',
+      newBest:'New personal best!', best:'Personal best: {time}',
+      noteY:'Every virtue held. The vices never stood a chance.',
+      noteK:'The vices bite hard — but every Janma is a new chance. Try again.',
+      again:'Play again', back:'Back to game info'
+    },
+    guide:{
+      kicker:'BOARD GUIDE · VAIKUNTHAPALI',
+      title:'The map of virtue and vice',
+      aboutT:'About this board',
+      about:'Vaikunthapali descends from <strong>Moksha Patam</strong> ("the ladder to salvation") and the Jain <strong>Gyan Chauper</strong> ("game of knowledge") painted by 19th-century bazaar artists. The board is not a race track but a moral map: every square is a stage of life, ladders are virtues that lift you toward liberation, and snakes are the inner enemies that pull you back. Square 1 is <strong>Janma</strong> (birth); square 100 is <strong>Vaikuntham</strong>, Vishnu\u2019s abode.',
+      ladT:'The seven ladders — virtues',
+      vicT:'The seven snakes — vices',
+      th0:'From → To', th1:'Name', th2:'Meaning',
+      rulesT:'Rules played here',
+      rules:[
+        'Roll the die and advance. A <strong>6 grants one extra roll</strong> — but three 6s in a row forfeit the turn.',
+        'Landing on a <strong>virtue</strong> climbs its ladder; landing on a <strong>vice</strong> slides down its snake.',
+        'You must land on 100 <strong>exactly</strong>. Overshoot and you wait for another roll.',
+        'Travellers may share a square — this is a pilgrimage, not a battle.',
+        '<strong>Solo mode</strong> races the clock; against Kreedu it is a straight race to moksha.'
+      ]
+    }
+  },
+  hi:{
+    label:'हिंदी', name:'ज्ञान चौपड़', digits:'०१२३४५६७८९',
+    you:'आप', roll:'पासा फेंकिए',
+    janma:{w:'जन्म',t:'Janma'}, moksha:{w:'वैकुंठ',t:'Vaikuntham'},
+    virt:{Vinaya:'विनय','Dāna':'दान',Seva:'सेवा','Śraddha':'श्रद्धा','Jñāna':'ज्ञान','Dhyāna':'ध्यान','Dayā':'दया'},
+    vice:{Krodha:'क्रोध',Matsarya:'ईर्ष्या',Lobha:'लोभ',Moha:'मोह',Mada:'मद','Ahaṅkāra':'अहंकार','Kāma':'काम'},
+    mean:{Vinaya:'विनम्रता','Dāna':'दानशीलता',Seva:'सेवा','Śraddha':'विश्वास','Jñāna':'ज्ञान','Dhyāna':'ध्यान','Dayā':'दया',Krodha:'क्रोध',Matsarya:'ईर्ष्या',Lobha:'लोभ',Moha:'मोह',Mada:'अहंकार-मद','Ahaṅkāra':'अहंकार','Kāma':'काम'},
+    msg:{
+      startVs:'जन्म, खाना 1 से यात्रा — क्रीड़ू के साथ वैकुंठ की होड़!',
+      startSolo:'घड़ी चल रही है — जन्म, खाना 1 से यात्रा!',
+      move:'{e}: {v} → खाना {p}',
+      over:'{e}: {v} — {goal} के लिए ठीक {n} चाहिए, {p} पर रुके',
+      ladder:'{e}: {name} — {a} ↑ {b}',
+      snake:'{e}: {name} — {a} ↓ {b}',
+      six:'छह! {e} फिर फेंके.',
+      sixes:'{e}: लगातार तीन छह — लोभ की सज़ा, चाल ज़ब्त!',
+      toastL:'{name}! {a} → {b}',
+      toastS:'{name} ने डसा! {a} → {b}',
+      win:'{e} वैकुंठ पहुँचा — मोक्ष!'
+    },
+    bubble:{
+      pre:['क्रीड़ू पासा हिला रहा है…','मेरी बारी!','ध्यान से देखिए.','ले, फेंकता हूँ!'],
+      snake:['अरे! साँप ने डस लिया!','पीछे जा रहा हूँ…','आज दोष बड़े क्रूर हैं!'],
+      ladder:['ऊपर चढ़ रहा हूँ!','पुण्य का फल!','शिखर पर मिलते हैं!']
+    },
+    win:{
+      placeYou:'वैकुंठ पहुँच गए', placeK:'क्रीड़ू वैकुंठ पहुँचा',
+      titleYou:'मोक्ष प्राप्त!', titleK:'क्रीड़ू पहले पहुँचा!',
+      statsSolo:'समय {time} · फेंक {r}',
+      statsVsYou:'फेंक {r} · क्रीड़ू खाना {p} पर',
+      statsVsK:'फेंक {r} · आप खाना {p} पर',
+      newBest:'नया रिकॉर्ड!', best:'सर्वश्रेष्ठ: {time}',
+      noteY:'हर पुण्य काम आया — दोष दूर रहे.',
+      noteK:'दोषों ने कड़ा डसा — हर जन्म नया मौका. फिर कोशिश करें.',
+      again:'फिर खेलें', back:'पीछे'
+    },
+    guide:{
+      kicker:'बोर्ड गाइड · ज्ञान चौपड़',
+      title:'पुण्य-पाप का नक्शा',
+      aboutT:'इस बोर्ड के बारे में',
+      about:'यह खेल <strong>मोक्ष पट</strong> ("मोक्ष की सीढ़ी") और 19वीं सदी के जैन <strong>ज्ञान चौपड़</strong> बाज़ार-चित्रों से आता है। यह दौड़ का मैदान नहीं, नीति का नक्शा है: हर खाना जीवन का चरण; पुण्य सीढ़ियाँ हैं जो मोक्ष की ओर उठाती हैं, और साँप भीतरी शत्रु हैं जो खींचते हैं। खाना 1 <strong>जन्म</strong>; खाना 100 <strong>वैकुंठ</strong>.',
+      ladT:'सात सीढ़ियाँ — पुण्य',
+      vicT:'सात साँप — दोष',
+      th0:'खाना', th1:'नाम', th2:'अर्थ',
+      rulesT:'यहाँ के नियम',
+      rules:[
+        'पासा फेंकिए और आगे बढ़ें। <strong>6 पर एक और फेंक</strong> — पर लगातार तीन 6 चाल ज़ब्त।',
+        '<strong>पुण्य</strong> पर सीढ़ी चढ़ती है; <strong>दोष</strong> पर साँप उतारता है।',
+        '100 पर <strong>ठीक</strong> उतरना ज़रूरी — अधिक आया तो वहीं इंतज़ार।',
+        'दोनों एक ही खाने में रह सकते हैं — युद्ध नहीं, तीर्थयात्रा।',
+        '<strong>सोलो</strong> में घड़ी से दौड़; क्रीड़ू के साथ सीधी होड़.'
+      ]
+    }
+  },
+  ta:{
+    label:'தமிழ்', name:'பரமபடம்', digits:'0123456789',
+    you:'நான்', roll:'டை உருட்டு',
+    janma:{w:'பிறப்பு',t:'Pirappu'}, moksha:{w:'பரமபதம்',t:'Parama Padam'},
+    virt:{Vinaya:'அடக்கம்','Dāna':'ஈகை',Seva:'தொண்டு','Śraddha':'நம்பிக்கை','Jñāna':'அறிவு','Dhyāna':'தியானம்','Dayā':'கருணை'},
+    vice:{Krodha:'கோபம்',Matsarya:'பொறாமை',Lobha:'பேராசை',Moha:'மோகம்',Mada:'கர்வம்','Ahaṅkāra':'அகங்காரம்','Kāma':'காமம்'},
+    mean:{Vinaya:'அடக்கம்','Dāna':'ஈகை',Seva:'தொண்டு','Śraddha':'நம்பிக்கை','Jñāna':'அறிவு','Dhyāna':'தியானம்','Dayā':'கருணை',Krodha:'கோபம்',Matsarya:'பொறாமை',Lobha:'பேராசை',Moha:'மோகம்',Mada:'கர்வம்','Ahaṅkāra':'அகங்காரம்','Kāma':'காமம்'},
+    msg:{
+      startVs:'பிறப்பு, கட்டம் 1-இலிருந்து பயணம் — கிரீடூவுடன் பரமபதப் போட்டி!',
+      startSolo:'கடிகாரம் இயங்குகிறது — பிறப்பு, கட்டம் 1-இலிருந்து பயணம்!',
+      move:'{e}: {v} → கட்டம் {p}',
+      over:'{e}: {v} — {goal}க்கு சரியாக {n} வேண்டும், {p}-இல் நிற்கிறது',
+      ladder:'{e}: {name} — {a} ↑ {b}',
+      snake:'{e}: {name} — {a} ↓ {b}',
+      six:'ஆறு! {e} மீண்டும் உருட்டுக.',
+      sixes:'{e}: தொடர் மூன்று ஆறுகள் — பேராசைக்குத் தண்டனை!',
+      toastL:'{name}! {a} → {b}',
+      toastS:'{name} கடித்தது! {a} → {b}',
+      win:'{e} பரமபதம் அடைந்தது — முத்தி!'
+    },
+    bubble:{
+      pre:['கிரீடூ டை உருட்டுகிறது…','என் முறை!','கவனமாகப் பாருங்கள்.','இதோ உருட்டுகிறேன்!'],
+      snake:['ஐயோ — பாம்பு கடித்துவிட்டது!','பின்னோக்கிப் போகிறேன்…','இன்று பாவங்கள் கடுமை!'],
+      ladder:['மேலே ஏறுகிறேன்!','அறம் பயன் தரும்!','உச்சியில் சந்திப்போம்!']
+    },
+    win:{
+      placeYou:'பரமபதம் அடைந்தேர்', placeK:'கிரீடூ பரமபதம் அடைந்தது',
+      titleYou:'முத்தி கிடைத்தது!', titleK:'கிரீடூ முதலில் வந்தது!',
+      statsSolo:'நேரம் {time} · டை {r}',
+      statsVsYou:'டை {r} · கிரீடூ கட்டம் {p}',
+      statsVsK:'டை {r} · நீங்கள் கட்டம் {p}',
+      newBest:'புதிய சாதனை!', best:'சிறந்த நேரம்: {time}',
+      noteY:'ஒவ்வொரு அறமும் கைகொடுத்தது.',
+      noteK:'பாவங்கள் கடினமாகக் கடித்தன — ஒவ்வொரு பிறப்பும் புதிய வாய்ப்பு. மீண்டும் முயற்சி.',
+      again:'மீண்டும் விளையாடு', back:'பின்செல்'
+    },
+    guide:{
+      kicker:'பலகை வழிகாட்டி · பரமபடம்',
+      title:'அறம்-பாவத்தின் வரைபடம்',
+      aboutT:'இந்தப் பலகையைப் பற்றி',
+      about:'பரமபடம் <strong>மோட்சப் படம்</strong> ("முத்திக்கான ஏணி")-இலிருந்தும் 19ஆம் நூற்றாண்டு சமண <strong>ஞான சௌபர்</strong> ஓவியங்களிலிருந்தும் வந்தது. இது ஓட்டப் பலகை அல்ல — நீதியின் வரைபடம்: ஒவ்வொரு கட்டமும் வாழ்வின் படி; அறங்கள் ஏணிகளாய் முத்தி நோக்கி ஏற்றும், பாவங்கள் (பாம்புகள்) இழுத்துக்கொண்டுவரும். கட்டம் 1 <strong>பிறப்பு</strong>; கட்டம் 100 <strong>பரமபதம்</strong>.',
+      ladT:'ஏழு ஏணிகள் — அறங்கள்',
+      vicT:'ஏழு பாம்புகள் — பாவங்கள்',
+      th0:'கட்டம்', th1:'பெயர்', th2:'பொருள்',
+      rulesT:'இங்கே விளையாடும் விதிகள்',
+      rules:[
+        'டை உருட்டி முன்னேறுங்கள். <strong>6 வந்தால் மறு வாய்ப்பு</strong> — ஆனால் தொடர் மூன்று 6 வாய்ப்பை இழக்கும்.',
+        '<strong>அறம்</strong> ஏணியேற்றும்; <strong>பாவம்</strong> பாம்பு இறக்கும்.',
+        '100-இல் <strong>சரியாக</strong> நிற்க வேண்டும் — அதிகமானால் அங்கே காத்திருப்பு.',
+        'இருவரும் ஒரே கட்டத்தில் இருக்கலாம் — போர் அல்ல, யாத்திரை.',
+        '<strong>தனி வீரர்</strong> முறையில் கடிகாரத்துடன்; கிரீடூவுடன் நேரடிப் போட்டி.'
+      ]
+    }
+  }
+};
+let vpLang='te';
+try{vpLang=localStorage.getItem('kreeda-vp-lang')||'te';}catch(err){}
+if(!VP_I18N[vpLang])vpLang='te';
+function vpCur(){return VP_I18N[vpLang];}
+function vf(s,o){return s.replace(/\{(\w+)\}/g,(_,k)=>o[k]);}
+function vpLoc(n){const d=vpCur().digits;return String(n).replace(/\d/g,x=>d[+x]);}
+function setVPLang(l){
+  vpLang=l;
+  try{localStorage.setItem('kreeda-vp-lang',l);}catch(err){}
+  renderVPLangBar();
+  applyVPLang();
+}
+function renderVPLangBar(){
+  document.getElementById('vp-lang').innerHTML=Object.keys(VP_I18N).map(c=>
+    `<button class="${c===vpLang?'active':''}" onclick="setVPLang('${c}')">${VP_I18N[c].label}</button>`).join('');
+}
+function applyVPLang(){
+  const L=vpCur();
+  document.getElementById('vp-roll').textContent=L.roll;
+  document.getElementById('hud-you').textContent=`${L.you} · ${vp.pos.you}`;
+  document.getElementById('hud-kreedu').textContent=`Kreedu · ${vp.pos.kreedu}`;
+  document.getElementById('win-again').textContent=L.win.again;
+  document.getElementById('win-back').textContent=L.win.back;
+  vpBuilt=false;
+  buildVPBoard();
+  if(!vp.over&&!vp.rolling){
+    document.getElementById('vp-event').textContent=vp.mode==='mascot'?L.msg.startVs:L.msg.startSolo;
+  }
+  if(document.getElementById('vp-guide').classList.contains('active')){
+    document.getElementById('vp-guide-body').innerHTML=vpGuideBody();
+  }
+}
+renderVPLangBar();
 
 function vpCenter(n){
   const i=n-1,row=Math.floor(i/10),k=i%10;
@@ -700,6 +958,7 @@ let vpBuilt=false;
 function buildVPBoard(){
   if(vpBuilt) return;
   vpBuilt=true;
+  const L=vpCur();
   const lmap={},smap={};
   VP_LADDERS.forEach(l=>lmap[l.from]=l);
   VP_SNAKES.forEach(s=>smap[s.from]=s);
@@ -713,11 +972,11 @@ function buildVPBoard(){
       const cell=document.createElement('div');
       cell.className='vp-cell'+(((rt+c)%2===0)?' alt':'');
       let lab='';
-      if(lmap[n]){cell.classList.add('virtue');lab=`<div class="vp-lab">${lmap[n].te}<br>${lmap[n].name}</div>`;}
-      else if(smap[n]){cell.classList.add('vice');lab=`<div class="vp-lab">${smap[n].te}<br>${smap[n].name}</div>`;}
-      else if(n===1){cell.classList.add('janma');lab='<div class="vp-lab">జన్మ<br>Janma</div>';}
-      else if(n===100){cell.classList.add('moksha');lab='<div class="vp-lab">✦ వైకుంఠం<br>Vaikuntham</div>';}
-      cell.innerHTML=`<span class="vp-num">${n}</span>${lab}${(lmap[n]||smap[n]||n===1||n===100)?'':`<span class="vp-tel">${vpTe(n)}</span>`}`;
+      if(lmap[n]){cell.classList.add('virtue');lab=`<div class="vp-lab">${L.virt[lmap[n].name]}<br>${lmap[n].name}</div>`;}
+      else if(smap[n]){cell.classList.add('vice');lab=`<div class="vp-lab">${L.vice[smap[n].name]}<br>${smap[n].name}</div>`;}
+      else if(n===1){cell.classList.add('janma');lab=`<div class="vp-lab">${L.janma.w}<br>${L.janma.t}</div>`;}
+      else if(n===100){cell.classList.add('moksha');lab=`<div class="vp-lab">✦ ${L.moksha.w}<br>${L.moksha.t}</div>`;}
+      cell.innerHTML=`<span class="vp-num">${n}</span>${lab}${(lmap[n]||smap[n]||n===1||n===100)?'':`<span class="vp-tel">${vpLoc(n)}</span>`}`;
       gridEl.appendChild(cell);
     }
   }
