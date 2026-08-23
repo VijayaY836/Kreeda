@@ -38,20 +38,26 @@ This build is the **structural/navigational skeleton**, not the finished games. 
 Included and working:
 - Home screen with Kreedu and a grid of all 6 games
 - Game detail screen per game: mode toggle (where applicable), illustrated map with clickable pins, tap-to-open fact dialogs, how-to-play instructions, Play button
-- Navigation between Home → Game Detail → Play (placeholder) screens
+- Navigation between Home → Game Detail → Play screens
 - Real content for every game: accurate pin locations, fun facts, and "how it traveled" notes for all 6 games, pulled from actual research — not placeholder text
 - Kreedu, the mascot, rendered as a transparent-background illustration on the home screen and the play placeholder
+- **Vaikunthapali fully playable** (the other 5 still open a play placeholder):
+  - Authentic Moksha Patam board — 100 squares in boustrophedon order with Telugu numerals, Janma (birth) at square 1 and Vaikuntham at square 100
+  - Seven named virtue ladders (Vinaya, Dāna, Seva, Śraddha, Jñāna, Dhyāna, Dayā) and seven named vice snakes (Krodha, Matsarya, Lobha, Moha, Mada, Ahaṅkāra, Kāma), each drawn as an illustrated snake winding across the board
+  - Traditional rules: 6 grants an extra roll, three 6s forfeit the turn, exact landing required on 100
+  - Solo mode races a clock with personal-best tracking; vs-Kreedu mode is a straight race against the mascot AI
+  - In-game board guide covering the history of Moksha Patam / Gyan Chauper and the meaning of every virtue and vice
 
 Not yet built:
-- Actual game boards and logic for any of the 6 games
-- Kreedu's AI opponent behavior
+- Actual boards and logic for the remaining 5 games
+- Kreedu's AI opponent behavior beyond Vaikunthapali's turn-based racing
 - Real geographic map data (pins are placed on a stylized illustrated map, not real coordinates)
 - Additional mascot poses/expressions (win, lose, thinking, idle)
 - Multiplayer (planned for a future iteration, per the original scope)
 
 ## Files
 
-- `kreeda_prototype.html` — the full prototype. Open directly in any browser, no server needed.
+- `kreeda.html` — the full prototype. Open directly in any browser, no server needed.
 - `kreedu-mascot.png` — Kreedu's mascot illustration, transparent background. Must stay in the same folder as the HTML file, since it's referenced by relative path.
 
 ## Design system
