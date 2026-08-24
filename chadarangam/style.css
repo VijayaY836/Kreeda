@@ -208,6 +208,12 @@
      eased transform transition set inline, so no move-in keyframe is needed
      here — this just keeps the compositing smooth. */
 
+  /* pawns are drawn smaller than the other pieces everywhere they appear */
+  .sq.piece-pawn svg{width:62%; height:62%;}
+  .mini-sq .piece-pawn svg{width:64%; height:64%;}
+  .cap-row .piece-pawn svg{width:19px; height:19px;}
+  .demo-board .piece-pawn svg{width:58%; height:58%;}
+
   .pc-w{--pc-fill:#F6ECD2; --pc-stroke:#5C140F;}
   .pc-b{--pc-fill:#5C140F; --pc-stroke:#EFDFB8;}
 

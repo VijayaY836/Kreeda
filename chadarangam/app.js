@@ -53,7 +53,7 @@ function renderPreview(){
     if(r===7||r===0) t = back[f];
     else if(r===6||r===1) t = P;
     const cls = [(f+r)%2===0 ? 'dark':'', isMarked(SQ(f,r)) ? 'marked':''].join(' ');
-    const pc = t ? `<span class="${r>=6?'pc-b':'pc-w'}">${getArt(v, LET[t])}</span>` : '';
+    const pc = t ? `<span class="${r>=6?'pc-b':'pc-w'}${(t===P&&v==='chaturanga')?' piece-pawn':''}">${getArt(v, LET[t])}</span>` : '';
     html += `<div class="mini-sq ${cls}">${pc}</div>`;
   }
   el.innerHTML = html;
@@ -180,6 +180,7 @@ function render(){
     if(p){
       sq.innerHTML = getArt(UI.variant, LET[p>0?p:-p]);
       sq.classList.add(p>0 ? 'pc-w' : 'pc-b');
+      if((p>0?p:-p) === P && UI.variant==='chaturanga') sq.classList.add('piece-pawn');
     }
     if(UI.hints && targetSet.has(i)){
       const mark = document.createElement('span');
@@ -228,7 +229,7 @@ function renderCaptures(){
     const rank = ['Q','R','N','B','M','E','P'];
     list.slice().sort((a,b)=>rank.indexOf(a)-rank.indexOf(b)).forEach(t=>{
       const s=document.createElement('span');
-      s.className=cls; s.innerHTML=getArt(UI.variant, t);
+      s.className=cls + ((t==='P'&&UI.variant==='chaturanga') ? ' piece-pawn' : ''); s.innerHTML=getArt(UI.variant, t);
       s.title=PIECE_INFO[UI.variant][t].n;
       el.appendChild(s);
     });
@@ -362,10 +363,16 @@ function slidePieceIn(toIdx, fromRect){
   if(!dx && !dy) return;
   piece.style.transition = 'none';
   piece.style.transform = `translate(${dx}px,${dy}px)`;
-  piece.getBoundingClientRect();               // force reflow before easing back
+  piece.getBoundingClientRect();               // force the "start" position to actually paint
+  // a single requestAnimationFrame can still land in the same frame as the
+  // style write above and get coalesced away, so the transition never shows;
+  // waiting a second frame guarantees the browser has painted the start
+  // position before we animate to the end position.
   requestAnimationFrame(()=>{
-    piece.style.transition = 'transform .46s cubic-bezier(.21,.85,.24,1)';
-    piece.style.transform = 'translate(0,0)';
+    requestAnimationFrame(()=>{
+      piece.style.transition = 'transform .5s cubic-bezier(.21,.85,.24,1)';
+      piece.style.transform = 'translate(0,0)';
+    });
   });
   piece.addEventListener('transitionend', ()=>{ piece.style.transition=''; piece.style.transform=''; }, {once:true});
 }
@@ -584,8 +591,8 @@ function renderDemo(t){
     const d=document.createElement('div'), k=r*N5+f;
     if((f+r)%2===0) d.classList.add('alt');
     if(cells[k]) d.classList.add(cells[k]);
-    if(k===C){ d.innerHTML=getArt(v, t); d.classList.add('pc-w'); }
-    else if(cells[k]==='cap'){ d.innerHTML=getArt(v, 'P'); d.classList.add('pc-b'); }
+    if(k===C){ d.innerHTML=getArt(v, t); d.classList.add('pc-w'); if(t==='P'&&v==='chaturanga') d.classList.add('piece-pawn'); }
+    else if(cells[k]==='cap'){ d.innerHTML=getArt(v, 'P'); d.classList.add('pc-b'); if(v==='chaturanga') d.classList.add('piece-pawn'); }
     board.appendChild(d);
   }
 
