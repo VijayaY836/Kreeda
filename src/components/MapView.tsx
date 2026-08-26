@@ -43,19 +43,24 @@ export function MapView({
     if (!containerRef.current || mapRef.current) return
 
     const map = L.map(containerRef.current, {
-      zoomControl: true,
+      zoomControl: false,
       attributionControl: false,
       scrollWheelZoom: false,
+      dragging: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+      keyboard: false,
     })
     mapRef.current = map
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 8,
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     }).addTo(map)
 
     const latlngs = pins.map(pinToLatLng)
     const bounds = L.latLngBounds(latlngs)
-    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 })
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 5 })
 
     if (path && latlngs.length > 1) {
       L.polyline(latlngs, {
@@ -64,12 +69,18 @@ export function MapView({
         dashArray: '8 6',
         opacity: 0.8,
         lineCap: 'round',
+        className: 'animated-route',
       }).addTo(map)
     }
 
     pins.forEach((pin, i) => {
       const color = i === 0 ? '#EFA90C' : '#D8401F'
       const marker = L.marker(latlngs[i], { icon: makePinIcon(color) }).addTo(map)
+      marker.bindTooltip(pin.place, {
+        direction: 'top',
+        offset: [0, -38],
+        className: 'map-tooltip',
+      })
       marker.on('click', () => onPinClick(pin))
     })
 
