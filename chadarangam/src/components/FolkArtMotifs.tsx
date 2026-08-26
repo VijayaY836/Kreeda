@@ -41,11 +41,11 @@ export const KolamCorner: React.FC<{
 
 export const FolkDivider: React.FC<{ className?: string }> = ({ className = '' }) => (
   <div className={`flex items-center justify-center gap-2 py-2 ${className}`}>
-    <div className="h-[2px] w-12 bg-[#5C140F]" />
+    <div className="h-0.5 w-12 bg-[#5C140F]" />
     <div className="w-2.5 h-2.5 rotate-45 bg-[#D8401F] border-2 border-[#5C140F]" />
     <div className="w-3.5 h-3.5 rotate-45 bg-[#EFA90C] border-2 border-[#5C140F]" />
     <div className="w-2.5 h-2.5 rotate-45 bg-[#D8401F] border-2 border-[#5C140F]" />
-    <div className="h-[2px] w-12 bg-[#5C140F]" />
+    <div className="h-0.5 w-12 bg-[#5C140F]" />
   </div>
 );
 

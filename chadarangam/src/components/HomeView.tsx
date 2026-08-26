@@ -41,14 +41,14 @@ const VariantCard: React.FC<{ variant: Variant; onPick: () => void }> = ({ varia
       <KolamCorner position="bottom-right" size={22} className="absolute bottom-1.5 right-1.5 opacity-60" />
 
       <div>
-        <div className="flex items-center justify-between mb-3 border-b-[2px] border-[#5C140F]/30 pb-2">
+        <div className="flex items-center justify-between mb-3 border-b-2 border-[#5C140F]/30 pb-2">
           <span className={`px-2.5 py-0.5 text-white text-[11px] font-bold uppercase tracking-wide ${variant === 'chaturanga' ? 'bg-[#D8401F]' : 'bg-[#0E5C58]'}`}>
             {variant === 'chaturanga' ? 'The Ancient Game' : 'The Modern Descendant'}
           </span>
         </div>
 
         {/* Back-rank strip preview */}
-        <div className="flex items-center justify-center gap-1 mb-4 bg-[#E4D19E] border-[2px] border-[#5C140F] py-3">
+        <div className="flex items-center justify-center gap-1 mb-4 bg-[#E4D19E] border-2 border-[#5C140F] py-3">
           {back.map((t, idx) => (
             <PieceIcon key={idx} variant={variant} letter={LET[t] as PieceLetter} ivory className="w-6 h-6 sm:w-7 sm:h-7" />
           ))}
@@ -58,7 +58,7 @@ const VariantCard: React.FC<{ variant: Variant; onPick: () => void }> = ({ varia
         <p className="font-telugu text-sm text-center font-bold text-[#D9587B] mb-3">{info.native}</p>
         <p className="text-xs text-[#2B1B12] leading-relaxed mb-4 text-center">{info.lead}</p>
 
-        <dl className="grid grid-cols-2 gap-1.5 bg-[#E4D19E] border-[2px] border-[#5C140F] p-2.5 text-[11px] text-[#2B1B12] mb-5">
+        <dl className="grid grid-cols-2 gap-1.5 bg-[#E4D19E] border-2 border-[#5C140F] p-2.5 text-[11px] text-[#2B1B12] mb-5">
           {FACTS[variant].map(([k, v]) => (
             <div key={k}>
               <dt className="font-bold text-[#5C140F]">{k}</dt>
@@ -71,7 +71,7 @@ const VariantCard: React.FC<{ variant: Variant; onPick: () => void }> = ({ varia
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); onPick(); }}
-        className={`w-full py-3 text-white border-[2px] border-[#5C140F] font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+        className={`w-full py-3 text-white border-2 border-[#5C140F] font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer ${
           variant === 'chaturanga' ? 'bg-[#D8401F] group-hover:bg-[#B83215]' : 'bg-[#0E5C58] group-hover:bg-[#094340]'
         }`}
       >
@@ -90,7 +90,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onPickVariant })
         <div className="flex justify-center mb-4">
           <KreeduMascot mood="HAPPY" size={84} showDialogBubble dialogText="I'll bring the elephants — you'll want the chariots." />
         </div>
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#F6ECD2] border-[2px] border-[#5C140F] text-xs font-bold uppercase tracking-widest text-[#5C140F] mb-3">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#F6ECD2] border-2 border-[#5C140F] text-xs font-bold uppercase tracking-widest text-[#5C140F] mb-3">
           <ChariotWheelIcon size={14} color="#D8401F" />
           <span>One Board · Two Games · 1,500 Years Apart</span>
         </div>
@@ -115,7 +115,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onPickVariant })
       {/* Secondary links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FolkArtFrame bg="bg-[#F6ECD2]" className="p-5 flex items-center gap-4">
-          <div className="w-12 h-12 shrink-0 bg-[#E4D19E] border-[2px] border-[#5C140F] flex items-center justify-center text-[#5C140F]">
+          <div className="w-12 h-12 shrink-0 bg-[#E4D19E] border-2 border-[#5C140F] flex items-center justify-center text-[#5C140F]">
             <BookOpen className="w-6 h-6" />
           </div>
           <div className="flex-1">
@@ -128,7 +128,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onPickVariant })
         </FolkArtFrame>
 
         <FolkArtFrame bg="bg-[#F6ECD2]" className="p-5 flex items-center gap-4">
-          <div className="w-12 h-12 shrink-0 bg-[#E4D19E] border-[2px] border-[#5C140F] flex items-center justify-center text-[#5C140F]">
+          <div className="w-12 h-12 shrink-0 bg-[#E4D19E] border-2 border-[#5C140F] flex items-center justify-center text-[#5C140F]">
             <Compass className="w-6 h-6" />
           </div>
           <div className="flex-1">

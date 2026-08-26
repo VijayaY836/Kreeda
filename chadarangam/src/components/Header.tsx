@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
     <header className="sticky top-0 z-40 bg-[#EFDFB8] border-b-[3px] border-[#5C140F]">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
         <button onClick={() => onNavigate('HOME')} className="flex items-center gap-2.5 text-left group cursor-pointer focus:outline-none">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#F6ECD2] border-[2px] border-[#5C140F] flex items-center justify-center transition-transform group-hover:scale-105">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#F6ECD2] border-2 border-[#5C140F] flex items-center justify-center transition-transform group-hover:scale-105">
             <ChariotWheelIcon size={22} color="#D8401F" />
           </div>
           <div>
@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
           </div>
         </button>
 
-        <nav className="hidden lg:flex items-center gap-1 bg-[#F6ECD2] border-[2px] border-[#5C140F] p-1">
+        <nav className="hidden lg:flex items-center gap-1 bg-[#F6ECD2] border-2 border-[#5C140F] p-1">
           {navItems.map((item) => {
             const isActive = currentTab === item.tab || (item.tab === 'MODE_SELECT' && currentTab === 'GAME');
             return (
@@ -65,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
           <button
             onClick={onToggleSound}
             aria-label={soundEnabled ? 'Mute audio' : 'Unmute audio'}
-            className="w-8 h-8 sm:w-9 sm:h-9 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] flex items-center justify-center text-[#5C140F] transition-colors cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] flex items-center justify-center text-[#5C140F] transition-colors cursor-pointer"
             title={soundEnabled ? 'Sound On' : 'Sound Muted'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-[#5C140F]/50" />}
@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
           <button
             onClick={onOpenHelp}
             aria-label="Rules help"
-            className="w-8 h-8 sm:w-9 sm:h-9 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] flex items-center justify-center text-[#5C140F] cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] flex items-center justify-center text-[#5C140F] cursor-pointer"
             title="Rules & Help"
           >
             <HelpCircle className="w-4 h-4" />
@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
           {currentTab !== 'GAME' && (
             <button
               onClick={() => onNavigate('MODE_SELECT')}
-              className="lg:hidden flex items-center gap-1 px-3 py-1.5 bg-[#D8401F] text-white border-[2px] border-[#5C140F] text-xs font-bold cursor-pointer"
+              className="lg:hidden flex items-center gap-1 px-3 py-1.5 bg-[#D8401F] text-white border-2 border-[#5C140F] text-xs font-bold cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               Play
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
         </div>
       </div>
 
-      <div className="lg:hidden overflow-x-auto border-t-[2px] border-[#5C140F] bg-[#F6ECD2] py-1 px-2 flex items-center gap-1.5">
+      <div className="lg:hidden overflow-x-auto border-t-2 border-[#5C140F] bg-[#F6ECD2] py-1 px-2 flex items-center gap-1.5">
         {navItems.map((item) => (
           <button
             key={`mobile-nav-${item.tab}`}

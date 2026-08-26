@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { GameSettings, KreeduMood, MoveRecord, PieceLetter, ViewTab } from '../types';
+import { GameSettings, KreeduMood, MoveRecord, PieceLetter, Side, ViewTab } from '../types';
 import {
   Pos, setStart, legalMoves, makeMove, unmakeMove, bestMove,
   inCheck, kingOf, insufficientMaterial, repetitionCount, bareKing,
@@ -163,7 +163,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
 
     makeMove(m);
     syncBoard();
-    setMoveLog(prev => [{ id: Math.random().toString(36).slice(2, 9), moveNumber: prev.length + 1, side: mover, san, capturedLetter: capLetter }, ...prev]);
+    setMoveLog(prev => [{ id: Math.random().toString(36).slice(2, 9), moveNumber: prev.length + 1, side: mover as Side, san, capturedLetter: capLetter }, ...prev]);
     setLastMove({ from, to });
     setSelected(null); setTargets([]);
 
@@ -270,7 +270,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
         <div className="flex items-center gap-2">
           <span className="font-fraunces font-bold text-sm text-[#5C140F]">{info.title}</span>
           <span className="font-telugu text-sm text-[#D9587B]">{variant === 'chaturanga' ? 'చతురంగం' : ''}</span>
-          <span className="px-2 py-0.5 bg-[#E4D19E] border-[1px] border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
+          <span className="px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
             {gameMode === 'PVC' ? `vs Kreedu · ${LEVEL_NAMES[DIFF_LEVEL[difficulty]]}` : '2 Players'}
           </span>
         </div>
@@ -345,25 +345,25 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
           />
 
           {/* Captures strip */}
-          <div className="w-full max-w-[560px] mt-4 grid grid-cols-2 gap-3">
-            <div className="border-[2px] border-[#5C140F] p-2.5 bg-[#F6ECD2]">
+          <div className="w-full max-w-140 mt-4 grid grid-cols-2 gap-3">
+            <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.w} has captured</span>
                 {diff > 0 && <span className="text-[10px] font-bold text-[#D8401F]">+{diff}</span>}
               </div>
-              <div className="flex flex-wrap gap-1 min-h-[20px]">
+              <div className="flex flex-wrap gap-1 min-h-5">
                 {capByIvory.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
                 {capByIvory.map((t, idx) => (
                   <PieceIcon key={idx} variant={variant} letter={t} ivory={false} className="w-4 h-4" />
                 ))}
               </div>
             </div>
-            <div className="border-[2px] border-[#5C140F] p-2.5 bg-[#F6ECD2]">
+            <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.b} has captured</span>
                 {diff < 0 && <span className="text-[10px] font-bold text-[#5C140F]">+{-diff}</span>}
               </div>
-              <div className="flex flex-wrap gap-1 min-h-[20px]">
+              <div className="flex flex-wrap gap-1 min-h-5">
                 {capByEbony.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
                 {capByEbony.map((t, idx) => (
                   <PieceIcon key={idx} variant={variant} letter={t} ivory className="w-4 h-4" />
@@ -376,12 +376,12 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
         <div className="lg:col-span-4 flex flex-col gap-4">
           {gameMode === 'PVC' ? (
             <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
-              <div className="flex items-center justify-between border-b-[2px] border-[#5C140F] pb-2 mb-3">
+              <div className="flex items-center justify-between border-b-2 border-[#5C140F] pb-2 mb-3">
                 <div className="flex items-center gap-2">
                   <Bot className="w-4 h-4 text-[#0E5C58]" />
                   <span className="font-fraunces font-bold text-sm text-[#5C140F]">AI Opponent: Kreedu</span>
                 </div>
-                <span className="px-2 py-0.5 bg-[#E4D19E] border-[1px] border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
+                <span className="px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
                   {LEVEL_NAMES[DIFF_LEVEL[difficulty]]}
                 </span>
               </div>
@@ -399,7 +399,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
             </FolkArtFrame>
           ) : (
             <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
-              <div className="flex items-center gap-2 border-b-[2px] border-[#5C140F] pb-2 mb-3">
+              <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-3">
                 <User className="w-4 h-4 text-[#D8401F]" />
                 <span className="font-fraunces font-bold text-sm text-[#5C140F]">2-Player Local Match</span>
               </div>
@@ -408,11 +408,11 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
           )}
 
           <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 flex-1 flex flex-col">
-            <div className="flex items-center gap-2 border-b-[2px] border-[#5C140F] pb-2 mb-2">
+            <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-2">
               <History className="w-4 h-4 text-[#5C140F]" />
               <h4 className="font-fraunces text-sm font-bold text-[#5C140F]">Move Log ({moveLog.length})</h4>
             </div>
-            <div className="max-h-[260px] overflow-y-auto space-y-1 pr-1 text-xs">
+            <div className="max-h-65 overflow-y-auto space-y-1 pr-1 text-xs">
               {moveLog.length === 0 ? (
                 <p className="text-center py-4 text-xs italic text-[#6B4E3D]">Moves will appear here as you play...</p>
               ) : (
@@ -420,7 +420,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
                   <div key={rec.id} className={`px-2 py-1.5 border-[1.5px] border-[#5C140F] flex items-center justify-between ${idx % 2 === 0 ? 'bg-[#E4D19E]' : 'bg-[#F6ECD2]'}`}>
                     <span className="font-mono text-[10px] text-[#6B4E3D] w-7">#{rec.moveNumber}</span>
                     <span className="font-bold text-[#2B1B12] flex-1 text-center">{rec.san}</span>
-                    <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 border-[1px] border-[#5C140F] ${rec.side > 0 ? 'bg-[#F6ECD2] text-[#5C140F]' : 'bg-[#5C140F] text-white'}`}>
+                    <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 border border-[#5C140F] ${rec.side > 0 ? 'bg-[#F6ECD2] text-[#5C140F]' : 'bg-[#5C140F] text-white'}`}>
                       {rec.side > 0 ? 'W' : 'B'}
                     </span>
                   </div>
@@ -434,7 +434,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       {/* PROMOTION MODAL */}
       {pendingPromo && (
         <div className="fixed inset-0 z-50 bg-[#5C140F]/60 flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#F6ECD2] border-[4px] border-[#5C140F] p-6 text-center">
+          <div className="w-full max-w-sm bg-[#F6ECD2] border-4 border-[#5C140F] p-6 text-center">
             <h3 className="font-fraunces text-xl font-bold text-[#5C140F] mb-4">Promote your pawn to:</h3>
             <div className="grid grid-cols-2 gap-3">
               {pendingPromo.slice().sort((a, b) => mPromo(b) - mPromo(a)).map((m) => {
@@ -443,7 +443,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
                   <button
                     key={m}
                     onClick={() => { const mv = m; setPendingPromo(null); applyMove(mv); }}
-                    className="flex flex-col items-center gap-1.5 p-3 bg-[#E4D19E] hover:bg-white border-[2px] border-[#5C140F] cursor-pointer"
+                    className="flex flex-col items-center gap-1.5 p-3 bg-[#E4D19E] hover:bg-white border-2 border-[#5C140F] cursor-pointer"
                   >
                     <PieceIcon variant="chess" letter={letter} ivory={Pos.side > 0} className="w-10 h-10" />
                     <span className="text-xs font-bold text-[#5C140F]">{PIECE_INFO.chess[letter]?.n}</span>
@@ -458,7 +458,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       {/* RESULT MODAL */}
       {result && (
         <div className="fixed inset-0 z-50 bg-[#5C140F]/60 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#F6ECD2] border-[4px] border-[#5C140F] p-6 text-center relative">
+          <div className="w-full max-w-md bg-[#F6ECD2] border-4 border-[#5C140F] p-6 text-center relative">
             <KolamCorner position="top-left" size={28} className="absolute top-1 left-1" />
             <KolamCorner position="top-right" size={28} className="absolute top-1 right-1" />
             <KolamCorner position="bottom-left" size={28} className="absolute bottom-1 left-1" />
@@ -466,7 +466,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
 
             <div className="flex justify-center mb-3">
               {result.kicker === 'YOU WIN' || (gameMode === 'PVP' && result.kicker.includes('WINS')) ? (
-                <div className="p-3 bg-[#D8401F] border-[2px] border-[#5C140F] text-white">
+                <div className="p-3 bg-[#D8401F] border-2 border-[#5C140F] text-white">
                   <Trophy className="w-10 h-10" />
                 </div>
               ) : (
@@ -482,10 +482,10 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
               <button onClick={resetGame} className="w-full py-3 bg-[#D8401F] hover:bg-[#B83215] text-white border-[3px] border-[#5C140F] font-bold text-sm tracking-wide uppercase cursor-pointer">
                 Play Again
               </button>
-              <button onClick={() => onNavigate('MODE_SELECT')} className="w-full py-2.5 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] text-xs font-bold text-[#5C140F] uppercase cursor-pointer">
+              <button onClick={() => onNavigate('MODE_SELECT')} className="w-full py-2.5 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] text-xs font-bold text-[#5C140F] uppercase cursor-pointer">
                 Change Setup
               </button>
-              <button onClick={() => onNavigate('HOME')} className="w-full py-2 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[2px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
+              <button onClick={() => onNavigate('HOME')} className="w-full py-2 bg-[#E4D19E] hover:bg-[#F6ECD2] border-2 border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
                 Home
               </button>
             </div>
@@ -496,19 +496,19 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       {/* SETTINGS MODAL */}
       {showSettings && (
         <div className="fixed inset-0 z-50 bg-[#5C140F]/60 flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#F6ECD2] border-[4px] border-[#5C140F] p-6 relative">
-            <button onClick={() => setShowSettings(false)} className="absolute top-3 right-3 p-1.5 bg-[#E4D19E] border-[2px] border-[#5C140F] cursor-pointer">
+          <div className="w-full max-w-sm bg-[#F6ECD2] border-4 border-[#5C140F] p-6 relative">
+            <button onClick={() => setShowSettings(false)} className="absolute top-3 right-3 p-1.5 bg-[#E4D19E] border-2 border-[#5C140F] cursor-pointer">
               <X className="w-4 h-4" />
             </button>
             <h3 className="font-fraunces text-xl font-bold text-[#5C140F] mb-4">Game Settings</h3>
             <div className="space-y-3 text-xs text-[#2B1B12]">
-              <div className="flex items-center justify-between p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]">
+              <div className="flex items-center justify-between p-3 bg-[#E4D19E] border-2 border-[#5C140F]">
                 <span className="font-bold text-[#5C140F]">Move Hints</span>
                 <button onClick={() => setHints(h => !h)} className="px-3 py-1 bg-[#F6ECD2] border-[1.5px] border-[#5C140F] font-bold text-xs cursor-pointer">
                   {hints ? 'On' : 'Off'}
                 </button>
               </div>
-              <div className="flex items-center justify-between p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]">
+              <div className="flex items-center justify-between p-3 bg-[#E4D19E] border-2 border-[#5C140F]">
                 <span className="font-bold text-[#5C140F]">Sound Effects</span>
                 <button onClick={onToggleSound} className="px-3 py-1 bg-[#F6ECD2] border-[1.5px] border-[#5C140F] font-bold text-xs cursor-pointer">
                   {soundEnabled ? 'Enabled' : 'Muted'}
@@ -516,7 +516,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
               </div>
               <p className="text-[11px] text-[#6B4E3D] px-1">To change variant, opponent, difficulty or side, use "Change Setup" from the toolbar above.</p>
             </div>
-            <button onClick={() => setShowSettings(false)} className="w-full mt-4 py-2.5 bg-[#D8401F] hover:bg-[#B83215] text-white border-[2px] border-[#5C140F] font-bold text-xs uppercase cursor-pointer">
+            <button onClick={() => setShowSettings(false)} className="w-full mt-4 py-2.5 bg-[#D8401F] hover:bg-[#B83215] text-white border-2 border-[#5C140F] font-bold text-xs uppercase cursor-pointer">
               Close
             </button>
           </div>
@@ -526,15 +526,15 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       {/* HELP MODAL */}
       {showHelp && (
         <div className="fixed inset-0 z-50 bg-[#5C140F]/60 flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-[#F6ECD2] border-[4px] border-[#5C140F] p-6 max-h-[85vh] overflow-y-auto relative">
-            <button onClick={() => setShowHelp(false)} className="absolute top-3 right-3 p-1.5 bg-[#E4D19E] border-[2px] border-[#5C140F] cursor-pointer">
+          <div className="w-full max-w-lg bg-[#F6ECD2] border-4 border-[#5C140F] p-6 max-h-[85vh] overflow-y-auto relative">
+            <button onClick={() => setShowHelp(false)} className="absolute top-3 right-3 p-1.5 bg-[#E4D19E] border-2 border-[#5C140F] cursor-pointer">
               <X className="w-4 h-4" />
             </button>
             <h3 className="font-fraunces text-2xl font-bold text-[#5C140F] mb-2">Quick Reference — {info.title}</h3>
             <FolkDivider className="mb-3" />
             <div className="space-y-2.5 text-xs text-[#2B1B12] leading-relaxed">
               {(Object.entries(PIECE_INFO[variant]) as [PieceLetter, (typeof PIECE_INFO)['chess']['P']][]).map(([letter, pinfo]) => (
-                <div key={letter} className="p-2.5 bg-[#E4D19E] border-[2px] border-[#5C140F] flex items-start gap-3">
+                <div key={letter} className="p-2.5 bg-[#E4D19E] border-2 border-[#5C140F] flex items-start gap-3">
                   <PieceIcon variant={variant} letter={letter} ivory className="w-8 h-8 shrink-0" />
                   <div>
                     <h4 className="font-bold text-sm text-[#5C140F]">{pinfo!.n}{pinfo!.t ? ` · ${pinfo!.t}` : ''} <span className="font-normal text-[#6B4E3D]">— {pinfo!.worth}</span></h4>
@@ -543,7 +543,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
                 </div>
               ))}
             </div>
-            <button onClick={() => setShowHelp(false)} className="w-full mt-4 py-2.5 bg-[#D8401F] text-white border-[2px] border-[#5C140F] text-xs font-bold uppercase cursor-pointer">
+            <button onClick={() => setShowHelp(false)} className="w-full mt-4 py-2.5 bg-[#D8401F] text-white border-2 border-[#5C140F] text-xs font-bold uppercase cursor-pointer">
               Back to Game
             </button>
           </div>

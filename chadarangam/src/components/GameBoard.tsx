@@ -45,7 +45,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const checkered = boardStyle === 'checkered';
 
   return (
-    <div className="w-full max-w-[560px] mx-auto select-none">
+    <div className="w-full max-w-140 mx-auto select-none">
       <div className="flex">
         {/* Rank labels */}
         <div className="flex flex-col justify-around pr-1.5 sm:pr-2">
@@ -58,7 +58,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         <div className="flex-1">
           {/* Board frame — same treatment as Daadi Aata's board container */}
-          <div className="w-full aspect-square bg-[#F6ECD2] border-[4px] border-[#5C140F] p-1.5 sm:p-2 box-border relative">
+          <div className="w-full aspect-square bg-[#F6ECD2] border-4 border-[#5C140F] p-1.5 sm:p-2 box-border relative">
             <div className="w-full h-full border-[1.5px] border-[#5C140F] grid grid-cols-8 grid-rows-8">
               {order.map((i) => {
                 const piece = board[i];

@@ -62,9 +62,9 @@ export const KreeduMascot: React.FC<KreeduMascotProps> = ({
   return (
     <div className={`inline-flex flex-col items-center select-none ${className}`}>
       {showDialogBubble && dialogText && (
-        <div className="mb-2 relative bg-[#F6ECD2] border-[2px] border-[#5C140F] px-3 py-1 text-xs font-semibold text-[#2B1B12] text-center max-w-[220px] shadow-sm">
+        <div className="mb-2 relative bg-[#F6ECD2] border-2 border-[#5C140F] px-3 py-1 text-xs font-semibold text-[#2B1B12] text-center max-w-55 shadow-sm">
           {dialogText}
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#F6ECD2] border-r-[2px] border-b-[2px] border-[#5C140F] rotate-45" />
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#F6ECD2] border-r-2 border-b-2 border-[#5C140F] rotate-45" />
         </div>
       )}
 

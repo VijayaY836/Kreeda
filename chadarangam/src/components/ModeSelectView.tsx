@@ -86,14 +86,14 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setGameMode('PVC')}
-              className={`flex items-center justify-center gap-2 px-3 py-3 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${gameMode === 'PVC' ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
+              className={`flex items-center justify-center gap-2 px-3 py-3 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${gameMode === 'PVC' ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
             >
               <Bot className="w-4 h-4" />
               <span>vs Kreedu (AI)</span>
             </button>
             <button
               onClick={() => setGameMode('PVP')}
-              className={`flex items-center justify-center gap-2 px-3 py-3 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${gameMode === 'PVP' ? 'bg-[#D8401F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
+              className={`flex items-center justify-center gap-2 px-3 py-3 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${gameMode === 'PVP' ? 'bg-[#D8401F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
             >
               <Users className="w-4 h-4" />
               <span>2 Players (Local)</span>
@@ -112,7 +112,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
                   <div
                     key={d.key}
                     onClick={() => setDifficulty(d.key)}
-                    className={`p-3 border-[2px] cursor-pointer transition-all ${difficulty === d.key ? 'border-[#5C140F] bg-white shadow-[3px_3px_0px_0px_#5C140F]' : 'border-[#5C140F]/40 bg-[#E4D19E] hover:bg-white'}`}
+                    className={`p-3 border-2 cursor-pointer transition-all ${difficulty === d.key ? 'border-[#5C140F] bg-white shadow-[3px_3px_0px_0px_#5C140F]' : 'border-[#5C140F]/40 bg-[#E4D19E] hover:bg-white'}`}
                   >
                     <div className="text-2xl text-center mb-1">{d.emoji}</div>
                     <h4 className="font-fraunces font-extrabold text-base text-center text-[#5C140F]">{d.label}</h4>
@@ -129,14 +129,14 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setHumanSide(1)}
-                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${humanSide === 1 ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${humanSide === 1 ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
                 >
                   <span className="w-3.5 h-3.5 rounded-full bg-[#F6ECD2] border-2 border-[#5C140F]" />
                   <span>{info.sides.w} (moves first)</span>
                 </button>
                 <button
                   onClick={() => setHumanSide(-1)}
-                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${humanSide === -1 ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${humanSide === -1 ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
                 >
                   <span className="w-3.5 h-3.5 rounded-full bg-[#5C140F] border-2 border-[#EFA90C]" />
                   <span>{info.sides.b}</span>
@@ -155,14 +155,14 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setBoardStyle('ashtapada')}
-                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${boardStyle === 'ashtapada' ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${boardStyle === 'ashtapada' ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
                 >
                   <LayoutGrid className="w-4 h-4" />
                   <span>Ashtapada (traditional)</span>
                 </button>
                 <button
                   onClick={() => setBoardStyle('checkered')}
-                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-[2px] border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${boardStyle === 'checkered' ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 border-2 border-[#5C140F] text-sm font-bold transition-colors cursor-pointer ${boardStyle === 'checkered' ? 'bg-[#F6ECD2] ring-2 ring-[#D8401F]' : 'bg-[#E4D19E] hover:bg-white'}`}
                 >
                   <Grid3x3 className="w-4 h-4" />
                   <span>Checkered</span>

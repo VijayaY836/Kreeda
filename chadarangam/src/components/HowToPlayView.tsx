@@ -73,7 +73,7 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
           <button
             key={v}
             onClick={() => switchVariant(v)}
-            className={`px-4 py-2 border-[2px] border-[#5C140F] text-sm font-bold cursor-pointer ${variant === v ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
+            className={`px-4 py-2 border-2 border-[#5C140F] text-sm font-bold cursor-pointer ${variant === v ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
           >
             {VARIANT_INFO[v].title}
           </button>
@@ -98,7 +98,7 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
             <li>Trap the enemy king so it cannot escape — that's checkmate, and you win.</li>
           </ul>
         )}
-        <div className="mt-4 p-3 bg-[#E4D19E] border-[2px] border-[#5C140F] text-xs text-[#2B1B12] leading-relaxed">
+        <div className="mt-4 p-3 bg-[#E4D19E] border-2 border-[#5C140F] text-xs text-[#2B1B12] leading-relaxed">
           {variant === 'chaturanga'
             ? <>If you already play chess, three things will trip you up: the <strong>Mantri moves one square diagonally</strong> (it is not a queen), the <strong>Gaja jumps exactly two squares diagonally</strong> (it is not a bishop), and <strong>Padatis never advance two squares</strong>. There is no castling.</>
             : <>Coming from Chaturangam? The queen and bishop now slide the <strong>full board</strong>, pawns get a <strong>two-square first move</strong> (with en passant), and each side may <strong>castle</strong> once. Stalemate is now a draw, not a win.</>}
@@ -115,7 +115,7 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
             <button
               key={k}
               onClick={() => setDemoPiece(k)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 border-[2px] border-[#5C140F] text-xs font-bold cursor-pointer ${demoPiece === k ? 'bg-white shadow-[2px_2px_0px_0px_#5C140F]' : 'bg-[#E4D19E] hover:bg-white'}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${demoPiece === k ? 'bg-white shadow-[2px_2px_0px_0px_#5C140F]' : 'bg-[#E4D19E] hover:bg-white'}`}
             >
               <PieceIcon variant={variant} letter={k} ivory className="w-5 h-5" />
               {PIECE_INFO[variant][k]?.n}
@@ -124,7 +124,7 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
         </div>
 
         <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
-          <div className="grid grid-cols-5 w-[220px] h-[220px] border-[3px] border-[#5C140F] shrink-0">
+          <div className="grid grid-cols-5 w-55 h-55 border-[3px] border-[#5C140F] shrink-0">
             {Array.from({ length: 25 }).map((_, k) => {
               const r = 4 - Math.floor(k / 5), f = k % 5;
               const idx = r * 5 + f;
@@ -147,7 +147,7 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
           </div>
 
           <div className="flex-1">
-            <span className="inline-block px-2 py-0.5 bg-[#E4D19E] border-[1px] border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase mb-2">
+            <span className="inline-block px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase mb-2">
               {pinfo.worth}
             </span>
             <h4 className="font-fraunces font-bold text-xl text-[#5C140F] mb-1">
@@ -168,18 +168,18 @@ export const HowToPlayView: React.FC<HowToPlayViewProps> = ({ onNavigate, initia
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#2B1B12]">
           {variant === 'chess' ? (
             <>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Castling</strong>King and rook swap past each other once per game, if neither has moved and nothing stands between or attacks the path.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">En passant</strong>If an enemy pawn jumps two squares past yours, you may capture it as though it had moved only one — but only on your very next move.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Promotion</strong>A pawn reaching the far rank becomes any piece you choose — almost always a queen.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Stalemate</strong>No legal move and not in check — the game is a draw.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Draws</strong>Also drawn by insufficient material, the fifty-move rule, or threefold repetition.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Castling</strong>King and rook swap past each other once per game, if neither has moved and nothing stands between or attacks the path.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">En passant</strong>If an enemy pawn jumps two squares past yours, you may capture it as though it had moved only one — but only on your very next move.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Promotion</strong>A pawn reaching the far rank becomes any piece you choose — almost always a queen.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Stalemate</strong>No legal move and not in check — the game is a draw.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Draws</strong>Also drawn by insufficient material, the fifty-move rule, or threefold repetition.</div>
             </>
           ) : (
             <>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">No castling</strong>The Raja and Rathas never make a special combined move.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Promotion</strong>A Padati reaching the far rank becomes a Mantri — and only a Mantri.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Stalemate</strong>No legal move and not in check — under Shatranj rules, that's a <em>win</em> for whoever forced it, not a draw.</div>
-              <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Bare king</strong>Capturing every enemy piece but the Raja wins outright — unless the opponent can bare your Raja right back, which draws.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">No castling</strong>The Raja and Rathas never make a special combined move.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Promotion</strong>A Padati reaching the far rank becomes a Mantri — and only a Mantri.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Stalemate</strong>No legal move and not in check — under Shatranj rules, that's a <em>win</em> for whoever forced it, not a draw.</div>
+              <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F]"><strong className="block text-[#5C140F] mb-1">Bare king</strong>Capturing every enemy piece but the Raja wins outright — unless the opponent can bare your Raja right back, which draws.</div>
             </>
           )}
         </div>

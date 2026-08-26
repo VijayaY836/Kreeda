@@ -41,7 +41,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
           through the Islamic world into Spain and Italy, where 15th-century players gave the queen and bishop their
           modern powers. A separate branch went east and became Xiangqi and Shogi.
         </p>
-        <div className="p-3 bg-[#E4D19E] border-[2px] border-[#5C140F] text-xs text-[#2B1B12] mb-4">
+        <div className="p-3 bg-[#E4D19E] border-2 border-[#5C140F] text-xs text-[#2B1B12] mb-4">
           In Telugu it is <strong>చతురంగం (Chaturangam)</strong>; you will also hear <strong>Chadarangam</strong>. Switch to{' '}
           <strong>Chess</strong> from Play Game to try the far end of that journey on the same board.
         </div>
@@ -73,9 +73,9 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
             <tbody>
               {VARIANT_ROWS.map(([label, chat, chess], idx) => (
                 <tr key={label} className={idx % 2 === 0 ? 'bg-[#E4D19E]' : 'bg-[#F6ECD2]'}>
-                  <td className="p-2 font-bold text-[#5C140F] border-t-[1px] border-[#5C140F]/30">{label}</td>
-                  <td className="p-2 text-[#2B1B12] border-t-[1px] border-[#5C140F]/30">{chat}</td>
-                  <td className="p-2 text-[#2B1B12] border-t-[1px] border-[#5C140F]/30">{chess}</td>
+                  <td className="p-2 font-bold text-[#5C140F] border-t border-[#5C140F]/30">{label}</td>
+                  <td className="p-2 text-[#2B1B12] border-t border-[#5C140F]/30">{chat}</td>
+                  <td className="p-2 text-[#2B1B12] border-t border-[#5C140F]/30">{chess}</td>
                 </tr>
               ))}
             </tbody>
@@ -93,11 +93,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
       </FolkArtFrame>
 
       <div className="text-center flex flex-wrap justify-center gap-4">
-        <button onClick={() => onNavigate('MODE_SELECT')} className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#D8401F] text-white border-[2px] border-[#5C140F] text-xs font-bold uppercase cursor-pointer">
+        <button onClick={() => onNavigate('MODE_SELECT')} className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#D8401F] text-white border-2 border-[#5C140F] text-xs font-bold uppercase cursor-pointer">
           <span>Play Now</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
-        <button onClick={() => onNavigate('HOME')} className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] text-xs font-bold text-[#5C140F] uppercase cursor-pointer">
+        <button onClick={() => onNavigate('HOME')} className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] text-xs font-bold text-[#5C140F] uppercase cursor-pointer">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Home</span>
         </button>
