@@ -12,6 +12,85 @@ export interface Pin {
   how: string
 }
 
+export type VpVersion = 'india' | 'uk' | 'usa'
+
+export interface VpVersionDef {
+  id: VpVersion
+  name: string
+  native: string
+  labels: Record<string, { virtue: string; vice: string }>
+  instructions: string[]
+}
+
+export const VP_VERSIONS: Record<VpVersion, VpVersionDef> = {
+  india: {
+    id: 'india',
+    name: 'Vaikunthapali',
+    native: 'వైకుంఠపాళి · also Gyan Chauper, Moksha Patam',
+    labels: {
+      Vinaya: { virtue: 'Humility', vice: 'Anger' },
+      Dāna: { virtue: 'Charity', vice: 'Envy' },
+      Seva: { virtue: 'Service', vice: 'Greed' },
+      Śraddha: { virtue: 'Faith', vice: 'Delusion' },
+      Jñāna: { virtue: 'Knowledge', vice: 'Pride' },
+      Dhyāna: { virtue: 'Meditation', vice: 'Ego' },
+      Dayā: { virtue: 'Compassion', vice: 'Desire' },
+    },
+    instructions: [
+      '<strong>Objective:</strong> travel from Janma (birth, square 1) to Vaikuntham (square 100).',
+      '<strong>Move:</strong> roll the die and advance; a <strong>6 earns another roll</strong>, but three 6s in a row forfeit the turn.',
+      '<strong>Virtues</strong> raise ladders — humility, charity, service, faith, knowledge, meditation, compassion.',
+      '<strong>Vices</strong> raise snakes — anger, envy, greed, delusion, pride, ego, desire.',
+      '<strong>Moksha rule:</strong> you must land exactly on 100 — overshoot and you wait.',
+      '<strong>Solo mode</strong> races the clock; against Kreedu it is a straight race to liberation.',
+    ],
+  },
+  uk: {
+    id: 'uk',
+    name: 'Snakes and Ladders',
+    native: 'United Kingdom · from colonial India',
+    labels: {
+      Vinaya: { virtue: 'Good Deed', vice: 'Bad Habit' },
+      Dāna: { virtue: 'Kindness', vice: 'Greed' },
+      Seva: { virtue: 'Helpfulness', vice: 'Laziness' },
+      Śraddha: { virtue: 'Honesty', vice: 'Lying' },
+      Jñāna: { virtue: 'Learning', vice: 'Foolishness' },
+      Dhyāna: { virtue: 'Patience', vice: 'Rudeness' },
+      Dayā: { virtue: 'Courage', vice: 'Cruelty' },
+    },
+    instructions: [
+      '<strong>Objective:</strong> be the first to reach square 100.',
+      '<strong>Move:</strong> roll the die and advance along the numbered squares.',
+      '<strong>Ladders</strong> shoot you up — land on a good deed and climb.',
+      '<strong>Snakes</strong> drag you down — land on a bad habit and slide.',
+      'No special rules — first player past 100 wins.',
+      'A straight race between two players.',
+    ],
+  },
+  usa: {
+    id: 'usa',
+    name: 'Chutes and Ladders',
+    native: 'United States · from British Snakes and Ladders',
+    labels: {
+      Vinaya: { virtue: '', vice: '' },
+      Dāna: { virtue: '', vice: '' },
+      Seva: { virtue: '', vice: '' },
+      Śraddha: { virtue: '', vice: '' },
+      Jñāna: { virtue: '', vice: '' },
+      Dhyāna: { virtue: '', vice: '' },
+      Dayā: { virtue: '', vice: '' },
+    },
+    instructions: [
+      '<strong>Objective:</strong> be the first to reach the top of the board!',
+      '<strong>Move:</strong> spin the spinner and advance the number of squares shown.',
+      '<strong>Ladders</strong> take you up — land at the bottom and ride to the top.',
+      '<strong>Chutes</strong> slide you down — land at the top and ride to the bottom.',
+      'No special rules — first player to the top wins!',
+      'A classic children\'s race game for two players.',
+    ],
+  },
+}
+
 export interface GameDef {
   id: string
   name: string
@@ -23,6 +102,7 @@ export interface GameDef {
   path: boolean
   pins: Pin[]
   instructions: string[]
+  vpVersion?: VpVersion
 }
 
 const stroke = {
@@ -87,6 +167,7 @@ export const GAMES: GameDef[] = [
     hasSoloMode: true,
     mapSub: 'Traced its own path out of India — tap to follow it.',
     path: true,
+    vpVersion: 'india',
     pins: [
       { x: 32, y: 38, lat: 16.5, lng: 79.5, place: 'ANDHRA PRADESH, INDIA', name: 'Vaikunthapali', fact: 'A solitary board of virtue and vice — squares of Faith and Knowledge lift you, squares of Greed and Pride drop you back down.', how: 'Origin. Designed as a solo meditation on karma, not a race against anyone.' },
       { x: 52, y: 26, lat: 51.5, lng: -0.1, place: 'UNITED KINGDOM', name: 'Snakes and Ladders', fact: 'Colonial families carried the board home; publishers stripped the moral squares and made it a race.', how: 'Brought back by returning colonial families and printed by British board-game makers.' },
