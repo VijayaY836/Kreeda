@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KREEDA — Ancient Games, Mapped</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Manrope:wght@400;500;600;700;800&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#EFDFB8;
@@ -19,7 +20,9 @@
     --green:#5F8F3B;
     --ink:#2B1B12;
     --ink-soft:#6B4E3D;
-    --radius:14px;
+    --light-cream:#F6ECD2;
+    --deep-cream:#E4D19E;
+    --radius:0px;
     --bw:3px;
   }
   *{box-sizing:border-box;}
@@ -31,16 +34,42 @@
     min-height:100vh;
   }
   .display{font-family:'Fraunces', serif; font-weight:700;}
+  .telugu{font-family:'Tiro Telugu', serif;}
+
+  /* subtle folk-pattern texture, echoed from the React shell's bg-kolam-dots */
+  .bg-kolam-dots{background-image:radial-gradient(var(--maroon) 1.2px, transparent 1.2px); background-size:24px 24px;}
+
+  ::-webkit-scrollbar{width:8px; height:8px;}
+  ::-webkit-scrollbar-track{background:var(--paper); border-left:2px solid var(--maroon);}
+  ::-webkit-scrollbar-thumb{background:var(--maroon);}
+  ::-webkit-scrollbar-thumb:hover{background:var(--terracotta);}
+
+  /* ---------- kolam corner accents (ported from the React FolkArtFrame/KolamCorner) ---------- */
+  .kolam-wrap{position:absolute; pointer-events:none; opacity:.75; z-index:3;}
+  .kolam-wrap.corner-tl{top:5px; left:5px;}
+  .kolam-wrap.corner-tr{top:5px; right:5px;}
+  .kolam-wrap.corner-bl{bottom:5px; left:5px;}
+  .kolam-wrap.corner-br{bottom:5px; right:5px;}
+  .has-corners{position:relative;}
 
   /* ---------- shell ---------- */
-  .app{max-width:1180px; margin:0 auto; padding:28px 20px 80px;}
-  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
-  .wordmark{
-    font-family:'Fraunces', serif; font-weight:800; font-size:28px; letter-spacing:0.3px; color:var(--maroon);
-    display:flex; align-items:center; gap:10px;
+  .app{max-width:1180px; margin:0 auto; padding:0 20px 80px;}
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin:0 -20px 28px; padding:16px 20px; border-bottom:var(--bw) solid var(--maroon);
+    background:var(--paper); position:sticky; top:0; z-index:40;
   }
-  .wordmark svg{width:34px; height:34px;}
-  .wordmark span.dev{font-size:14px; color:var(--ink-soft); font-family:'Manrope',sans-serif; font-weight:700;}
+  .wordmark{
+    font-family:'Fraunces', serif; font-weight:800; font-size:24px; letter-spacing:0.3px; color:var(--maroon);
+    display:flex; align-items:center; gap:12px;
+  }
+  .wordmark .logo-chip{
+    width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    background:var(--light-cream); border:2px solid var(--maroon);
+  }
+  .wordmark svg{width:28px; height:28px;}
+  .wordmark .word-text{display:flex; flex-direction:column; line-height:1.15;}
+  .wordmark span.dev{font-size:13px; color:var(--pink); font-family:'Tiro Telugu',serif; font-weight:700;}
 
   .view{display:none;}
   .view.active{display:block;}
@@ -59,17 +88,24 @@
   .hero-inner{position:relative; z-index:2; display:flex; align-items:center; gap:28px; flex-wrap:wrap;}
   .mascot{width:118px; height:118px; flex-shrink:0;}
   .mascot img{width:100%; height:100%; object-fit:contain; display:block;}
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:7px; padding:5px 12px; margin-bottom:10px;
+    background:rgba(239,223,184,.14); border:1.5px solid var(--paper); color:var(--paper);
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.6px;
+  }
   .hero-text h1{margin:0 0 8px; font-size:32px; font-weight:800; line-height:1.15;}
   .hero-text p{margin:0; color:var(--paper); opacity:.9; max-width:520px; font-size:15px; line-height:1.55;}
   .speech{
+    position:relative;
     background:var(--marigold); color:var(--ink); padding:10px 16px;
-    border-radius:10px; border:2.5px solid var(--maroon);
-    font-size:13.5px; font-weight:700; display:inline-block; margin-top:12px;
+    border-radius:0; border:2.5px solid var(--maroon);
+    font-size:13.5px; font-weight:700; display:inline-block; margin-top:14px;
   }
 
-  .section-label{display:flex; align-items:baseline; gap:10px; margin:6px 0 16px;}
-  .section-label h2{font-family:'Fraunces', serif; font-size:22px; margin:0; font-weight:800; color:var(--maroon);}
+  .section-label{display:flex; align-items:center; gap:12px; margin:6px 0 18px;}
+  .section-label h2{font-family:'Fraunces', serif; font-size:22px; margin:0; font-weight:800; color:var(--maroon); white-space:nowrap;}
   .section-label .thread{flex:1; height:3px; background:repeating-linear-gradient(90deg, var(--maroon) 0 8px, transparent 8px 14px);}
+  .section-label .diamond{width:9px; height:9px; background:var(--marigold); border:2px solid var(--maroon); transform:rotate(45deg); flex-shrink:0;}
 
   .grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px;}
   @media (max-width:880px){.grid{grid-template-columns:repeat(2,1fr);}}
@@ -79,10 +115,10 @@
     border-radius:var(--radius); padding:20px; cursor:pointer;
     position:relative;
     border:var(--bw) solid var(--maroon);
-    transition:transform .12s ease;
+    transition:transform .12s ease, box-shadow .12s ease;
   }
-  .card:hover{transform:translateY(-3px);}
-  .card:active{transform:translateY(0px) scale(0.98);}
+  .card:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--maroon);}
+  .card:active{transform:translate(0,0) scale(0.98); box-shadow:none;}
 
   /* one flat color block per game — no gradients */
   .tile-blue{background:var(--blue);}
@@ -100,7 +136,7 @@
   .card h3{font-family:'Fraunces', serif; font-size:19px; margin:0 0 4px; font-weight:800; color:var(--paper);}
   .card .native{font-size:12px; color:var(--paper); opacity:.85; margin:0 0 14px;}
   .card .badge{
-    display:inline-block; font-size:11px; font-weight:800; padding:5px 10px; border-radius:8px;
+    display:inline-block; font-size:11px; font-weight:800; padding:5px 10px; border-radius:0;
     letter-spacing:.3px; text-transform:uppercase; color:var(--ink); background:var(--paper);
     border:2px solid var(--maroon);
   }
@@ -118,16 +154,16 @@
   .game-head .native-line{color:var(--ink-soft); font-size:14.5px; font-weight:600;}
 
   .mode-toggle{
-    display:flex; gap:4px; border-radius:10px; padding:4px;
+    display:flex; gap:4px; border-radius:0; padding:4px;
     background:var(--paper); border:2.5px solid var(--maroon);
   }
   .mode-toggle button{
-    border:none; background:none; padding:9px 16px; border-radius:7px; font-weight:800; font-size:13px;
-    cursor:pointer; color:var(--maroon); font-family:'Manrope',sans-serif;
+    border:none; background:none; padding:9px 16px; border-radius:0; font-weight:800; font-size:13px;
+    cursor:pointer; color:var(--maroon); font-family:'Manrope',sans-serif; transition:background .12s ease, color .12s ease;
   }
   .mode-toggle button.active{ background:var(--terracotta); color:var(--paper); }
   .mode-fixed{
-    background:var(--teal); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13px; font-weight:800;
+    background:var(--teal); color:var(--paper); padding:10px 18px; border-radius:0; font-size:13px; font-weight:800;
     border:2.5px solid var(--maroon);
   }
 
@@ -141,7 +177,7 @@
 
   /* map — flat color block, no gradient/shadow */
   .map-frame{
-    position:relative; height:340px; border-radius:10px; overflow:hidden;
+    position:relative; height:340px; border-radius:0; overflow:hidden;
     background:var(--blue);
     border:var(--bw) solid var(--maroon);
   }
@@ -159,14 +195,15 @@
   .instructions li:last-child{border-bottom:none; margin-bottom:0;}
 
   .play-btn{
-    width:100%; padding:17px; border-radius:12px; cursor:pointer;
+    width:100%; padding:17px; border-radius:0; cursor:pointer;
     font-family:'Fraunces',serif; font-size:19px; font-weight:800; color:var(--paper);
     background:var(--terracotta);
     border:var(--bw) solid var(--maroon);
-    transition:transform .1s ease;
+    transition:transform .1s ease, box-shadow .1s ease;
+    text-transform:uppercase; letter-spacing:.4px;
   }
-  .play-btn:hover{transform:translateY(-2px);}
-  .play-btn:active{transform:translateY(1px) scale(0.99);}
+  .play-btn:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--maroon);}
+  .play-btn:active{transform:translate(0,0) scale(0.99); box-shadow:none;}
 
   /* modal — flat card, no fold/shadow */
   .modal-overlay{
@@ -179,7 +216,7 @@
     border:var(--bw) solid var(--maroon);
   }
   .modal::before{display:none;}
-  .modal .close{position:absolute; top:14px; right:16px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--maroon); font-weight:800;}
+  .modal .close{position:absolute; top:20px; right:22px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--maroon); font-weight:800; z-index:4;}
   .modal .place{font-size:12px; letter-spacing:.6px; text-transform:uppercase; color:var(--terracotta); font-weight:800;}
   .modal h3{font-family:'Fraunces',serif; margin:6px 0 10px; font-size:22px; font-weight:800; color:var(--maroon);}
   .modal p{font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 10px;}
@@ -192,11 +229,24 @@
   .play-shell p{color:var(--ink-soft); font-size:14.5px; max-width:400px; margin:0 auto; font-weight:600;}
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--maroon); color:var(--paper); padding:12px 22px; border-radius:10px; font-size:13.5px; font-weight:800;
+    background:var(--maroon); color:var(--paper); padding:12px 22px; border-radius:0; font-size:13.5px; font-weight:800;
     opacity:0; pointer-events:none; transition:all .3s ease; z-index:80;
-    border:2px solid var(--ink);
+    border:2px solid var(--marigold);
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ---------- footer ---------- */
+  .footer{
+    margin:48px -20px 0; padding:22px 20px; border-top:var(--bw) solid var(--maroon);
+    background:var(--light-cream);
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .footer .brand{display:flex; align-items:center; gap:10px;}
+  .footer .brand .chip{width:30px; height:30px; flex-shrink:0; background:var(--paper); border:2px solid var(--maroon); display:flex; align-items:center; justify-content:center;}
+  .footer .brand .chip svg{width:18px; height:18px;}
+  .footer .brand strong{font-family:'Fraunces',serif; font-size:14px; color:var(--maroon); display:block;}
+  .footer .brand span{font-size:11px; color:var(--ink-soft); font-weight:600;}
+  .footer .tag{font-size:11px; font-weight:700; color:var(--ink-soft); font-family:'Manrope',monospace; letter-spacing:.3px;}
 
 </style>
 </head>
@@ -205,18 +255,24 @@
 
   <div class="topbar">
     <div class="wordmark">
-      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/><circle cx="20" cy="6" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="20" cy="34" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="6" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="34" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/></svg>
-      KREEDA <span class="dev">क्रीड़ा</span>
+      <div class="logo-chip">
+        <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/><circle cx="20" cy="6" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="20" cy="34" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="6" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="34" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/></svg>
+      </div>
+      <div class="word-text">
+        KREEDA
+        <span class="dev">క్రీడ · ancient games, mapped</span>
+      </div>
     </div>
   </div>
 
   <!-- ============ HOME VIEW ============ -->
   <div class="view active" id="view-home">
 
-    <div class="hero">
+    <div class="hero has-corners">
       <div class="hero-inner">
         <div class="mascot" id="mascot-home"></div>
         <div class="hero-text">
+          <div class="hero-badge">⬢ Six Games · Six Journeys Out of India</div>
           <h1 class="display">Six games. A thousand years.<br>One board each.</h1>
           <p>Every game here was born in India — some stayed close to home, some crossed oceans and came back with new names. Tap a game to see where it's been.</p>
           <div class="speech">Namaste! I'm Kreedu — pick a game and I'll play with you 🎲</div>
@@ -224,7 +280,7 @@
       </div>
     </div>
 
-    <div class="section-label"><h2>Choose a game</h2><div class="thread"></div></div>
+    <div class="section-label"><h2>Choose a game</h2><div class="thread"></div><span class="diamond"></span><div class="thread"></div></div>
     <div class="grid" id="game-grid"></div>
   </div>
 
@@ -240,7 +296,7 @@
       <div id="d-mode-area"></div>
     </div>
 
-    <div class="panel">
+    <div class="panel has-corners">
       <h2>Where it's played</h2>
       <p class="sub" id="d-map-sub">Tap a pin to read its story.</p>
       <div class="map-frame" id="map-frame">
@@ -250,7 +306,7 @@
       </div>
     </div>
 
-    <div class="panel instructions">
+    <div class="panel instructions has-corners">
       <h2>How to play</h2>
       <ul id="d-instructions"></ul>
     </div>
@@ -261,18 +317,29 @@
   <!-- ============ PLAY PLACEHOLDER VIEW ============ -->
   <div class="view" id="view-play">
     <button class="backbtn" onclick="goDetail()">&larr; Back to game info</button>
-    <div class="play-shell panel">
+    <div class="play-shell panel has-corners">
       <div class="mascot" id="mascot-play"></div>
       <h2 id="play-title">Loading board…</h2>
       <p id="play-sub">This is where the actual game board renders. Structural placeholder for now.</p>
     </div>
   </div>
 
+  <div class="footer">
+    <div class="brand">
+      <div class="chip"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/></svg></div>
+      <div>
+        <strong>KREEDA</strong>
+        <span>Six traditional Indian games, mapped &amp; playable offline</span>
+      </div>
+    </div>
+    <div class="tag">100% Offline · Six Games · One Mascot</div>
+  </div>
+
 </div>
 
 <!-- Pin dialog modal -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
+  <div class="modal has-corners">
     <button class="close" onclick="closeModal()">✕</button>
     <div class="place" id="modal-place">PLACE</div>
     <h3 id="modal-name">Game name here</h3>
@@ -288,6 +355,31 @@
 const mascotImg = '<img src="kreedu-mascot.png" alt="Kreedu, the KREEDA mascot">';
 document.getElementById('mascot-home').innerHTML = mascotImg;
 document.getElementById('mascot-play').innerHTML = mascotImg;
+
+/* ---------------- kolam corner accents ----------------
+   Ported from the React FolkArtFrame/KolamCorner component so every bordered
+   card/panel/modal in this prototype gets the same folk-art bracket accents. */
+function kolamCornerSVG(rotation){
+  return `<svg width="16" height="16" viewBox="0 0 32 32"><g transform="rotate(${rotation} 16 16)">`
+    + `<path d="M2 2 L2 18 L6 18 L6 6 L18 6 L18 2 Z" fill="#5C140F"/>`
+    + `<circle cx="12" cy="12" r="3" fill="#D9587B" stroke="#5C140F" stroke-width="1.5"/>`
+    + `<circle cx="6" cy="24" r="2" fill="#5C140F"/>`
+    + `<circle cx="24" cy="6" r="2" fill="#5C140F"/>`
+    + `</g></svg>`;
+}
+function addCorners(el){
+  if(!el || el.dataset.corneredDone) return;
+  el.dataset.corneredDone = '1';
+  [['corner-tl',0], ['corner-tr',90], ['corner-br',180], ['corner-bl',270]].forEach(([cls,rot])=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'kolam-wrap ' + cls;
+    wrap.innerHTML = kolamCornerSVG(rot);
+    el.appendChild(wrap);
+  });
+}
+function addCornersAll(root){
+  (root || document).querySelectorAll('.has-corners').forEach(addCorners);
+}
 
 /* ---------------- Icons per game (simple folk-motif svgs) ---------------- */
 const icons = {
@@ -387,7 +479,7 @@ const games = [
 const grid = document.getElementById('game-grid');
 games.forEach(g=>{
   const card = document.createElement('div');
-  card.className='card tile-'+g.tile;
+  card.className='card has-corners tile-'+g.tile;
   card.innerHTML = `
     <div class="icon-wrap">${icons[g.icon]}</div>
     <h3>${g.name}</h3>
@@ -397,7 +489,11 @@ games.forEach(g=>{
   `;
   card.onclick = ()=>openGame(g.id);
   grid.appendChild(card);
+  addCorners(card);
 });
+
+/* stamp corner accents on every static bordered surface (hero, panels, modal) */
+addCornersAll();
 
 /* ---------------- navigation ---------------- */
 let currentGame = null;
@@ -497,6 +593,12 @@ document.getElementById('modal-overlay').addEventListener('click', e=>{
 /* ---------------- play placeholder ---------------- */
 function startPlay(){
   const g = currentGame;
+  // Chaturangam has a real, fully-built app of its own — hand off to it
+  // instead of the structural placeholder every other game still uses.
+  if(g.id === 'chaturangam'){
+    window.location.href = 'chadarangam/dist/index.html';
+    return;
+  }
   const modeLabel = g.hasSoloMode ? (currentMode==='solo'?'Solo mode':'vs Kreedu') : 'vs Kreedu';
   document.getElementById('play-title').textContent = `${g.name} — ${modeLabel}`;
   document.getElementById('play-sub').textContent = 'Board and game logic mount here. This screen just confirms the navigation + mode selection works end to end.';
