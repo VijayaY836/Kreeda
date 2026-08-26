@@ -3,6 +3,7 @@ import type { GameDef, Pin } from '../data/games'
 import type { PlayMode } from '../App'
 import { useLang } from '../data/LangContext'
 import { SHELL_I18N } from '../data/i18n'
+import { MapView } from './MapView'
 
 export function GameDetailView({
   game,
@@ -48,45 +49,7 @@ export function GameDetailView({
       <div className="panel">
         <h2>{S.wherePlayed}</h2>
         <p className="sub">{game.mapSub}</p>
-        <div className="map-frame">
-          <svg className="paths" viewBox="0 0 100 100" preserveAspectRatio="none">
-            {game.path && game.pins.length > 1 && (
-              <path
-                d={game.pins.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')}
-                fill="none"
-                stroke="#FCF5E8"
-                strokeWidth="0.6"
-                strokeDasharray="1.2 2"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-            )}
-          </svg>
-          <div>
-            {game.pins.map((p, i) => (
-              <div
-                key={`${p.place}-${i}`}
-                className="pin"
-                style={{ left: `${p.x}%`, top: `${p.y}%` }}
-                onClick={() => setOpenPin(p)}
-              >
-                <svg viewBox="0 0 24 32">
-                  <path
-                    d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 8 10.5 18 10.5 18s10.5-10 10.5-18c0-5.8-4.7-10.5-10.5-10.5z"
-                    fill={i === 0 ? '#EFA90C' : '#D8401F'}
-                    stroke="#5C140F"
-                    strokeWidth="2.4"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="12" cy="12" r="4" fill="#EFDFB8" stroke="#5C140F" strokeWidth="1.6" />
-                </svg>
-              </div>
-            ))}
-          </div>
-          <div className="map-caption">
-            {game.path ? S.stitchedLine : S.scatteredPins}
-          </div>
-        </div>
+        <MapView pins={game.pins} path={game.path} lang={lang} onPinClick={setOpenPin} />
       </div>
 
       <div className="panel instructions">

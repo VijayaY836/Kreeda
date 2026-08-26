@@ -150,16 +150,18 @@ body{
 
 .map-frame{
   position:relative; height:340px; border-radius:10px; overflow:hidden;
-  background:var(--blue);
   border:var(--bw) solid var(--maroon);
 }
-.map-frame svg.paths{position:absolute; inset:0; width:100%; height:100%;}
-.pin{
-  position:absolute; width:24px; height:24px; transform:translate(-50%,-100%); cursor:pointer;
-  transition:transform .12s ease;
+.leaflet-map-wrap{position:relative; height:340px;}
+.leaflet-map-container{width:100%; height:100%;}
+.leaflet-map-container .leaflet-tile-pane{filter:sepia(.12) saturate(.85) brightness(1.05);}
+.leaflet-map-container .leaflet-control-attribution{display:none !important;}
+.leaflet-map-container .leaflet-control-zoom{border:none !important; box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.leaflet-map-container .leaflet-control-zoom a{
+  background:var(--paper) !important; color:var(--maroon) !important;
+  border:2px solid var(--maroon) !important; font-weight:800;
 }
-.pin:hover{transform:translate(-50%,-100%) scale(1.15);}
-.map-caption{position:absolute; bottom:10px; left:14px; color:var(--paper); font-size:12px; font-weight:800;}
+.map-caption{position:absolute; bottom:10px; left:14px; color:var(--paper); font-size:12px; font-weight:800; text-shadow:0 1px 3px rgba(0,0,0,.6); z-index:400;}
 
 .instructions ul{margin:0; padding-left:18px; line-height:1.85; font-size:14.5px;}
 .instructions li strong{color:var(--maroon);}
