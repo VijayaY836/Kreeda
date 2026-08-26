@@ -2,6 +2,7 @@ import type { Lang } from '../../data/i18n'
 import { VP_I18N, vpLoc } from '../../data/i18n'
 import { ladderAt, snakeAt, vpCenter, vpLadderSVG, vpSnakeSVG, VP_LADDERS, VP_SNAKES } from '../../data/vp'
 import mascotUrl from '../../assets/kreedu-mascot.png'
+import { TigerIllustration } from './TigerIllustration'
 
 export interface TokenPos {
   you: number
@@ -87,24 +88,43 @@ export function Board({
       : ''
 
   return (
-    <div className="vp-board">
-      <div className="vp-grid">{cells}</div>
-      <svg className="vp-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-        {VP_LADDERS.map((l) => vpLadderSVG(l))}
-        {VP_SNAKES.map((s, i) => vpSnakeSVG(s, i))}
-      </svg>
-      <div
-        className={`vp-token you${youAnimClass}`}
-        style={{ left: `${youC.x + TOKEN_OFF.you}%`, top: `${youC.y}%` }}
-      />
-      {showKreedu && (
-        <div
-          className={`vp-token kreedu${kreeduAnimClass}`}
-          style={{ left: `${kreeduC.x + TOKEN_OFF.kreedu}%`, top: `${kreeduC.y}%` }}
-        >
-          <img src={mascotUrl} alt="" />
+    <div className="board-frame">
+      <div className="board-frame-inner">
+        <div className="board-parchment">
+          <div className="parchment-wear parchment-wear-tl" />
+          <div className="parchment-wear parchment-wear-tr" />
+          <div className="parchment-wear parchment-wear-bl" />
+          <div className="parchment-wear parchment-wear-br" />
+          <div className="parchment-stain parchment-stain-1" />
+          <div className="parchment-stain parchment-stain-2" />
+          <div className="parchment-stain parchment-stain-3" />
+          <div className="parchment-fold" />
+
+          <div className="vp-board">
+            <div className="vp-grid">{cells}</div>
+            <svg className="vp-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+              {VP_LADDERS.map((l) => vpLadderSVG(l))}
+              {VP_SNAKES.map((s, i) => vpSnakeSVG(s, i))}
+            </svg>
+            <div
+              className={`vp-token you${youAnimClass}`}
+              style={{ left: `${youC.x + TOKEN_OFF.you}%`, top: `${youC.y}%` }}
+            />
+            {showKreedu && (
+              <div
+                className={`vp-token kreedu${kreeduAnimClass}`}
+                style={{ left: `${kreeduC.x + TOKEN_OFF.kreedu}%`, top: `${kreeduC.y}%` }}
+              >
+                <img src={mascotUrl} alt="" />
+              </div>
+            )}
+          </div>
+
+          <div className="tiger-corner">
+            <TigerIllustration />
+          </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
