@@ -419,7 +419,7 @@
     padding:8px 14px; border-radius:8px; cursor:pointer;
   }
   .ashta-layout{ display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
-  .ashta-board-col{ flex:1 1 360px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .ashta-board-col{ flex:1 1 520px; display:flex; flex-direction:column; align-items:center; gap:10px; }
   .ashta-side-col{ flex:0 0 260px; min-width:240px; display:flex; flex-direction:column; gap:16px; }
 
   .ashta-tray{
@@ -436,12 +436,13 @@
 
   .ashta-board{
     display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(5,1fr);
-    width:346px; height:346px; gap:2px;
-    background:var(--maroon); border:var(--bw) solid var(--maroon); border-radius:10px; overflow:hidden;
+    width:346px; height:346px; gap:0;
+    background:var(--paper); border:var(--bw) solid var(--maroon); border-radius:10px; overflow:hidden;
   }
   .ashta-cell{
-    background:var(--paper-deep); position:relative;
+    background:var(--maroon); position:relative;
     display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:2px; padding:2px;
+    border:1.5px dotted var(--marigold);
   }
   .ashta-cell.void-cell{ background:var(--paper); }
   .ashta-cell.safe-cell{ background:var(--blue); }
@@ -456,13 +457,15 @@
   .ashta-cell.k-start{ outline:3px solid var(--teal); outline-offset:-4px; }
 
   .ashta-token{
-    width:18px; height:18px; border-radius:50%;
-    border:2px solid var(--maroon); flex-shrink:0; cursor:default;
+    width:20px; height:20px; border:2px solid var(--maroon); flex-shrink:0; cursor:default;
+    border-radius:46% 46% 34% 34% / 30% 30% 66% 66%;
+    clip-path:polygon(18% 100%, 7% 76%, 23% 61%, 28% 31%, 38% 16%, 50% 7%, 62% 16%, 72% 31%, 77% 61%, 93% 76%, 82% 100%);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.38), inset 0 -2px 0 rgba(43,27,18,.22);
     transition:transform .1s ease;
   }
-  .ashta-cell.home-cell .ashta-token{ width:11px; height:11px; border-width:1.4px; }
-  .ashta-token.player{ background:var(--terracotta); }
-  .ashta-token.kreedu{ background:var(--teal); }
+  .ashta-cell.home-cell .ashta-token{ width:12px; height:12px; border-width:1.4px; }
+  .ashta-token.player{ background:#B94B2E; }
+  .ashta-token.kreedu{ background:#176D68; }
   .ashta-token.selectable{ cursor:pointer; outline:2.4px dashed var(--maroon); outline-offset:2px; }
   .ashta-token.selectable:hover{ transform:scale(1.2); }
 
@@ -471,8 +474,19 @@
   .ashta-panel{ background:var(--paper-deep); border:var(--bw) solid var(--maroon); border-radius:var(--radius); padding:16px 18px; }
   .ashta-panel h3{ font-family:'Fraunces',serif; font-size:15px; margin:0 0 12px; color:var(--maroon); font-weight:800; }
 
-  .ashta-shells{ display:flex; gap:10px; justify-content:center; margin-bottom:14px; }
-  .ashta-shell{ width:32px; height:32px; }
+  .ashta-shell-panel{ width:min(100%, 520px); margin-top:4px; }
+  .ashta-shells{ display:flex; gap:4px; align-items:center; justify-content:center; min-height:58px; margin-bottom:14px; }
+  .ashta-shell{ width:36px; height:36px; transform-origin:50% 70%; animation:ashta-shell-tumble .72s cubic-bezier(.2,.75,.25,1) both; }
+  .ashta-shell:nth-child(1){ margin-top:5px; animation-delay:0ms; }
+  .ashta-shell:nth-child(2){ margin-top:-7px; animation-delay:70ms; }
+  .ashta-shell:nth-child(3){ margin-top:8px; animation-delay:130ms; }
+  .ashta-shell:nth-child(4){ margin-top:-3px; animation-delay:190ms; }
+  @keyframes ashta-shell-tumble{
+    0%{ opacity:.35; transform:translate(-22px,-15px) rotate(-115deg) scale(.72); }
+    35%{ opacity:1; transform:translate(14px,9px) rotate(72deg) scale(1.08); }
+    68%{ transform:translate(-6px,-4px) rotate(-28deg) scale(.96); }
+    100%{ transform:translate(0,0) rotate(0) scale(1); }
+  }
 
   .ashta-roll-btn{ padding:13px; font-size:15px; }
   .ashta-roll-btn:disabled{ opacity:.45; cursor:default; transform:none !important; }
@@ -492,7 +506,7 @@
     font-size:10px; font-weight:800; letter-spacing:.2px;
     padding:2px 6px; border-radius:5px; border:1.5px solid var(--maroon);
   }
-  .ashta-inner-badge.unlocked{ background:var(--green); color:var(--paper); }
+  .ashta-inner-badge.unlocked{ background:#A8C77A; color:var(--maroon); display:inline-flex; align-items:center; gap:4px; }
   .ashta-inner-badge.locked{ background:var(--paper); color:var(--ink-soft); }
 
   .ashta-log{ list-style:none; margin:0; padding:0; max-height:150px; overflow-y:auto;
@@ -524,9 +538,9 @@
   /* ---------------------------------------------------------
      10. SVG / label helpers
   --------------------------------------------------------- */
-  function shellSvg(isUp) {
+  function shellSvg(isUp, index) {
     const fill = isUp ? 'var(--marigold)' : 'var(--paper-deep)';
-    return '<svg class="ashta-shell" viewBox="0 0 24 24" fill="none"' +
+    return '<svg class="ashta-shell shell-' + index + '" viewBox="0 0 24 24" fill="none"' +
       ' stroke="var(--maroon)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
       '<ellipse cx="12" cy="12" rx="9" ry="6" fill="' + fill + '"/>' +
       '<path d="M5 12c3-1.4 11-1.4 14 0"/></svg>';
@@ -592,6 +606,11 @@
       '<div class="ashta-map-caption">' +
       'terracotta \u00b7 you (bottom) \u00b7 teal \u00b7 Kreedu (top) \u00b7 \u2715 squares are safe' +
       '</div>' +
+      '<div class="ashta-shell-panel ashta-panel">' +
+      '<h3>Cowrie shells</h3>' +
+      '<div class="ashta-shells" id="ashta-shells"></div>' +
+      '<button class="play-btn ashta-roll-btn" id="ashta-roll-btn">\u25b6 Throw shells</button>' +
+      '</div>' +
       '</div>' +
       '<div class="ashta-side-col">' +
       '<div class="ashta-panel">' +
@@ -608,11 +627,6 @@
       '<span class="ashta-inner-badge locked" id="badge-kreedu">outer</span>' +
       '</div>' +
       '</div>' +
-      '</div>' +
-      '<div class="ashta-panel">' +
-      '<h3>Cowrie shells</h3>' +
-      '<div class="ashta-shells" id="ashta-shells"></div>' +
-      '<button class="play-btn ashta-roll-btn" id="ashta-roll-btn">\u25b6 Throw shells</button>' +
       '</div>' +
       '<div class="ashta-panel">' +
       '<h3>What\u2019s happened</h3>' +
@@ -703,7 +717,9 @@
     }
 
     /* ── Shells ── */
-    root.querySelector('#ashta-shells').innerHTML = state.shells.map(shellSvg).join('');
+    root.querySelector('#ashta-shells').innerHTML = state.shells.map(function (isUp, index) {
+      return shellSvg(isUp, index);
+    }).join('');
 
     /* ── Roll button ── */
     root.querySelector('#ashta-roll-btn').disabled =
@@ -718,7 +734,7 @@
 
       const badge = root.querySelector('#badge-' + side);
       if (state.captured[side]) {
-        badge.textContent = 'inner \u2713';
+        badge.textContent = 'INNER \u2713';
         badge.className = 'ashta-inner-badge unlocked';
       } else {
         badge.textContent = 'outer';
