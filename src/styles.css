@@ -439,22 +439,6 @@ body{
 .vp-cell.janma .vp-lab,.vp-cell.moksha .vp-lab{color:var(--maroon);}
 .vp-svg{position:absolute; inset:0; width:100%; height:100%; z-index:2; pointer-events:none;}
 
-/* ---------- TIGER ILLUSTRATION ---------- */
-.tiger-corner{
-  position:absolute;
-  bottom:2%;
-  right:2%;
-  width:14%;
-  max-width:70px;
-  z-index:8;
-  opacity:.55;
-  pointer-events:none;
-}
-.tiger-illustration{
-  width:100%; height:auto;
-  filter:sepia(.15) saturate(.9);
-}
-
 /* ---------- TOKEN ANIMATIONS ---------- */
 .vp-token{
   position:absolute; width:4.8%; aspect-ratio:1/1; border-radius:50%;

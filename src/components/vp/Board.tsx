@@ -2,7 +2,7 @@ import type { Lang } from '../../data/i18n'
 import { VP_I18N, vpLoc } from '../../data/i18n'
 import { ladderAt, snakeAt, vpCenter, vpLadderSVG, vpSnakeSVG, VP_LADDERS, VP_SNAKES } from '../../data/vp'
 import mascotUrl from '../../assets/kreedu-mascot.png'
-import { TigerIllustration } from './TigerIllustration'
+
 
 export interface TokenPos {
   you: number
@@ -120,9 +120,6 @@ export function Board({
             )}
           </div>
 
-          <div className="tiger-corner">
-            <TigerIllustration />
-          </div>
         </div>
       </div>
     </div>
