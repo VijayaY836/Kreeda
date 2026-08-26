@@ -6,9 +6,7 @@ import type { Lang } from '../data/i18n'
 import { SHELL_I18N } from '../data/i18n'
 
 function pinToLatLng(p: Pin): L.LatLngExpression {
-  const lng = (p.x / 100) * 360 - 180
-  const lat = 90 - (p.y / 100) * 150
-  return [lat, lng]
+  return [p.lat, p.lng]
 }
 
 function makePinIcon(color: string): L.DivIcon {

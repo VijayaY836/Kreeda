@@ -4,6 +4,8 @@ export type TileId = 'blue' | 'terracotta' | 'marigold' | 'green' | 'teal' | 'pi
 export interface Pin {
   x: number
   y: number
+  lat: number
+  lng: number
   place: string
   name: string
   fact: string
@@ -86,9 +88,9 @@ export const GAMES: GameDef[] = [
     mapSub: 'Traced its own path out of India — tap to follow it.',
     path: true,
     pins: [
-      { x: 32, y: 38, place: 'ANDHRA PRADESH, INDIA', name: 'Vaikunthapali', fact: 'A solitary board of virtue and vice — squares of Faith and Knowledge lift you, squares of Greed and Pride drop you back down.', how: 'Origin. Designed as a solo meditation on karma, not a race against anyone.' },
-      { x: 52, y: 26, place: 'UNITED KINGDOM', name: 'Snakes and Ladders', fact: 'Colonial families carried the board home; publishers stripped the moral squares and made it a race.', how: 'Brought back by returning colonial families and printed by British board-game makers.' },
-      { x: 74, y: 24, place: 'UNITED STATES', name: 'Chutes and Ladders', fact: 'Milton Bradley localised it further in the 1940s, swapping snakes for chutes.', how: 'Licensed and re-illustrated from the British version.' },
+      { x: 32, y: 38, lat: 16.5, lng: 79.5, place: 'ANDHRA PRADESH, INDIA', name: 'Vaikunthapali', fact: 'A solitary board of virtue and vice — squares of Faith and Knowledge lift you, squares of Greed and Pride drop you back down.', how: 'Origin. Designed as a solo meditation on karma, not a race against anyone.' },
+      { x: 52, y: 26, lat: 51.5, lng: -0.1, place: 'UNITED KINGDOM', name: 'Snakes and Ladders', fact: 'Colonial families carried the board home; publishers stripped the moral squares and made it a race.', how: 'Brought back by returning colonial families and printed by British board-game makers.' },
+      { x: 74, y: 24, lat: 39.0, lng: -77.0, place: 'UNITED STATES', name: 'Chutes and Ladders', fact: 'Milton Bradley localised it further in the 1940s, swapping snakes for chutes.', how: 'Licensed and re-illustrated from the British version.' },
     ],
     instructions: [
       '<strong>Objective:</strong> travel from Janma (birth, square 1) to Vaikuntham (square 100).',
@@ -109,8 +111,8 @@ export const GAMES: GameDef[] = [
     mapSub: 'A hunt that crossed the Himalayas.',
     path: true,
     pins: [
-      { x: 38, y: 42, place: 'SOUTH INDIA', name: 'Puli Meka Aata', fact: 'Three tigers hunt fifteen goats on lines carved into temple floors — you can still find boards etched into stone at Chamundi Hill, Mysore.', how: 'Origin. Played for centuries in Tamil Nadu, Andhra Pradesh and Karnataka temple courtyards.' },
-      { x: 56, y: 22, place: 'NEPAL', name: 'Bagh-Chal', fact: 'Same hunt, tougher odds — four tigers instead of three, twenty goats instead of fifteen, on a different grid.', how: 'Carried across trade and pilgrim routes into the Himalayas.' },
+      { x: 38, y: 42, lat: 12.3, lng: 76.6, place: 'SOUTH INDIA', name: 'Puli Meka Aata', fact: 'Three tigers hunt fifteen goats on lines carved into temple floors — you can still find boards etched into stone at Chamundi Hill, Mysore.', how: 'Origin. Played for centuries in Tamil Nadu, Andhra Pradesh and Karnataka temple courtyards.' },
+      { x: 56, y: 22, lat: 27.7, lng: 85.3, place: 'NEPAL', name: 'Bagh-Chal', fact: 'Same hunt, tougher odds — four tigers instead of three, twenty goats instead of fifteen, on a different grid.', how: 'Carried across trade and pilgrim routes into the Himalayas.' },
     ],
     instructions: [
       '<strong>Two roles:</strong> tigers hunt, goats trap.',
@@ -129,10 +131,10 @@ export const GAMES: GameDef[] = [
     mapSub: 'One game, a dozen regional names — before it ever left India.',
     path: true,
     pins: [
-      { x: 40, y: 44, place: 'TELANGANA / ANDHRA PRADESH', name: 'Ashta Chamma', fact: 'Cast four cowrie shells — all mouths down scores "Atta" (8), all mouths up scores "Chamma" (4).', how: 'Regional name in Telugu-speaking country.' },
-      { x: 32, y: 50, place: 'KARNATAKA', name: 'Chowka Bara', fact: 'Same board, same shells, new name — "four, eight" describes the winning throws.', how: 'Neighbouring regional variant.' },
-      { x: 34, y: 60, place: 'TAMIL NADU', name: 'Daayam', fact: 'Played on cloth boards stitched with beads, passed down through generations of a household.', how: 'Southern regional variant.' },
-      { x: 48, y: 20, place: 'NORTH INDIA', name: 'Pachisi → Ludo', fact: 'Its royal cousin — Akbar reportedly played a life-sized version at Fatehpur Sikri with courtiers as pieces.', how: 'Parallel dice-and-cross lineage, later exported by the British as Ludo.' },
+      { x: 40, y: 44, lat: 17.4, lng: 78.5, place: 'TELANGANA / ANDHRA PRADESH', name: 'Ashta Chamma', fact: 'Cast four cowrie shells — all mouths down scores "Atta" (8), all mouths up scores "Chamma" (4).', how: 'Regional name in Telugu-speaking country.' },
+      { x: 32, y: 50, lat: 15.3, lng: 75.7, place: 'KARNATAKA', name: 'Chowka Bara', fact: 'Same board, same shells, new name — "four, eight" describes the winning throws.', how: 'Neighbouring regional variant.' },
+      { x: 34, y: 60, lat: 10.8, lng: 78.7, place: 'TAMIL NADU', name: 'Daayam', fact: 'Played on cloth boards stitched with beads, passed down through generations of a household.', how: 'Southern regional variant.' },
+      { x: 48, y: 20, lat: 26.8, lng: 80.9, place: 'NORTH INDIA', name: 'Pachisi → Ludo', fact: 'Its royal cousin — Akbar reportedly played a life-sized version at Fatehpur Sikri with courtiers as pieces.', how: 'Parallel dice-and-cross lineage, later exported by the British as Ludo.' },
     ],
     instructions: [
       '<strong>Objective:</strong> Race all 4 tokens home before your opponents.',
@@ -151,10 +153,10 @@ export const GAMES: GameDef[] = [
     mapSub: 'Seeds that sailed the Indian Ocean.',
     path: true,
     pins: [
-      { x: 36, y: 48, place: 'TAMIL NADU, INDIA', name: 'Pallanguzhi', fact: 'Fourteen pits, tamarind seeds or cowries — mentioned in Chola-era temple inscriptions.', how: 'Origin, popular among women in agrarian households.' },
-      { x: 40, y: 44, place: 'ANDHRA / TELANGANA', name: 'Vaamana Guntalu', fact: 'Same fourteen-pit board, played at Sankranti gatherings across generations.', how: 'Regional spread within South India.' },
-      { x: 64, y: 56, place: 'MALAYSIA', name: 'Congkak', fact: 'The pit-and-seed format re-appears almost unchanged, thousands of kilometres east.', how: 'Carried by Indian Ocean trade routes.' },
-      { x: 52, y: 64, place: 'EAST AFRICA', name: 'Bao / Omweso family', fact: 'Distant mancala cousins with a strikingly similar board logic.', how: 'Possibly linked via the same pre-colonial trade network — history is still debated here.' },
+      { x: 36, y: 48, lat: 10.8, lng: 78.7, place: 'TAMIL NADU, INDIA', name: 'Pallanguzhi', fact: 'Fourteen pits, tamarind seeds or cowries — mentioned in Chola-era temple inscriptions.', how: 'Origin, popular among women in agrarian households.' },
+      { x: 40, y: 44, lat: 16.5, lng: 79.5, place: 'ANDHRA / TELANGANA', name: 'Vaamana Guntalu', fact: 'Same fourteen-pit board, played at Sankranti gatherings across generations.', how: 'Regional spread within South India.' },
+      { x: 64, y: 56, lat: 4.2, lng: 101.9, place: 'MALAYSIA', name: 'Congkak', fact: 'The pit-and-seed format re-appears almost unchanged, thousands of kilometres east.', how: 'Carried by Indian Ocean trade routes.' },
+      { x: 52, y: 64, lat: -1.3, lng: 36.8, place: 'EAST AFRICA', name: 'Bao / Omweso family', fact: 'Distant mancala cousins with a strikingly similar board logic.', how: 'Possibly linked via the same pre-colonial trade network — history is still debated here.' },
     ],
     instructions: [
       '<strong>Objective:</strong> Collect more seeds than your opponent.',
@@ -173,10 +175,10 @@ export const GAMES: GameDef[] = [
     mapSub: 'Four divisions of an army, reborn on every continent.',
     path: true,
     pins: [
-      { x: 44, y: 46, place: 'INDIA', name: 'Chaturanga', fact: '"Four limbs" — infantry, cavalry, elephants, chariots — the earliest ancestor of chess, from around the 6th century.', how: 'Origin, played in Gupta-era courts.' },
-      { x: 52, y: 38, place: 'PERSIA', name: 'Shatranj', fact: '"Shah mat" — the king is helpless — is where we get the word "checkmate."', how: 'Adopted and renamed after trade and conquest routes reached Persia.' },
-      { x: 48, y: 22, place: 'EUROPE', name: 'Chess', fact: 'The queen and bishop got their modern powers only in 15th-century Europe.', how: 'Spread through the Islamic world into Spain and Italy.' },
-      { x: 76, y: 34, place: 'CHINA / JAPAN', name: 'Xiangqi & Shogi', fact: 'A separate eastward branch — different board, different pieces, same shared root.', how: 'Parallel spread along Silk Road contact.' },
+      { x: 44, y: 46, lat: 20.6, lng: 78.9, place: 'INDIA', name: 'Chaturanga', fact: '"Four limbs" — infantry, cavalry, elephants, chariots — the earliest ancestor of chess, from around the 6th century.', how: 'Origin, played in Gupta-era courts.' },
+      { x: 52, y: 38, lat: 32.4, lng: 53.7, place: 'PERSIA', name: 'Shatranj', fact: '"Shah mat" — the king is helpless — is where we get the word "checkmate."', how: 'Adopted and renamed after trade and conquest routes reached Persia.' },
+      { x: 48, y: 22, lat: 48.9, lng: 2.3, place: 'EUROPE', name: 'Chess', fact: 'The queen and bishop got their modern powers only in 15th-century Europe.', how: 'Spread through the Islamic world into Spain and Italy.' },
+      { x: 76, y: 34, lat: 35.7, lng: 117.0, place: 'CHINA / JAPAN', name: 'Xiangqi & Shogi', fact: 'A separate eastward branch — different board, different pieces, same shared root.', how: 'Parallel spread along Silk Road contact.' },
     ],
     instructions: [
       '<strong>Objective:</strong> Checkmate the opposing king.',
@@ -195,9 +197,9 @@ export const GAMES: GameDef[] = [
     mapSub: 'No single birthplace — just pins where it has quietly lived for millennia.',
     path: false,
     pins: [
-      { x: 44, y: 44, place: 'INDIA', name: 'Navakankari / Daadi Aata', fact: '"Nine pebbles" — played in temples and village courtyards since at least the Maurya-Gupta era.', how: 'No claimed origin here — one of several places this game has existed for millennia.' },
-      { x: 52, y: 30, place: 'ROME', name: "Nine Men's Morris", fact: 'Boards were carved into the stone of cathedrals and castles for soldiers and nobles alike.', how: 'Independently documented from around 1400 BCE.' },
-      { x: 50, y: 24, place: 'EGYPT', name: 'Mill game boards', fact: 'Some of the oldest surviving boards of this family come from ancient Egyptian sites.', how: 'A separate, equally old thread of the same idea.' },
+      { x: 44, y: 44, lat: 20.6, lng: 78.9, place: 'INDIA', name: 'Navakankari / Daadi Aata', fact: '"Nine pebbles" — played in temples and village courtyards since at least the Maurya-Gupta era.', how: 'No claimed origin here — one of several places this game has existed for millennia.' },
+      { x: 52, y: 30, lat: 41.9, lng: 12.5, place: 'ROME', name: "Nine Men's Morris", fact: 'Boards were carved into the stone of cathedrals and castles for soldiers and nobles alike.', how: 'Independently documented from around 1400 BCE.' },
+      { x: 50, y: 24, lat: 30.0, lng: 31.2, place: 'EGYPT', name: 'Mill game boards', fact: 'Some of the oldest surviving boards of this family come from ancient Egyptian sites.', how: 'A separate, equally old thread of the same idea.' },
     ],
     instructions: [
       '<strong>Objective:</strong> Reduce your opponent to two pieces, or block all their moves.',
