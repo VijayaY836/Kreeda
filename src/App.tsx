@@ -7,13 +7,14 @@ import { LanguageModal } from './components/LanguageModal'
 import { LangContext } from './data/LangContext'
 import { loadLang, saveLang, LANGS, VP_I18N } from './data/i18n'
 import type { Lang } from './data/i18n'
+import type { VpVersion } from './data/games'
 
 export type PlayMode = 'solo' | 'mascot'
 type View =
   | { k: 'home' }
   | { k: 'detail'; id: string }
   | { k: 'lang-select'; id: string }
-  | { k: 'play'; id: string; mode: PlayMode }
+  | { k: 'play'; id: string; mode: PlayMode; vpVersion?: VpVersion }
 
 interface ToastState {
   id: number
@@ -60,7 +61,7 @@ export default function App() {
         key={view.id}
         game={GAMES.find((g) => g.id === view.id) ?? GAMES[0]}
         onBack={() => setView({ k: 'home' })}
-        onStartPlay={(mode) => setView({ k: 'play', id: view.id, mode })}
+        onStartPlay={(mode, vpVersion) => setView({ k: 'play', id: view.id, mode, vpVersion })}
       />
     )
   } else if (view.k === 'lang-select') {

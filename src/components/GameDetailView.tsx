@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import type { GameDef, Pin } from '../data/games'
+import type { GameDef, Pin, VpVersion } from '../data/games'
+import { VP_VERSIONS } from '../data/games'
 import type { PlayMode } from '../App'
 import { useLang } from '../data/LangContext'
 import { SHELL_I18N } from '../data/i18n'
@@ -12,9 +13,10 @@ export function GameDetailView({
 }: {
   game: GameDef
   onBack: () => void
-  onStartPlay: (mode: PlayMode) => void
+  onStartPlay: (mode: PlayMode, vpVersion?: VpVersion) => void
 }) {
   const [mode, setMode] = useState<PlayMode>('mascot')
+  const [vpVersion, setVpVersion] = useState<VpVersion>(game.vpVersion ?? 'india')
   const [openPin, setOpenPin] = useState<Pin | null>(null)
   const lang = useLang()
   const S = SHELL_I18N[lang]
@@ -27,11 +29,11 @@ export function GameDetailView({
 
       <div className="game-head">
         <div>
-          <h1 className="display">{game.name}</h1>
-          <div className="native-line">{game.native}</div>
+          <h1 className="display">{game.vpVersion ? VP_VERSIONS[vpVersion].name : game.name}</h1>
+          <div className="native-line">{game.vpVersion ? VP_VERSIONS[vpVersion].native : game.native}</div>
         </div>
         <div>
-          {game.hasSoloMode ? (
+          {game.hasSoloMode && !game.vpVersion ? (
             <div className="mode-toggle">
               <button className={mode === 'solo' ? 'active' : ''} onClick={() => setMode('solo')}>
                 {S.solo}
@@ -46,6 +48,20 @@ export function GameDetailView({
         </div>
       </div>
 
+      {game.vpVersion && (
+        <div className="vp-version-select">
+          {(['india', 'uk', 'usa'] as VpVersion[]).map((v) => (
+            <button
+              key={v}
+              className={`vp-version-pill${v === vpVersion ? ' active' : ''}`}
+              onClick={() => setVpVersion(v)}
+            >
+              {VP_VERSIONS[v].name}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="panel">
         <h2>{S.wherePlayed}</h2>
         <p className="sub">{game.mapSub}</p>
@@ -55,13 +71,13 @@ export function GameDetailView({
       <div className="panel instructions">
         <h2>{S.howToPlay}</h2>
         <ul>
-          {game.instructions.map((t, i) => (
+          {(game.vpVersion ? VP_VERSIONS[vpVersion].instructions : game.instructions).map((t, i) => (
             <li key={i} dangerouslySetInnerHTML={{ __html: t }} />
           ))}
         </ul>
       </div>
 
-      <button className="play-btn" onClick={() => onStartPlay(mode)}>
+      <button className="play-btn" onClick={() => onStartPlay(mode, game.vpVersion ? vpVersion : undefined)}>
         {S.playBtn}
       </button>
 

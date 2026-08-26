@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Lang } from '../../data/i18n'
 import { VP_I18N, fmt } from '../../data/i18n'
+import type { VpVersion } from '../../data/games'
+import { VP_VERSIONS } from '../../data/games'
 import { ladderAt, snakeAt, VP_LADDERS, VP_SNAKES } from '../../data/vp'
 import { Board } from './Board'
 import { Die } from './Die'
@@ -38,9 +40,11 @@ type Phase = 'idle' | 'rolling' | 'stepping' | 'resolving' | 'snake-anim' | 'ove
 
 export function Vaikunthapali({
   mode,
+  vpVersion,
   onExit,
 }: {
   mode: 'solo' | 'mascot'
+  vpVersion: VpVersion
   onExit: () => void
 }) {
   const lang = useLang()
@@ -81,7 +85,11 @@ export function Vaikunthapali({
   const handleRollRef = useRef<() => void>(() => {})
 
   const L = VP_I18N[lang]
-  const vsKreedu = mode === 'mascot'
+  const V = VP_VERSIONS[vpVersion]
+  const isIndia = vpVersion === 'india'
+  const vsKreedu = isIndia ? mode === 'mascot' : true
+  const hasThreeSixes = isIndia
+  const hasExactLanding = isIndia
 
   // Sync refs outside of render phase via effect
   useEffect(() => { phaseRef.current = phase }, [phase])
@@ -199,7 +207,7 @@ export function Vaikunthapali({
       const m = VP_I18N[langRef.current]
       let again = false
 
-      if (v === 6) {
+      if (v === 6 && hasThreeSixes) {
         sixRef.current++
         if (sixRef.current >= 3) {
           sixRef.current = 0
@@ -208,6 +216,9 @@ export function Vaikunthapali({
           again = true
           setEvent(fmt(m.msg.six, { e: label(e) }))
         }
+      } else if (v === 6) {
+        again = true
+        setEvent(fmt(m.msg.six, { e: label(e) }))
       } else {
         sixRef.current = 0
       }
@@ -229,7 +240,7 @@ export function Vaikunthapali({
         setPhase('idle')
       }
     },
-    [label, vsKreedu]
+    [label, vsKreedu, hasThreeSixes]
   )
 
   const resolveSquare = useCallback(
@@ -280,8 +291,8 @@ export function Vaikunthapali({
       const snk = snakeAt(p)
 
       if (lad) {
-        const nm = `${lad.name} (${VP.virt[lad.name]})`
-        setEvent(fmt(m.ladder, { e: label(e), name: nm, a: String(p), b: String(lad.to) }))
+        const vName = vpVersion === 'uk' ? V.labels[lad.name].virtue : `${lad.name} (${VP.virt[lad.name]})`
+        setEvent(fmt(m.ladder, { e: label(e), name: vName, a: String(p), b: String(lad.to) }))
         posRef.current[e] = lad.to
         setTokenAnim({ entity: e, kind: 'ladder' })
         if (e === 'you') setYouPos(lad.to)
@@ -294,8 +305,8 @@ export function Vaikunthapali({
       }
 
       if (snk) {
-        const nm = `${snk.name} (${VP.vice[snk.name]})`
-        setEvent(fmt(m.snake, { e: label(e), name: nm, a: String(p), b: String(snk.to) }))
+        const vName = vpVersion === 'uk' ? V.labels[snk.name].vice : `${snk.name} (${VP.vice[snk.name]})`
+        setEvent(fmt(m.snake, { e: label(e), name: vName, a: String(p), b: String(snk.to) }))
         posRef.current[e] = snk.to
         setTokenAnim({ entity: e, kind: 'snake' })
         if (e === 'you') setYouPos(snk.to)
@@ -310,20 +321,23 @@ export function Vaikunthapali({
       setEvent(fmt(m.move, { e: label(e), v: String(v), p: String(p) }))
       endOfTurn(e, v, gen)
     },
-    [label, mode, showSnakeAnimation, stopTimer, endOfTurn]
+    [label, mode, showSnakeAnimation, stopTimer, endOfTurn, vpVersion, V, hasExactLanding]
   )
 
   const moveEntity = useCallback(
     (e: Entity, v: number, gen: number) => {
       if (gen !== genRef.current) return
       const start = posRef.current[e]
-      const target = start + v
+      let target = start + v
       const m = VP_I18N[langRef.current]
 
       if (target > 100) {
-        setEvent(fmt(m.msg.over, { e: label(e), v: String(v), goal: m.moksha.w, n: String(100 - start), p: String(start) }))
-        endOfTurn(e, v, gen)
-        return
+        if (hasExactLanding) {
+          setEvent(fmt(m.msg.over, { e: label(e), v: String(v), goal: m.moksha.w, n: String(100 - start), p: String(start) }))
+          endOfTurn(e, v, gen)
+          return
+        }
+        target = 100
       }
 
       let cur = start
@@ -438,6 +452,7 @@ export function Vaikunthapali({
         pos={{ you: youPos, kreedu: kreeduPos }}
         showKreedu={vsKreedu}
         lang={lang}
+        vpVersion={vpVersion}
         tokenAnim={tokenAnim}
       />
 
@@ -482,7 +497,7 @@ export function Vaikunthapali({
       {showGuide && !winInfo && (
         <div className="vp-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowGuide(false) }}>
           <div className="modal modal-wide">
-            <GuideContent lang={lang} />
+            <GuideContent lang={lang} vpVersion={vpVersion} />
             <div className="vp-btnrow">
               <button className="vp-mini ghost" onClick={() => setShowGuide(false)}>
                 ✕
@@ -495,17 +510,21 @@ export function Vaikunthapali({
   )
 }
 
-function GuideContent({ lang }: { lang: Lang }) {
+function GuideContent({ lang, vpVersion }: { lang: Lang; vpVersion: VpVersion }) {
   const L = VP_I18N[lang]
+  const V = VP_VERSIONS[vpVersion]
   const g = L.guide
 
   const row = (x: { from: number; to: number; name: string }) => {
-    const sc = L.virt[x.name as keyof typeof L.virt] || L.vice[x.name as keyof typeof L.vice]
+    const isLadder = VP_LADDERS.some((l) => l.name === x.name)
+    const sc = isLadder
+      ? (vpVersion === 'uk' ? V.labels[x.name as keyof typeof V.labels]?.virtue : L.virt[x.name as keyof typeof L.virt])
+      : (vpVersion === 'uk' ? V.labels[x.name as keyof typeof V.labels]?.vice : L.vice[x.name as keyof typeof L.vice])
     return (
       <tr key={x.from}>
         <td>{x.from} → {x.to}</td>
         <td><strong>{x.name}</strong> <span className="vp-te">{sc}</span></td>
-        <td>{L.mean[x.name as keyof typeof L.mean]}</td>
+        <td>{vpVersion === 'india' ? L.mean[x.name as keyof typeof L.mean] : ''}</td>
       </tr>
     )
   }

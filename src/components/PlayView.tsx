@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { GAMES } from '../data/games'
+import type { VpVersion } from '../data/games'
 import mascotUrl from '../assets/kreedu-mascot.png'
 import { Vaikunthapali } from './vp/Vaikunthapali'
 import type { PlayMode } from '../App'
@@ -9,11 +10,13 @@ import { SHELL_I18N, fmt } from '../data/i18n'
 export function PlayView({
   gameId,
   mode,
+  vpVersion,
   showToast,
   onBack,
 }: {
   gameId: string
   mode: PlayMode
+  vpVersion?: VpVersion
   showToast: (msg: string) => void
   onBack: () => void
 }) {
@@ -35,7 +38,7 @@ export function PlayView({
       </button>
 
       {isVP ? (
-        <Vaikunthapali mode={mode} onExit={onBack} />
+        <Vaikunthapali mode={mode} vpVersion={vpVersion ?? 'india'} onExit={onBack} />
       ) : (
         <div className="play-shell panel">
           <div className="mascot">

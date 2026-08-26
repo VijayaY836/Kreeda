@@ -117,6 +117,17 @@ body{
 .card .explore{position:absolute; bottom:18px; right:18px; font-size:12.5px; font-weight:800; color:var(--paper);}
 
 /* ---------- GAME DETAIL ---------- */
+.vp-version-select{display:flex; gap:6px; margin-bottom:18px;}
+.vp-version-pill{
+  flex:1; padding:10px 14px; border-radius:10px; cursor:pointer;
+  border:2.5px solid var(--maroon); background:var(--paper);
+  font-family:'Fraunces',serif; font-size:13px; font-weight:800; color:var(--maroon);
+  transition:background .15s ease, color .15s ease, transform .1s ease;
+  text-align:center;
+}
+.vp-version-pill.active{background:var(--terracotta); color:var(--paper);}
+.vp-version-pill:hover:not(.active){background:var(--paper-deep);}
+.vp-version-pill:active{transform:scale(.97);}
 .backbtn{
   display:inline-flex; align-items:center; gap:6px; background:none; border:none; cursor:pointer;
   color:var(--maroon); font-weight:800; font-size:14px; padding:8px 0; margin-bottom:10px; font-family:'Manrope',sans-serif;
