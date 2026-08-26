@@ -2,7 +2,7 @@ import type { Lang } from '../../data/i18n'
 import { VP_I18N, vpLoc } from '../../data/i18n'
 import type { VpVersion } from '../../data/games'
 import { VP_VERSIONS } from '../../data/games'
-import { ladderAt, snakeAt, vpCenter, vpLadderSVG, vpSnakeSVG, VP_LADDERS, VP_SNAKES } from '../../data/vp'
+import { ladderAt, snakeAt, vpCenter, vpLadderSVG, vpSnakeSVG, vpChuteSVG, VP_LADDERS, VP_SNAKES } from '../../data/vp'
 import mascotUrl from '../../assets/kreedu-mascot.png'
 
 
@@ -117,7 +117,7 @@ export function Board({
             <div className="vp-grid">{cells}</div>
             <svg className="vp-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
               {VP_LADDERS.map((l) => vpLadderSVG(l))}
-              {VP_SNAKES.map((s, i) => vpSnakeSVG(s, i))}
+              {VP_SNAKES.map((s, i) => vpVersion === 'usa' ? vpChuteSVG(s, i) : vpSnakeSVG(s, i))}
             </svg>
             <div
               className={`vp-token you${youAnimClass}`}

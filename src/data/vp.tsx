@@ -95,6 +95,38 @@ export function vpSnakeSVG(s: Snake, idx: number): JSX.Element {
   )
 }
 
+const CHUTE_COLORS = ['#D8401F', '#EFA90C', '#D8401F', '#EFA90C', '#D8401F', '#EFA90C', '#D8401F']
+
+export function vpChuteSVG(s: Snake, idx: number): JSX.Element {
+  const H = vpCenter(s.from)
+  const T = vpCenter(s.to)
+  const dx = T.x - H.x
+  const dy = T.y - H.y
+  const len = Math.hypot(dx, dy)
+  const nx = -dy / len
+  const ny = dx / len
+  const bend = (idx % 2 ? 1 : -1) * (4 + len * 0.06)
+  const c1 = { x: H.x + dx * 0.3 + nx * bend, y: H.y + dy * 0.3 + ny * bend }
+  const c2 = { x: H.x + dx * 0.72 - nx * bend * 0.7, y: H.y + dy * 0.72 - ny * bend * 0.7 }
+  const col = CHUTE_COLORS[idx % 7]
+  const d = `M ${H.x} ${H.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${T.x} ${T.y}`
+  const ang = (Math.atan2(T.y - H.y, T.x - H.x) * 180) / Math.PI
+  return (
+    <g key={`chute-${s.from}`}>
+      <path d={d} fill="none" stroke="#5C140F" strokeWidth="1.3" strokeLinecap="round" />
+      <path d={d} fill="none" stroke={col} strokeWidth="0.85" strokeLinecap="round" strokeDasharray="2.5 1.2" />
+      <g transform={`translate(${H.x},${H.y}) rotate(${ang})`}>
+        <rect x="-1.2" y="-0.7" width="2.4" height="1.4" rx="0.3" fill={col} stroke="#5C140F" strokeWidth="0.2" />
+        <text x="0" y="0.35" textAnchor="middle" fontSize="1.1" fill="#EFDFB8" fontWeight="bold">▼</text>
+      </g>
+      <g transform={`translate(${T.x},${T.y}) rotate(${ang})`}>
+        <rect x="-1.2" y="-0.7" width="2.4" height="1.4" rx="0.3" fill={col} stroke="#5C140F" strokeWidth="0.2" />
+        <text x="0" y="0.35" textAnchor="middle" fontSize="1.1" fill="#EFDFB8" fontWeight="bold">▼</text>
+      </g>
+    </g>
+  )
+}
+
 export function vpLadderSVG(l: Ladder): JSX.Element {
   const A = vpCenter(l.from)
   const B = vpCenter(l.to)
