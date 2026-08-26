@@ -4,6 +4,7 @@ import { HomeView } from './components/HomeView'
 import { GameDetailView } from './components/GameDetailView'
 import { PlayView } from './components/PlayView'
 import { LanguageModal } from './components/LanguageModal'
+import { Header } from './components/Header'
 import { LangContext } from './data/LangContext'
 import { loadLang, saveLang, LANGS, VP_I18N } from './data/i18n'
 import type { Lang } from './data/i18n'
@@ -45,6 +46,9 @@ export default function App() {
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
   const isInPlay = view.k === 'play' && view.id === 'vaikunthapali'
+  const currentGame = (view.k === 'detail' || view.k === 'play')
+    ? GAMES.find((g) => g.id === view.id)
+    : undefined
 
   let body: JSX.Element
   if (view.k === 'home') {
@@ -88,35 +92,26 @@ export default function App() {
 
   return (
     <LangContext.Provider value={lang}>
-      <div className="app">
-        <div className="topbar">
-          <div className="wordmark">
-            <svg viewBox="0 0 40 40">
-              {/* Outer ring */}
-              <circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#3D1A0A" strokeWidth="2.5" />
-              {/* Inner engraved ring groove */}
-              <circle cx="20" cy="20" r="14.5" fill="none" stroke="rgba(61,26,10,0.3)" strokeWidth="1" />
-              {/* Centre medallion */}
-              <circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#3D1A0A" strokeWidth="2" />
-              {/* Cardinal knobs — compass-point style */}
-              <circle cx="20" cy="4.5" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
-              <circle cx="20" cy="35.5" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
-              <circle cx="4.5" cy="20" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
-              <circle cx="35.5" cy="20" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
-              {/* Cross-axis lines connecting knobs */}
-              <line x1="20" y1="7.5" x2="20" y2="13.5" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
-              <line x1="20" y1="26.5" x2="20" y2="32.5" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
-              <line x1="7.5" y1="20" x2="13.5" y2="20" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
-              <line x1="26.5" y1="20" x2="32.5" y2="20" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
-            </svg>
-            KREEDA <span className="dev">क्रीड़ा</span>
-          </div>
+      <div className="min-h-screen">
+        <Header
+          currentView={view.k}
+          onNavigateHome={() => setView({ k: 'home' })}
+          gameTitle={currentGame?.name}
+          gameNative={currentGame?.native}
+        />
+
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          {/* In-play language switcher */}
           {isInPlay && (
-            <div className="topbar-lang">
+            <div className="flex justify-center gap-1 mb-4 bg-[#F6ECD2] border-[2px] border-[#5C140F] p-1 inline-flex mx-auto">
               {LANGS.map((c) => (
                 <button
                   key={c}
-                  className={`topbar-lang-btn${c === lang ? ' active' : ''}`}
+                  className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-[1.5px] border-[#5C140F] transition-colors cursor-pointer ${
+                    c === lang
+                      ? 'bg-[#D8401F] text-white'
+                      : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-[#F6ECD2]'
+                  }`}
                   onClick={() => handleLangChange(c)}
                 >
                   {VP_I18N[c].label}
@@ -124,12 +119,12 @@ export default function App() {
               ))}
             </div>
           )}
+
+          {body}
         </div>
 
-        {body}
-
         {toast && (
-          <div key={toast.id} className="toast show">
+          <div key={toast.id} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#5C140F] text-[#F6ECD2] px-5 py-2.5 border-[2px] border-[#3D1A0A] font-bold text-sm shadow-lg animate-[slideUp_.3s_ease]">
             {toast.msg}
           </div>
         )}
