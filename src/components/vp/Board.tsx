@@ -31,14 +31,17 @@ function Cell({ n, rt, c, lang, vpVersion }: { n: number; rt: number; c: number;
     if (n === 1) lab = ['START', '']
     else if (n === 100) lab = ['✦ FINISH', '']
     else lab = null
-  } else if (l) {
-    const en = vpVersion === 'uk' ? vDef.labels[l.name].virtue : cur.virt[l.name]
-    lab = vpVersion === 'uk' ? [en, l.name] : [cur.virt[l.name], l.name]
-  } else if (s) {
-    const en = vpVersion === 'uk' ? vDef.labels[s.name].vice : cur.vice[s.name]
-    lab = vpVersion === 'uk' ? [en, s.name] : [cur.vice[s.name], s.name]
-  } else if (n === 1) lab = [cur.janma.w, cur.janma.t]
-  else if (n === 100) lab = [`✦ ${cur.moksha.w}`, cur.moksha.t]
+  } else if (vpVersion === 'uk') {
+    if (l) lab = [vDef.labels[l.name].virtue, '']
+    else if (s) lab = [vDef.labels[s.name].vice, '']
+    else if (n === 1) lab = ['START', '']
+    else if (n === 100) lab = ['✦ FINISH', '']
+  } else {
+    if (l) lab = [cur.virt[l.name], l.name]
+    else if (s) lab = [cur.vice[s.name], s.name]
+    else if (n === 1) lab = [cur.janma.w, cur.janma.t]
+    else if (n === 100) lab = [`✦ ${cur.moksha.w}`, cur.moksha.t]
+  }
 
   return (
     <div className={`vp-cell${alt}${kind}`}>
