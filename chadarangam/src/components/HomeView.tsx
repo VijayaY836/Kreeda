@@ -2,12 +2,39 @@ import React from 'react';
 import { Variant, ViewTab } from '../types';
 import { FolkArtFrame } from './FolkArtFrame';
 import { FolkDivider, KolamCorner, ChariotWheelIcon } from './FolkArtMotifs';
-import { KreeduMascot } from './KreeduMascot';
 import { PieceIcon } from './PieceIcon';
 import { CHAT_BACK, CHESS_BACK, LET } from '../utils/chessEngine';
 import { VARIANT_INFO } from '../utils/pieceArt';
 import { PieceLetter } from '../types';
 import { ArrowRight, BookOpen, Compass, Swords } from 'lucide-react';
+
+/* Hero emblem — Ivory King vs. Ebony King, face to face across a medallion.
+   A crest, not a playable board: the two-colour clash is the whole pitch of
+   the app ("one board, two games, 1,500 years apart"). */
+const HeroEmblem: React.FC = () => (
+  <div className="w-56 sm:w-64 shrink-0 mx-auto lg:mx-0">
+    <div className="bg-[#F6ECD2] border-4 border-[#5C140F] px-3 py-4 sm:py-5 relative">
+      <KolamCorner position="top-left" size={16} className="absolute top-1 left-1 opacity-70" />
+      <KolamCorner position="top-right" size={16} className="absolute top-1 right-1 opacity-70" />
+      <KolamCorner position="bottom-left" size={16} className="absolute bottom-1 left-1 opacity-70" />
+      <KolamCorner position="bottom-right" size={16} className="absolute bottom-1 right-1 opacity-70" />
+
+      <div className="flex items-center justify-center">
+        <PieceIcon variant="chess" letter="K" ivory className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-sm shrink-0" />
+
+        <div className="relative w-9 sm:w-10 shrink-0 flex items-center justify-center">
+          <div className="w-0.5 h-9 sm:h-10 bg-[#5C140F]/25 rotate-12 absolute" />
+          <div className="w-0.5 h-9 sm:h-10 bg-[#5C140F]/25 -rotate-12 absolute" />
+          <div className="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EFA90C] border-2 border-[#5C140F] flex items-center justify-center">
+            <span className="font-fraunces font-black text-[8px] sm:text-[9px] text-[#5C140F]">VS</span>
+          </div>
+        </div>
+
+        <PieceIcon variant="chess" letter="K" ivory={false} className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-sm shrink-0" />
+      </div>
+    </div>
+  </div>
+);
 
 interface HomeViewProps {
   onNavigate: (tab: ViewTab) => void;
@@ -84,28 +111,28 @@ const VariantCard: React.FC<{ variant: Variant; onPick: () => void }> = ({ varia
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onPickVariant }) => {
   return (
-    <div className="max-w-5xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
+    <div className="max-w-5xl mx-auto py-4 sm:py-6 px-4 sm:px-6">
       {/* Hero */}
-      <div className="text-center mb-10">
-        <div className="flex justify-center mb-4">
-          <KreeduMascot mood="HAPPY" size={84} showDialogBubble dialogText="I'll bring the elephants — you'll want the chariots." />
+      <div className="flex flex-col lg:flex-row items-center gap-5 lg:gap-8 mb-6 text-center lg:text-left">
+        <div className="flex-1 min-w-0">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#F6ECD2] border-2 border-[#5C140F] text-xs font-bold uppercase tracking-widest text-[#5C140F] mb-2">
+            <ChariotWheelIcon size={14} color="#D8401F" />
+            <span>One Board · Two Games · 1,500 Years Apart</span>
+          </div>
+          <h1 className="font-fraunces font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#5C140F] mb-1 leading-tight">
+            Chaturangam — the four limbs of an army.
+          </h1>
+          <p className="font-telugu text-base sm:text-lg font-bold text-[#D9587B] mb-2">చతురంగం</p>
+          <p className="max-w-xl mx-auto lg:mx-0 text-xs sm:text-sm text-[#6B4E3D]">
+            Command infantry, cavalry, elephants and chariots the way Gupta-era India did — then play the same board
+            a thousand years later as modern Chess. 100% offline, against Kreedu or a friend.
+          </p>
         </div>
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#F6ECD2] border-2 border-[#5C140F] text-xs font-bold uppercase tracking-widest text-[#5C140F] mb-3">
-          <ChariotWheelIcon size={14} color="#D8401F" />
-          <span>One Board · Two Games · 1,500 Years Apart</span>
-        </div>
-        <h1 className="font-fraunces font-extrabold text-3xl sm:text-5xl text-[#5C140F] mb-2 leading-tight">
-          Chaturangam — the four limbs of an army.
-        </h1>
-        <p className="font-telugu text-lg sm:text-xl font-bold text-[#D9587B] mb-3">చతురంగం</p>
-        <p className="max-w-2xl mx-auto text-sm sm:text-base text-[#6B4E3D]">
-          Command infantry, cavalry, elephants and chariots the way Gupta-era India did — then play the same board a
-          thousand years later as modern Chess, and feel exactly what changed. 100% offline, against Kreedu or a friend.
-        </p>
+        <HeroEmblem />
       </div>
 
       {/* Variant cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <VariantCard variant="chaturanga" onPick={() => onPickVariant('chaturanga')} />
         <VariantCard variant="chess" onPick={() => onPickVariant('chess')} />
       </div>
