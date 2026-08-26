@@ -498,9 +498,9 @@ export function Vaikunthapali({
         <div className="vp-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowGuide(false) }}>
           <div className="modal modal-wide">
             <GuideContent lang={lang} vpVersion={vpVersion} />
-            <div className="vp-btnrow">
-              <button className="vp-mini ghost" onClick={() => setShowGuide(false)}>
-                ✕
+            <div className="vp-btnrow" style={{ justifyContent: 'center' }}>
+              <button className="vp-mini ghost" style={{ flex: 'none', minWidth: 100 }} onClick={() => setShowGuide(false)}>
+                ✕ Close
               </button>
             </div>
           </div>
