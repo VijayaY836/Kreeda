@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GameSettings, KreeduMood, MoveRecord, PieceLetter, Side, ViewTab } from '../types';
 import {
-  Pos, setStart, legalMoves, makeMove, unmakeMove, bestMove,
+  Pos, setStart, ttClear, legalMoves, makeMove, unmakeMove, bestMove,
   inCheck, kingOf, insufficientMaterial, repetitionCount, bareKing,
   mFrom, mTo, mPromo, mFlag, FLAG_EP, LET, LEVEL_NAMES, P,
 } from '../utils/chessEngine';
@@ -66,19 +66,35 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
-  const aiBusyRef = useRef(false);
+  // Tracks the single in-flight "Kreedu is thinking" timer, if any. A plain
+  // boolean busy-flag isn't enough here: resetGame() and the "AI moves
+  // first" effect below can both re-fire (React StrictMode's dev-mode
+  // double-invoke of effects is the reliable way to reproduce it) and a
+  // flag that resetGame() unconditionally clears lets a second timer slip
+  // through — which then computes a move for whichever side happens to be
+  // "current" once it fires, i.e. Kreedu silently playing the human's turn
+  // too. Storing the actual timer id and cancelling it on every reset closes
+  // that race: at most one timer can ever be pending.
+  const aiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearAiTimer = () => {
+    if (aiTimerRef.current !== null) {
+      clearTimeout(aiTimerRef.current);
+      aiTimerRef.current = null;
+    }
+  };
 
   const syncBoard = () => setBoard(Array.from(Pos.b));
 
   const resetGame = useCallback(() => {
+    clearAiTimer();
     setStart(variant);
+    ttClear();
     setBoard(Array.from(Pos.b));
     setSelected(null); setTargets([]); setLastMove(null);
     setMoveLog([]); setCapByIvory([]); setCapByEbony([]);
     setOver(false); setResult(null); setThinking(false); setPendingPromo(null);
     setKreeduMood('IDLE');
     setFlipped(humanSide < 0);
-    aiBusyRef.current = false;
     setKreeduLine(
       gameMode === 'PVC'
         ? `You command ${humanSide > 0 ? info.sides.w : info.sides.b}. ${info.sides.w} always moves first.`
@@ -134,20 +150,33 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
   };
 
   const scheduleAI = useCallback(() => {
-    if (aiBusyRef.current) return;
-    aiBusyRef.current = true;
+    if (aiTimerRef.current !== null) return;
     setThinking(true);
     setKreeduMood('THINKING');
     setKreeduLine('Kreedu is reading the board…');
-    setTimeout(() => {
+    aiTimerRef.current = setTimeout(() => {
+      aiTimerRef.current = null;
       const m = bestMove(DIFF_LEVEL[difficulty]);
-      if (!m) { setThinking(false); aiBusyRef.current = false; return; }
+      if (!m) { setThinking(false); return; }
       applyMove(m);
       setThinking(false);
-      aiBusyRef.current = false;
     }, 40);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [difficulty]);
+
+  // If Kreedu is Ivory (human chose Ebony), it must make the opening move —
+  // resetGame() above has already run by the time this fires, so Pos.side
+  // reflects the fresh position synchronously.
+  useEffect(() => {
+    if (gameMode === 'PVC' && Pos.side !== humanSide) {
+      scheduleAI();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variant, gameMode, difficulty, humanSide]);
+
+  // Cancel any in-flight "Kreedu is thinking" timer if the player navigates
+  // away mid-think, so it can't fire against an unmounted board.
+  useEffect(() => clearAiTimer, []);
 
   const applyMove = (m: number) => {
     const mover = Pos.side;
@@ -189,7 +218,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       scheduleAI();
     } else if (gameMode === 'PVC') {
       const pool = CHATTER[variant];
-      setKreeduLine(Math.random() < 0.3 ? pool[Math.floor(Math.random() * pool.length)] : 'Your move.');
+      setKreeduLine(Math.random() < 0.35 ? pool[Math.floor(Math.random() * pool.length)] : 'Your move.');
     }
   };
 
@@ -242,7 +271,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
     setOver(false); setResult(null); setSelected(null); setTargets([]);
     setLastMove(null);
     setKreeduLine('Move taken back.');
-    aiBusyRef.current = false;
+    clearAiTimer();
   };
 
   const resign = () => {

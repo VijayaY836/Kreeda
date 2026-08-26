@@ -58,3 +58,13 @@ export const ChariotWheelIcon: React.FC<MotifProps> = ({ size = 24, className = 
     <path d="M16 4v8M16 20v8M4 16h8M20 16h8M7.5 7.5l5.6 5.6M18.9 18.9l5.6 5.6M24.5 7.5l-5.6 5.6M13.1 18.9l-5.6 5.6" stroke="#5C140F" strokeWidth="1.6" strokeLinecap="round" />
   </svg>
 );
+
+/* Crescent-and-star — the Persia/Shatranj waypoint on the Eras timeline,
+   marking the game's relay leg through the Islamic world. */
+export const CrescentStarIcon: React.FC<MotifProps> = ({ size = 24, className = '', color = '#EFA90C' }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className}>
+    <circle cx="16" cy="16" r="12" fill="#F6ECD2" stroke="#5C140F" strokeWidth="2.5" />
+    <path d="M18 8.5c-4.5 0-8 3.6-8 8s3.5 8 8 8c1.7 0 3.3-.5 4.6-1.5-1.1.4-2.3.6-3.5.4-3.9-.6-6.7-4.1-6.4-8 .3-3.9 3.5-6.9 7.4-6.9.6 0 1.3.1 1.9.3C21 8.9 19.6 8.5 18 8.5z" fill={color} stroke="#5C140F" strokeWidth="1.6" strokeLinejoin="round" />
+    <path d="M22.5 12.5l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z" fill={color} stroke="#5C140F" strokeWidth="1.2" strokeLinejoin="round" />
+  </svg>
+);

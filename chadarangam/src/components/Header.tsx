@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewTab } from '../types';
 import { ChariotWheelIcon } from './FolkArtMotifs';
-import { Volume2, VolumeX, HelpCircle, Play, BookOpen, Compass } from 'lucide-react';
+import { Volume2, VolumeX, HelpCircle, Play, Compass, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
   currentTab: ViewTab;
@@ -14,9 +14,9 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEnabled, onToggleSound, onOpenHelp }) => {
   const navItems: { tab: ViewTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'HOME', label: 'Home', icon: <ChariotWheelIcon size={16} color="#D8401F" /> },
-    { tab: 'ABOUT', label: 'About', icon: <Compass className="w-3.5 h-3.5" /> },
-    { tab: 'HOW_TO_PLAY', label: 'How to Play', icon: <BookOpen className="w-3.5 h-3.5" /> },
-    { tab: 'MODE_SELECT', label: 'Play Game', icon: <Play className="w-3.5 h-3.5 fill-current" /> },
+    { tab: 'HISTORY', label: 'History', icon: <Compass className="w-3.5 h-3.5" /> },
+    { tab: 'TUTORIAL', label: 'Tutorial', icon: <Sparkles className="w-3.5 h-3.5 text-[#EFA90C]" /> },
+    { tab: 'MODE_SELECT', label: 'Play', icon: <Play className="w-3.5 h-3.5 fill-current" /> },
   ];
 
   return (

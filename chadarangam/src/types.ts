@@ -8,7 +8,7 @@ export type Side = 1 | -1; // 1 = Ivory/White, -1 = Ebony/Black
 
 export type PieceLetter = 'P' | 'N' | 'B' | 'R' | 'Q' | 'K' | 'E' | 'M';
 
-export type ViewTab = 'HOME' | 'MODE_SELECT' | 'ABOUT' | 'HOW_TO_PLAY' | 'GAME';
+export type ViewTab = 'HOME' | 'HISTORY' | 'TUTORIAL' | 'MODE_SELECT' | 'GAME';
 
 export type KreeduMood = 'IDLE' | 'THINKING' | 'HAPPY' | 'WORRIED' | 'WIN' | 'LOSE';
 

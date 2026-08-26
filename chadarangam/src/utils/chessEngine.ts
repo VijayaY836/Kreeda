@@ -18,6 +18,7 @@ export const FILE = (i: number) => i & 7;
 export const RANK = (i: number) => i >> 3;
 export const SQ = (f: number, r: number) => r * 8 + f;
 export const NAME_OF_SQ = (i: number) => 'abcdefgh'[FILE(i)] + (RANK(i) + 1);
+const SQ_OF_NAME = (s: string) => SQ('abcdefgh'.indexOf(s[0]), (+s[1]) - 1);
 
 /* ---------- precomputed move targets ---------- */
 const KNIGHT_T: number[][] = [], KING_T: number[][] = [], ELEPHANT_T: number[][] = [], DIAG1_T: number[][] = [];
@@ -106,8 +107,6 @@ export function setStart(variant: Variant) {
   Pos.stack.length = 0; Pos.keyHist.length = 0;
   syncKings(); rehash();
   Pos.keyHist.push(Pos.k2);
-  VAL = variant === 'chess' ? VAL_CHESS : VAL_CHAT;
-  ttClear();
 }
 
 function syncKings() {
@@ -123,6 +122,36 @@ function rehash() {
   a ^= ZCAST1[Pos.cast]; c ^= ZCAST2[Pos.cast];
   if (Pos.ep >= 0) { a ^= ZEP1[FILE(Pos.ep)]; c ^= ZEP2[FILE(Pos.ep)]; }
   Pos.k1 = a; Pos.k2 = c;
+}
+
+export function loadFEN(fen: string, variant?: Variant) {
+  Pos.variant = variant || 'chess';
+  Pos.b.fill(0);
+  const [pl, st, ca, ep, hm, fm] = fen.trim().split(/\s+/);
+  let r = 7, f = 0;
+  for (const ch of pl) {
+    if (ch === '/') { r--; f = 0; }
+    else if (/\d/.test(ch)) f += +ch;
+    else {
+      const t = TYPE_OF[ch.toUpperCase()];
+      Pos.b[SQ(f, r)] = ch === ch.toUpperCase() ? t : -t;
+      f++;
+    }
+  }
+  Pos.side = st === 'w' ? 1 : -1;
+  Pos.cast = 0;
+  if (ca && ca !== '-') {
+    if (ca.includes('K')) Pos.cast |= 1;
+    if (ca.includes('Q')) Pos.cast |= 2;
+    if (ca.includes('k')) Pos.cast |= 4;
+    if (ca.includes('q')) Pos.cast |= 8;
+  }
+  Pos.ep = (ep && ep !== '-') ? SQ_OF_NAME(ep) : -1;
+  Pos.half = hm ? +hm : 0;
+  Pos.full = fm ? +fm : 1;
+  Pos.stack.length = 0; Pos.keyHist.length = 0;
+  syncKings(); rehash();
+  Pos.keyHist.push(Pos.k2);
 }
 
 /* ---------- move encoding ----------
@@ -313,6 +342,18 @@ export function legalMoves(): number[] {
     unmakeMove();
   }
   return out;
+}
+
+export function perft(d: number): number {
+  if (d === 0) return 1;
+  let n = 0;
+  const side = Pos.side;
+  for (const m of genMoves([])) {
+    makeMove(m);
+    if (!attacked(kingOf(side), -side)) n += perft(d - 1);
+    unmakeMove();
+  }
+  return n;
 }
 
 /* ---------- draw / terminal helpers ---------- */

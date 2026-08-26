@@ -1,5 +1,6 @@
 import React from 'react';
 import { KreeduMood } from '../types';
+import mascotSrc from '../assets/kreedu-mascot.png';
 
 interface KreeduMascotProps {
   mood?: KreeduMood;
@@ -70,7 +71,7 @@ export const KreeduMascot: React.FC<KreeduMascotProps> = ({
 
       <div className="relative inline-block" style={{ width: size, height: size }}>
         <img
-          src="/kreedu-mascot.png"
+          src={mascotSrc}
           alt="Kreedu Mascot"
           referrerPolicy="no-referrer"
           className={`w-full h-full object-contain drop-shadow-sm ${getMoodAnimationClass()}`}

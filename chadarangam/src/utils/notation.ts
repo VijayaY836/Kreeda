@@ -44,6 +44,6 @@ export function moveNotation(m: number): string {
   const ck = attacked(kingOf(opp), -opp);
   unmakeMove();
   if (ck) s += replies.length ? '+' : '#';
-  else if (!replies.length && Pos.variant !== 'chess') s += '⋘';
+  else if (!replies.length && Pos.variant !== 'chess') s += '⊘';
   return s;
 }

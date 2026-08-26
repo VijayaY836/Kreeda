@@ -3,8 +3,8 @@ import { GameSettings, ViewTab, Variant } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
 import { ModeSelectView } from './components/ModeSelectView';
-import { AboutView } from './components/AboutView';
-import { HowToPlayView } from './components/HowToPlayView';
+import { HistoryView } from './components/HistoryView';
+import { InteractiveTutorial } from './components/InteractiveTutorial';
 import { GameView } from './components/GameView';
 import { FolkDivider, ChariotWheelIcon } from './components/FolkArtMotifs';
 import { sounds } from './utils/soundEngine';
@@ -65,8 +65,10 @@ export default function App() {
         {currentTab === 'MODE_SELECT' && (
           <ModeSelectView onNavigate={handleNavigate} onStartGame={handleStartGame} initialVariant={homeVariant} />
         )}
-        {currentTab === 'ABOUT' && <AboutView onNavigate={handleNavigate} />}
-        {currentTab === 'HOW_TO_PLAY' && <HowToPlayView onNavigate={handleNavigate} initialVariant={homeVariant} />}
+        {currentTab === 'HISTORY' && <HistoryView onNavigate={handleNavigate} />}
+        {currentTab === 'TUTORIAL' && (
+          <InteractiveTutorial onComplete={() => handleNavigate('MODE_SELECT')} initialVariant={homeVariant} />
+        )}
         {currentTab === 'GAME' && (
           <GameView settings={settings} onNavigate={handleNavigate} soundEnabled={soundEnabled} onToggleSound={handleToggleSound} />
         )}
@@ -85,9 +87,9 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 font-semibold text-[11px]">
-            <button onClick={() => handleNavigate('ABOUT')} className="hover:underline hover:text-[#D95B7D]">History</button>
+            <button onClick={() => handleNavigate('HISTORY')} className="hover:underline hover:text-[#D95B7D]">History</button>
             <span>•</span>
-            <button onClick={() => handleNavigate('HOW_TO_PLAY')} className="hover:underline hover:text-[#D95B7D]">Rules</button>
+            <button onClick={() => handleNavigate('TUTORIAL')} className="hover:underline hover:text-[#D95B7D]">Tutorial</button>
             <span>•</span>
             <button onClick={() => handleNavigate('MODE_SELECT')} className="hover:underline hover:text-[#D95B7D]">Play</button>
           </div>
@@ -110,7 +112,7 @@ export default function App() {
             <div className="space-y-3 text-xs text-[#5C140F] leading-relaxed">
               <div className="p-2.5 bg-[#EFDFB8] border-2 border-[#5C140F]">
                 <h4 className="font-bold text-sm mb-1">1. Two Games, One Board</h4>
-                <p>Choose Chaturangam (the 6th-century original) or modern Chess from Play Game. Each has its own pieces and rules.</p>
+                <p>Choose Chaturangam (the 6th-century original) or modern Chess from Play. Each has its own pieces and rules.</p>
               </div>
               <div className="p-2.5 bg-[#EFDFB8] border-2 border-[#5C140F]">
                 <h4 className="font-bold text-sm mb-1">2. Making a Move</h4>
@@ -122,12 +124,12 @@ export default function App() {
               </div>
               <div className="p-2.5 bg-[#EFDFB8] border-2 border-[#5C140F]">
                 <h4 className="font-bold text-sm mb-1">4. Victory</h4>
-                <p>Checkmate the enemy king/Raja to win. See the full rules page for stalemate, promotion and endgame differences.</p>
+                <p>Checkmate the enemy king/Raja to win. See Tutorial → The Rules for stalemate, promotion and endgame differences.</p>
               </div>
             </div>
             <div className="mt-4 pt-3 border-t-2 border-[#5C140F] flex justify-between items-center">
               <button
-                onClick={() => { setShowGlobalHelp(false); handleNavigate('HOW_TO_PLAY'); }}
+                onClick={() => { setShowGlobalHelp(false); handleNavigate('TUTORIAL'); }}
                 className="text-xs font-bold text-[#D95B7D] hover:underline"
               >
                 Full Rules & Piece Guide →
