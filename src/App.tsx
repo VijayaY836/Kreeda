@@ -92,12 +92,22 @@ export default function App() {
         <div className="topbar">
           <div className="wordmark">
             <svg viewBox="0 0 40 40">
-              <circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" strokeWidth="3" />
-              <circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" strokeWidth="2.4" />
-              <circle cx="20" cy="6" r="3.4" fill="#0E5C58" stroke="#5C140F" strokeWidth="2" />
-              <circle cx="20" cy="34" r="3.4" fill="#0E5C58" stroke="#5C140F" strokeWidth="2" />
-              <circle cx="6" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" strokeWidth="2" />
-              <circle cx="34" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" strokeWidth="2" />
+              {/* Outer ring */}
+              <circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#3D1A0A" strokeWidth="2.5" />
+              {/* Inner engraved ring groove */}
+              <circle cx="20" cy="20" r="14.5" fill="none" stroke="rgba(61,26,10,0.3)" strokeWidth="1" />
+              {/* Centre medallion */}
+              <circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#3D1A0A" strokeWidth="2" />
+              {/* Cardinal knobs — compass-point style */}
+              <circle cx="20" cy="4.5" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
+              <circle cx="20" cy="35.5" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
+              <circle cx="4.5" cy="20" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
+              <circle cx="35.5" cy="20" r="3" fill="#0E5C58" stroke="#3D1A0A" strokeWidth="1.8" />
+              {/* Cross-axis lines connecting knobs */}
+              <line x1="20" y1="7.5" x2="20" y2="13.5" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
+              <line x1="20" y1="26.5" x2="20" y2="32.5" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
+              <line x1="7.5" y1="20" x2="13.5" y2="20" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
+              <line x1="26.5" y1="20" x2="32.5" y2="20" stroke="rgba(61,26,10,0.35)" strokeWidth="1" />
             </svg>
             KREEDA <span className="dev">क्रीड़ा</span>
           </div>

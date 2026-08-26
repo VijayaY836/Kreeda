@@ -29,6 +29,7 @@ export function HomeView({ onOpen }: { onOpen: (id: string) => void }) {
       <div className="section-label">
         <h2>{S.chooseGame}</h2>
         <div className="thread" />
+        <span className="diamond">⬦</span>
       </div>
 
       <div className="grid">

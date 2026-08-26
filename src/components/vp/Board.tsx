@@ -105,6 +105,10 @@ export function Board({
 
   return (
     <div className="board-frame">
+      <div className="board-corner board-corner-tl" />
+      <div className="board-corner board-corner-tr" />
+      <div className="board-corner board-corner-bl" />
+      <div className="board-corner board-corner-br" />
       <div className="board-frame-inner">
         <div className="board-parchment">
           <div className="parchment-wear parchment-wear-tl" />
