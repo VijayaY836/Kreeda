@@ -1,0 +1,6 @@
+{
+  "name": "Daadi Aata - Traditional Indian Strategy Game",
+  "description": "A standalone, beautifully illustrated web application for the ancient Indian strategy board game Daadi Aata (దాడి ఆట), featuring cultural history, interactive tutorials, and smart offline AI opponent Kreedu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
