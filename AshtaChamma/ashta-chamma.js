@@ -477,21 +477,7 @@
 
   .ashta-shell-panel{ width:min(100%, 520px); margin-top:4px; }
   .ashta-shells{ position:relative; width:300px; height:300px; max-width:100%; margin:0 auto 20px; overflow:hidden; border:2px solid rgba(58,35,18,.3); border-radius:12px; background:rgba(253,251,247,.46); box-shadow:inset 0 2px 0 rgba(255,255,255,.55), inset 0 -8px 18px rgba(58,35,18,.08); }
-  .ashta-shell{ position:absolute; left:calc(50% - 35px); top:calc(50% - 27px); width:70px; height:54px; transform-origin:50% 78%; filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); animation:ashta-shell-throw .98s cubic-bezier(.2,.78,.25,1) both; }
-  .ashta-shell:nth-child(1){ --land-x:-82px; --land-y:-68px; animation-delay:0ms; }
-  .ashta-shell:nth-child(2){ --land-x:72px; --land-y:-64px; animation-delay:85ms; }
-  .ashta-shell:nth-child(3){ --land-x:-65px; --land-y:70px; animation-delay:170ms; }
-  .ashta-shell:nth-child(4){ --land-x:78px; --land-y:62px; animation-delay:255ms; }
-  .ashta-shell.open-shell{ filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
-  .ashta-shell.closed-shell{ filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
-  @keyframes ashta-shell-throw{
-    0%{ opacity:0; transform:translate(-128px,92px) rotate(-155deg) scale(.5); filter:drop-shadow(0 1px 1px rgba(40,20,5,.1)); }
-    20%{ opacity:1; transform:translate(-92px,48px) rotate(-92deg) scale(.78); filter:drop-shadow(6px 13px 7px rgba(40,20,5,.38)); }
-    45%{ transform:translate(-25px,-76px) rotate(72deg) scale(1.22); filter:drop-shadow(8px 22px 11px rgba(40,20,5,.5)); }
-    68%{ transform:translate(64px,-22px) rotate(205deg) scale(1.06); filter:drop-shadow(5px 14px 8px rgba(40,20,5,.4)); }
-    86%{ transform:translate(var(--land-x),var(--land-y)) rotate(330deg) scale(.94); filter:drop-shadow(2px 7px 4px rgba(40,20,5,.3)); }
-    100%{ opacity:1; transform:translate(var(--land-x),var(--land-y)) rotate(360deg) scale(1); filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
-  }
+  .ashta-shell{ position:absolute; left:calc(50% - 42.5px); top:calc(50% - 55px); width:85px; height:110px; transform-origin:center center; filter:drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
 
   .ashta-roll-btn{ padding:13px; font-size:15px; margin-top:8px; }
   .ashta-roll-btn:disabled{ opacity:.45; cursor:default; transform:none !important; }
@@ -546,25 +532,77 @@
      10. SVG / label helpers
   --------------------------------------------------------- */
   function shellSvg(isUp, index) {
-    const shellClass = isUp ? 'open-shell' : 'closed-shell';
-    const fill = isUp ? '#FDFBF7' : 'url(#shellWarmGrad-' + index + ')';
-    const inner = isUp ?
-      '<path d="M13 48 C17 25 37 10 60 12 C79 13 98 27 108 43 C112 50 106 57 96 59 C79 62 67 68 58 78 C49 88 28 85 17 73 C12 68 10 57 13 48Z" fill="#EFE7D3"/>' +
-      '<path d="M16 48 C29 42 44 40 60 42 C77 44 92 49 105 55 C92 63 76 66 61 67 C43 68 27 62 16 55Z" fill="#2A180B"/>' +
-      '<path d="M24 48 C38 45 50 46 62 48 M28 55 C40 52 52 53 64 55 M78 51 L84 47 M86 55 L92 51" stroke="#FDFBF7" stroke-width="2" stroke-linecap="round"/>'
-      : '<path d="M12 47 C20 26 39 12 60 12 C81 12 101 25 108 42 C111 49 104 55 94 57 C80 60 70 67 61 76 C48 88 28 84 17 72 C11 65 9 54 12 47Z" fill="#E5C3A4" stroke="#3A2312" stroke-width="4" stroke-linejoin="round"/>' +
-        '<path d="M20 39 C38 26 67 24 91 34 C98 37 103 41 106 45 C86 40 67 39 48 42 C36 44 27 46 18 50" stroke="#FFF9EE" stroke-width="3" stroke-linecap="round" opacity=".65"/>' +
-        '<path d="M25 61 C42 56 62 55 83 58 M30 68 C45 63 62 63 76 65" stroke="#B78D70" stroke-width="2" stroke-linecap="round" opacity=".7"/>';
-    return '<svg class="ashta-shell ' + shellClass + ' shell-' + index + '" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      (isUp ? '' : '<defs><linearGradient id="shellWarmGrad-' + index + '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF9EE"/><stop offset="50%" stop-color="#F3D3A6"/><stop offset="100%" stop-color="#D9A86C"/></linearGradient></defs>') +
-      (isUp ? '<path d="M13 48 C17 25 37 10 60 12 C79 13 98 27 108 43 C112 50 106 57 96 59 C79 62 67 68 58 78 C49 88 28 85 17 73 C12 68 10 57 13 48Z" fill="' + fill + '" stroke="#3A2312" stroke-width="4" stroke-linejoin="round"/>' : '') +
-      inner + '</svg>';
+    var isAltColor = index % 2 === 1;
+    var baseFill = isAltColor ? '#F4E7CE' : '#EFE2C5';
+    var spotColor = isAltColor ? '#5C3A21' : '#4E2F18';
+    var dotsPattern = '<circle cx="35" cy="35" r="2" fill="' + spotColor + '" opacity="0.8"/><circle cx="45" cy="28" r="3" fill="' + spotColor + '" opacity="0.85"/><circle cx="62" cy="32" r="2.5" fill="' + spotColor + '" opacity="0.75"/><circle cx="70" cy="42" r="3.5" fill="' + spotColor + '" opacity="0.9"/><circle cx="28" cy="50" r="3" fill="' + spotColor + '" opacity="0.8"/><circle cx="75" cy="58" r="2.5" fill="' + spotColor + '" opacity="0.85"/><circle cx="32" cy="70" r="3.5" fill="' + spotColor + '" opacity="0.9"/><circle cx="68" cy="74" r="3" fill="' + spotColor + '" opacity="0.8"/><circle cx="40" cy="85" r="2.5" fill="' + spotColor + '" opacity="0.75"/><circle cx="58" cy="88" r="3" fill="' + spotColor + '" opacity="0.85"/><circle cx="50" cy="96" r="2" fill="' + spotColor + '" opacity="0.8"/>';
+    if (isUp) {
+      return '<svg class="ashta-shell" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg"><path d="M50 8 C25 12 10 35 10 65 C10 95 25 118 50 122 C75 118 90 95 90 65 C90 35 75 12 50 8 Z" fill="' + baseFill + '" stroke="#2D1F15" stroke-width="3.5" stroke-linejoin="round"/><g>' + dotsPattern + '</g><path d="M48 20 C32 28 26 48 26 65 C26 82 32 102 48 110 C64 102 70 82 70 65 C70 48 64 28 48 20 Z" fill="#3A2010" stroke="#2D1F15" stroke-width="2"/><path d="M26 32 L36 34 M25 42 L37 43 M24 52 L38 52 M24 62 L38 62 M24 72 L38 71 M25 82 L37 80 M27 92 L36 89" stroke="' + baseFill + '" stroke-width="3" stroke-linecap="round"/><path d="M70 32 L60 34 M71 42 L59 43 M72 52 L58 52 M72 62 L58 62 M72 72 L58 71 M71 82 L59 80 M69 92 L60 89" stroke="' + baseFill + '" stroke-width="3" stroke-linecap="round"/><path d="M20 40 C16 55 16 75 20 90" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.6"/><path d="M76 40 C80 55 80 75 76 90" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.5"/></svg>';
+    }
+    return '<svg class="ashta-shell" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg"><path d="M50 8 C22 12 8 35 8 65 C8 95 22 118 50 122 C78 118 92 95 92 65 C92 35 78 12 50 8 Z" fill="' + baseFill + '" stroke="#2D1F15" stroke-width="3.5" stroke-linejoin="round"/><path d="M50 16 C30 20 18 38 18 65 C18 92 30 110 50 114 C70 110 82 92 82 65 C82 38 70 20 50 16 Z" fill="none" stroke="#D3C19F" stroke-width="3" opacity="0.7"/><g>' + dotsPattern + '</g><ellipse cx="42" cy="40" rx="14" ry="7" fill="#FFFFFF" opacity="0.55" transform="rotate(-15 42 40)"/><path d="M22 35 C15 50 15 75 22 90" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.65"/></svg>';
   }
 
   function labelForValue(v) {
     if (v === 4) return 'Chamma (4)';
     if (v === 8) return 'Ashta (8)';
     return String(v);
+  }
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+  }
+
+  function animateShells(shellElements, physicsList) {
+    var startTime = Date.now();
+    var duration = 950;
+    
+    function animate() {
+      var elapsed = Date.now() - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      
+      shellElements.forEach(function (el, idx) {
+        if (!physicsList[idx]) return;
+        var p = physicsList[idx];
+        var easeProgress = easeInOutCubic(progress);
+        
+        var x = p.translation.x * easeProgress;
+        var y = p.translation.y * easeProgress;
+        var rx = p.rotation.x * easeProgress;
+        var ry = p.rotation.y * easeProgress;
+        var rz = p.rotation.z * easeProgress;
+        var scale = 1 + (p.scale - 1) * easeProgress;
+        
+        el.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg) scale(' + scale + ')';
+      });
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+    
+    requestAnimationFrame(animate);
+  }
+
+  function generateThrowPhysics(count) {
+    return Array.from({ length: count }, function (_, i) {
+      var state = Math.random() > 0.5 ? 'open' : 'closed';
+      var angle = (Math.PI * 2 * i) / count + (Math.random() - 0.4);
+      var distance = 45 + Math.random() * 85;
+      return {
+        id: i,
+        state: state,
+        translation: {
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance
+        },
+        rotation: {
+          x: Math.floor(Math.random() * 4 + 2) * 360 + (Math.random() * 40 - 20),
+          y: Math.floor(Math.random() * 4 + 2) * 360 + (Math.random() * 40 - 20),
+          z: Math.random() * 360
+        },
+        scale: 0.9 + Math.random() * 0.15
+      };
+    });
   }
 
   /* ---------------------------------------------------------
@@ -734,9 +772,18 @@
     }
 
     /* ── Shells ── */
-    root.querySelector('#ashta-shells').innerHTML = state.shells.map(function (isUp, index) {
+    var shellsContainer = root.querySelector('#ashta-shells');
+    shellsContainer.innerHTML = state.shells.map(function (isUp, index) {
       return shellSvg(isUp, index);
     }).join('');
+    
+    var shellElements = Array.from(shellsContainer.querySelectorAll('.ashta-shell'));
+    if (shellElements.length > 0) {
+      var physicsList = generateThrowPhysics(shellElements.length);
+      requestAnimationFrame(function () {
+        animateShells(shellElements, physicsList);
+      });
+    }
 
     /* ── Roll button ── */
     root.querySelector('#ashta-roll-btn').disabled =
@@ -920,7 +967,7 @@
       } else {
         endKreeduTurn();
       }
-    }, 750);
+    }, 1900);
   }
 
   function endKreeduTurn() {
