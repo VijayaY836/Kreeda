@@ -59,7 +59,7 @@ function InfoView({ view, onNavigate }: { view: 'ABOUT' | 'HISTORY' | 'RULES'; o
 function GameView({ onBack }: { onBack: () => void }) {
   const gameRoot = useRef<HTMLDivElement>(null);
   useEffect(() => { const root = gameRoot.current; if (!root || !window.KreedaAshtaChamma) return; window.KreedaAshtaChamma.mount(root); return () => window.KreedaAshtaChamma?.unmount(); }, []);
-  return <main className="page game-page"><button className="back-link" onClick={onBack}><RotateCcw size={14} /> Back to game information</button><div className="game-heading"><div><span className="eyebrow">✦ Your match</span><h1>Ashta Chamma</h1><p>Terracotta is you. Teal is Kreedu. May the shells be kind.</p></div><div className="game-chip">VS KREEDU</div></div><div ref={gameRoot} className="ashta-mount" /></main>;
+  return <main className="page game-page"><div className="game-heading"><div><h1>Ashta Chamma</h1><p>Terracotta is you. Teal is Kreedu. May the shells be kind.</p></div></div><div ref={gameRoot} className="ashta-mount" /></main>;
 }
 
 export default function App() {

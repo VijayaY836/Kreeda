@@ -418,9 +418,10 @@
     font-family:'Manrope',sans-serif; font-weight:800; font-size:12.5px;
     padding:8px 14px; border-radius:8px; cursor:pointer;
   }
-  .ashta-layout{ display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
-  .ashta-board-col{ flex:1 1 520px; display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .ashta-side-col{ flex:0 0 260px; min-width:240px; display:flex; flex-direction:column; gap:16px; }
+  .ashta-layout{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; justify-content:flex-start; }
+  .ashta-board-col{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:10px; order:2; transform:translateX(90px); }
+  .ashta-side-col{ flex:0 0 220px; min-width:200px; display:flex; flex-direction:column; gap:12px; order:1; }
+  .ashta-shell-col{ flex:0 0 300px; display:flex; flex-direction:column; order:3; transform:translateX(200px); }
 
   .ashta-tray{
     width:100%; max-width:346px;
@@ -445,7 +446,7 @@
     border:1.5px dotted var(--marigold);
   }
   .ashta-cell.void-cell{ background:var(--paper); }
-  .ashta-cell.safe-cell{ background:var(--blue); }
+  .ashta-cell.safe-cell{ background:#9A7C6F; }
   .ashta-cell.safe-cell::before, .ashta-cell.safe-cell::after{
     content:''; position:absolute; width:150%; height:2.4px;
     background:rgba(255,255,255,0.5); top:50%; left:-25%; pointer-events:none;
@@ -475,20 +476,24 @@
   .ashta-panel h3{ font-family:'Fraunces',serif; font-size:15px; margin:0 0 12px; color:var(--maroon); font-weight:800; }
 
   .ashta-shell-panel{ width:min(100%, 520px); margin-top:4px; }
-  .ashta-shells{ display:flex; gap:4px; align-items:center; justify-content:center; min-height:58px; margin-bottom:14px; }
-  .ashta-shell{ width:36px; height:36px; transform-origin:50% 70%; animation:ashta-shell-tumble .72s cubic-bezier(.2,.75,.25,1) both; }
-  .ashta-shell:nth-child(1){ margin-top:5px; animation-delay:0ms; }
-  .ashta-shell:nth-child(2){ margin-top:-7px; animation-delay:70ms; }
-  .ashta-shell:nth-child(3){ margin-top:8px; animation-delay:130ms; }
-  .ashta-shell:nth-child(4){ margin-top:-3px; animation-delay:190ms; }
-  @keyframes ashta-shell-tumble{
-    0%{ opacity:.35; transform:translate(-22px,-15px) rotate(-115deg) scale(.72); }
-    35%{ opacity:1; transform:translate(14px,9px) rotate(72deg) scale(1.08); }
-    68%{ transform:translate(-6px,-4px) rotate(-28deg) scale(.96); }
-    100%{ transform:translate(0,0) rotate(0) scale(1); }
+  .ashta-shells{ position:relative; width:300px; height:300px; max-width:100%; margin:0 auto 20px; overflow:hidden; border:2px solid rgba(58,35,18,.3); border-radius:12px; background:rgba(253,251,247,.46); box-shadow:inset 0 2px 0 rgba(255,255,255,.55), inset 0 -8px 18px rgba(58,35,18,.08); }
+  .ashta-shell{ position:absolute; left:calc(50% - 35px); top:calc(50% - 27px); width:70px; height:54px; transform-origin:50% 78%; filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); animation:ashta-shell-throw .98s cubic-bezier(.2,.78,.25,1) both; }
+  .ashta-shell:nth-child(1){ --land-x:-82px; --land-y:-68px; animation-delay:0ms; }
+  .ashta-shell:nth-child(2){ --land-x:72px; --land-y:-64px; animation-delay:85ms; }
+  .ashta-shell:nth-child(3){ --land-x:-65px; --land-y:70px; animation-delay:170ms; }
+  .ashta-shell:nth-child(4){ --land-x:78px; --land-y:62px; animation-delay:255ms; }
+  .ashta-shell.open-shell{ filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
+  .ashta-shell.closed-shell{ filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
+  @keyframes ashta-shell-throw{
+    0%{ opacity:0; transform:translate(-128px,92px) rotate(-155deg) scale(.5); filter:drop-shadow(0 1px 1px rgba(40,20,5,.1)); }
+    20%{ opacity:1; transform:translate(-92px,48px) rotate(-92deg) scale(.78); filter:drop-shadow(6px 13px 7px rgba(40,20,5,.38)); }
+    45%{ transform:translate(-25px,-76px) rotate(72deg) scale(1.22); filter:drop-shadow(8px 22px 11px rgba(40,20,5,.5)); }
+    68%{ transform:translate(64px,-22px) rotate(205deg) scale(1.06); filter:drop-shadow(5px 14px 8px rgba(40,20,5,.4)); }
+    86%{ transform:translate(var(--land-x),var(--land-y)) rotate(330deg) scale(.94); filter:drop-shadow(2px 7px 4px rgba(40,20,5,.3)); }
+    100%{ opacity:1; transform:translate(var(--land-x),var(--land-y)) rotate(360deg) scale(1); filter:drop-shadow(1px 3px 2px rgba(40,20,5,.2)); }
   }
 
-  .ashta-roll-btn{ padding:13px; font-size:15px; }
+  .ashta-roll-btn{ padding:13px; font-size:15px; margin-top:8px; }
   .ashta-roll-btn:disabled{ opacity:.45; cursor:default; transform:none !important; }
 
   .ashta-score-row{
@@ -523,6 +528,8 @@
 
   @media (max-width:760px){
     .ashta-side-col{ flex:1 1 100%; }
+    .ashta-shell-col{ flex:1 1 100%; transform:none; }
+    .ashta-shells{ width:100%; height:min(300px, 80vw); }
     .ashta-board{ width:100%; max-width:346px; height:auto; aspect-ratio:1/1; }
   }
   `;
@@ -539,11 +546,19 @@
      10. SVG / label helpers
   --------------------------------------------------------- */
   function shellSvg(isUp, index) {
-    const fill = isUp ? 'var(--marigold)' : 'var(--paper-deep)';
-    return '<svg class="ashta-shell shell-' + index + '" viewBox="0 0 24 24" fill="none"' +
-      ' stroke="var(--maroon)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
-      '<ellipse cx="12" cy="12" rx="9" ry="6" fill="' + fill + '"/>' +
-      '<path d="M5 12c3-1.4 11-1.4 14 0"/></svg>';
+    const shellClass = isUp ? 'open-shell' : 'closed-shell';
+    const fill = isUp ? '#FDFBF7' : 'url(#shellWarmGrad-' + index + ')';
+    const inner = isUp ?
+      '<path d="M13 48 C17 25 37 10 60 12 C79 13 98 27 108 43 C112 50 106 57 96 59 C79 62 67 68 58 78 C49 88 28 85 17 73 C12 68 10 57 13 48Z" fill="#EFE7D3"/>' +
+      '<path d="M16 48 C29 42 44 40 60 42 C77 44 92 49 105 55 C92 63 76 66 61 67 C43 68 27 62 16 55Z" fill="#2A180B"/>' +
+      '<path d="M24 48 C38 45 50 46 62 48 M28 55 C40 52 52 53 64 55 M78 51 L84 47 M86 55 L92 51" stroke="#FDFBF7" stroke-width="2" stroke-linecap="round"/>'
+      : '<path d="M12 47 C20 26 39 12 60 12 C81 12 101 25 108 42 C111 49 104 55 94 57 C80 60 70 67 61 76 C48 88 28 84 17 72 C11 65 9 54 12 47Z" fill="#E5C3A4" stroke="#3A2312" stroke-width="4" stroke-linejoin="round"/>' +
+        '<path d="M20 39 C38 26 67 24 91 34 C98 37 103 41 106 45 C86 40 67 39 48 42 C36 44 27 46 18 50" stroke="#FFF9EE" stroke-width="3" stroke-linecap="round" opacity=".65"/>' +
+        '<path d="M25 61 C42 56 62 55 83 58 M30 68 C45 63 62 63 76 65" stroke="#B78D70" stroke-width="2" stroke-linecap="round" opacity=".7"/>';
+    return '<svg class="ashta-shell ' + shellClass + ' shell-' + index + '" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      (isUp ? '' : '<defs><linearGradient id="shellWarmGrad-' + index + '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFF9EE"/><stop offset="50%" stop-color="#F3D3A6"/><stop offset="100%" stop-color="#D9A86C"/></linearGradient></defs>') +
+      (isUp ? '<path d="M13 48 C17 25 37 10 60 12 C79 13 98 27 108 43 C112 50 106 57 96 59 C79 62 67 68 58 78 C49 88 28 85 17 73 C12 68 10 57 13 48Z" fill="' + fill + '" stroke="#3A2312" stroke-width="4" stroke-linejoin="round"/>' : '') +
+      inner + '</svg>';
   }
 
   function labelForValue(v) {
@@ -593,25 +608,6 @@
       '<button class="ashta-again-btn" id="ashta-again-btn" style="display:none;">Play again</button>' +
       '</div>' +
       '<div class="ashta-layout">' +
-      '<div class="ashta-board-col">' +
-      '<div class="ashta-tray" id="ashta-tray-kreedu">' +
-      '<div class="ashta-tray-label">Kreedu\u2019s tokens</div>' +
-      '<div class="ashta-tray-slots" id="ashta-slots-kreedu"></div>' +
-      '</div>' +
-      '<div class="ashta-board" id="ashta-board"></div>' +
-      '<div class="ashta-tray" id="ashta-tray-player">' +
-      '<div class="ashta-tray-label">Your tokens</div>' +
-      '<div class="ashta-tray-slots" id="ashta-slots-player"></div>' +
-      '</div>' +
-      '<div class="ashta-map-caption">' +
-      'terracotta \u00b7 you (bottom) \u00b7 teal \u00b7 Kreedu (top) \u00b7 \u2715 squares are safe' +
-      '</div>' +
-      '<div class="ashta-shell-panel ashta-panel">' +
-      '<h3>Cowrie shells</h3>' +
-      '<div class="ashta-shells" id="ashta-shells"></div>' +
-      '<button class="play-btn ashta-roll-btn" id="ashta-roll-btn">\u25b6 Throw shells</button>' +
-      '</div>' +
-      '</div>' +
       '<div class="ashta-side-col">' +
       '<div class="ashta-panel">' +
       '<h3>Score</h3>' +
@@ -638,6 +634,27 @@
       '<div class="ashta-legend-row"><span class="ashta-legend-swatch" style="background:var(--marigold);"></span>Home \u2014 reach exactly</div>' +
       '<div class="ashta-legend-row"><span class="ashta-legend-swatch" style="background:var(--terracotta);"></span>Your token</div>' +
       '<div class="ashta-legend-row"><span class="ashta-legend-swatch" style="background:var(--teal);"></span>Kreedu\u2019s token</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="ashta-board-col">' +
+      '<div class="ashta-tray" id="ashta-tray-kreedu">' +
+      '<div class="ashta-tray-label">Kreedu\u2019s tokens</div>' +
+      '<div class="ashta-tray-slots" id="ashta-slots-kreedu"></div>' +
+      '</div>' +
+      '<div class="ashta-board" id="ashta-board"></div>' +
+      '<div class="ashta-tray" id="ashta-tray-player">' +
+      '<div class="ashta-tray-label">Your tokens</div>' +
+      '<div class="ashta-tray-slots" id="ashta-slots-player"></div>' +
+      '</div>' +
+      '<div class="ashta-map-caption">' +
+      'terracotta \u00b7 you (bottom) \u00b7 teal \u00b7 Kreedu (top) \u00b7 \u2715 squares are safe' +
+      '</div>' +
+      '</div>' +
+      '<div class="ashta-shell-col">' +
+      '<div class="ashta-shell-panel ashta-panel">' +
+      '<h3>Cowrie shells</h3>' +
+      '<div class="ashta-shells" id="ashta-shells"></div>' +
+      '<button class="play-btn ashta-roll-btn" id="ashta-roll-btn">\u25b6 Throw shells</button>' +
       '</div>' +
       '</div>' +
       '</div>' +
