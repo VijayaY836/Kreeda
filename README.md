@@ -36,7 +36,7 @@ Five games get a map with a stitched-thread path tracing their journey out of In
 This build is the **structural/navigational skeleton**, not the finished games. It's meant to prove the full flow end to end and give the team one visual source of truth to build actual game logic into.
 
 Included and working:
-- Home screen with Kreedu and a grid of all 6 games
+- Home screen with Kreedu and a grid of all 6 games that are available
 - Game detail screen per game: mode toggle (where applicable), illustrated map with clickable pins, tap-to-open fact dialogs, how-to-play instructions, Play button
 - Navigation between Home → Game Detail → Play (placeholder) screens
 - Real content for every game: accurate pin locations, fun facts, and "how it traveled" notes for all 6 games, pulled from actual research — not placeholder text
