@@ -13,7 +13,7 @@ type Game = {
 const games: Game[] = [
   { slug: 'vaikunthapali', name: 'Vaikunthapali', nativeName: 'వైకుంఠపాళి', description: 'Climb toward liberation in the ancestor of Snakes and Ladders.', icon: '🪜', color: 'var(--color-blue)', href: './games/vaikunthapali/site/' },
   { slug: 'puli-meka-aata', name: 'Puli Meka Aata', nativeName: 'పులి మేక ఆట', description: 'A tense hunt where clever goats surround powerful tigers.', icon: '🐅', color: 'var(--color-terracotta)', href: './games/puli-meka-aata/site/' },
-  { slug: 'ashta-chamma', name: 'Ashta Chamma', nativeName: 'అష్ట చెమ్మ', description: 'Race your pieces home with cowrie shells and sharp tactics.', icon: '🐚', color: 'var(--color-marigold)' },
+  { slug: 'ashta-chamma', name: 'Ashta Chamma', nativeName: 'అష్ట చెమ్మ', description: 'Race your pieces home with cowrie shells and sharp tactics.', icon: '🐚', color: 'var(--color-marigold)', href: './games/ashta-chamma/site/' },
   { slug: 'vaamana-guntalu', name: 'Vaamana Guntalu', nativeName: 'వామన గుంటలు', description: 'Sow, capture, and count in this rhythmic mancala tradition.', icon: '🌰', color: 'var(--color-green)' },
   { slug: 'chaturangam', name: 'Chaturangam', nativeName: 'చతురంగం', description: 'Command the four divisions in the ancient forerunner of chess.', icon: '♞', color: 'var(--color-teal)' },
   { slug: 'daadi-aata', name: 'Daadi Aata', nativeName: 'దాడి ఆట', description: 'Form mills, block your rival, and control the crossing lines.', icon: '◉', color: 'var(--color-pink)' },
