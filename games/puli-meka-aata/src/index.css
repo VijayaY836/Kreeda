@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Fraunces', Georgia, serif;
+    --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-telugu: 'Tiro Telugu', sans-serif;
+    
+    /* User Specified Theme Palette */
+    --color-paper-cream: #EFDFB8;
+    --color-light-cream: #F6ECD2;
+    --color-deep-cream: #E4D19E;
+    --color-maroon: #5C140F;
+    --color-terracotta: #D8401F;
+    --color-marigold: #EFA90C;
+    --color-teal: #0E5C58;
+    --color-blue: #3E6E9E;
+    --color-pink: #D9587B;
+    --color-green: #5F8F3B;
+    --color-dark-ink: #2B1B12;
+    --color-soft-ink: #6B4E3D;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-paper-cream);
+    color: var(--color-dark-ink);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-maroon);
+  }
+
+  p {
+    color: var(--color-dark-ink);
+  }
+}
+
+/* Folk Art Typography Helpers */
+.font-fraunces {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-manrope {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-telugu {
+  font-family: 'Tiro Telugu', sans-serif;
+}
+
+/* Custom traditional solid borders */
+.border-traditional {
+  border: 3px solid #5C140F;
+}
+
+.border-traditional-sm {
+  border: 2px solid #5C140F;
+}
+
+.border-traditional-terracotta {
+  border: 3px solid #D8401F;
+}
+
+.border-traditional-marigold {
+  border: 3px solid #EFA90C;
+}
+
+.border-traditional-teal {
+  border: 2px solid #0E5C58;
+}
+
+/* Subtle folk pattern background generated via pure SVG data-uri */
+.bg-kolam-dots {
+  background-image: radial-gradient(#5C140F 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* Custom scrollbar matching folk art theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #EFDFB8;
+  border-left: 2px solid #5C140F;
+}
+::-webkit-scrollbar-thumb {
+  background: #5C140F;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D8401F;
+}
