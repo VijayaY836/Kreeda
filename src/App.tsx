@@ -1,55 +1,144 @@
-import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { GAMES } from './data/games'
+import { HomeView } from './components/HomeView'
+import { GameDetailView } from './components/GameDetailView'
+import { PlayView } from './components/PlayView'
+import { LanguageModal } from './components/LanguageModal'
+import { Header } from './components/Header'
+import { LangContext } from './data/LangContext'
+import { loadLang, saveLang, LANGS, VP_I18N } from './data/i18n'
+import type { Lang } from './data/i18n'
+import type { VpVersion } from './data/games'
 
-type Game = {
-  slug: string;
-  name: string;
-  nativeName: string;
-  description: string;
-  icon: string;
-  color: string;
-  href?: string;
-};
+export type PlayMode = 'solo' | 'mascot'
+type View =
+  | { k: 'home' }
+  | { k: 'detail'; id: string }
+  | { k: 'lang-select'; id: string }
+  | { k: 'play'; id: string; mode: PlayMode; vpVersion?: VpVersion }
 
-const games: Game[] = [
-  { slug: 'vaikunthapali', name: 'Vaikunthapali', nativeName: 'వైకుంఠపాళి', description: 'Climb toward liberation in the ancestor of Snakes and Ladders.', icon: '🪜', color: 'var(--color-blue)', href: './games/vaikunthapali/site/' },
-  { slug: 'puli-meka-aata', name: 'Puli Meka Aata', nativeName: 'పులి మేక ఆట', description: 'A tense hunt where clever goats surround powerful tigers.', icon: '🐅', color: 'var(--color-terracotta)', href: './games/puli-meka-aata/site/' },
-  { slug: 'ashta-chamma', name: 'Ashta Chamma', nativeName: 'అష్ట చెమ్మ', description: 'Race your pieces home with cowrie shells and sharp tactics.', icon: '🐚', color: 'var(--color-marigold)', href: './games/ashta-chamma/site/' },
-  { slug: 'vaamana-guntalu', name: 'Vaamana Guntalu', nativeName: 'వామన గుంటలు', description: 'Sow, capture, and count in this rhythmic mancala tradition.', icon: '🌰', color: 'var(--color-green)', href: './games/vaamana-guntalu/site/' },
-  { slug: 'chaturangam', name: 'Chaturangam', nativeName: 'చతురంగం', description: 'Command the four divisions in the ancient forerunner of chess.', icon: '♞', color: 'var(--color-teal)', href: './games/chaturangam/site/' },
-  { slug: 'daadi-aata', name: 'Daadi Aata', nativeName: 'దాడి ఆట', description: 'Form mills, block your rival, and control the crossing lines.', icon: '◉', color: 'var(--color-pink)', href: './games/daadi-aata/site/' },
-];
+interface ToastState {
+  id: number
+  msg: string
+}
 
-function GameCard({ game, index }: { game: Game; index: number }) {
-  const content = <>
-    <span className="card-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-    <span className="game-icon" aria-hidden="true">{game.icon}</span>
-    <h3>{game.name}</h3>
-    <p className="native-name" lang="te">{game.nativeName}</p>
-    <p className="description">{game.description}</p>
-    <span className="card-action">{game.href ? 'Play game →' : 'Integrating soon'}</span>
-  </>;
-  const style = { '--card-color': game.color } as CSSProperties;
-
-  return game.href
-    ? <a className="game-card" data-game={game.slug} href={game.href} style={style}>{content}</a>
-    : <article className="game-card unavailable" data-game={game.slug} aria-label={`${game.name}, integrating soon`} style={style}>{content}</article>;
+const GAME_ROUTES: Record<string, string> = {
+  'puli-meka': './games/puli-meka-aata/site/',
+  'ashta-chamma': './games/ashta-chamma/site/',
+  'vaamana-guntalu': './games/vaamana-guntalu/site/',
+  chaturangam: './games/chaturangam/site/',
+  'daadi-aata': './games/daadi-aata/site/',
 }
 
 export default function App() {
-  return <main className="shell">
-    <header>
-      <div className="brand"><span className="brand-mark" aria-hidden="true">✦</span>KREEDA</div>
-      <p className="tagline">Play the past. Keep the stories moving.</p>
-    </header>
-    <section className="hero" aria-labelledby="page-title">
-      <p className="eyebrow">Traditional games · timeless strategy</p>
-      <h1 id="page-title">Six games. Thousands of years of play.</h1>
-      <p className="intro">Meet India’s classic board games, learn how they travelled across the world, and challenge Kreedu—your playful built-in opponent.</p>
-    </section>
-    <section aria-labelledby="games-title">
-      <div className="section-heading"><h2 id="games-title">Choose your game</h2><span className="count">6 games in the collection</span></div>
-      <div className="games">{games.map((game, index) => <GameCard game={game} index={index} key={game.slug} />)}</div>
-    </section>
-    <footer>KREEDA celebrates the strategy, craft, and living history of Indian play.</footer>
-  </main>;
+  const [view, setView] = useState<View>({ k: 'home' })
+  const [toast, setToast] = useState<ToastState | null>(null)
+  const [lang, setLang] = useState<Lang>(loadLang)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  const handleLangChange = useCallback((l: Lang) => {
+    setLang(l)
+    saveLang(l)
+  }, [])
+
+  const showToast = useCallback((msg: string) => {
+    clearTimeout(toastTimer.current)
+    setToast({ id: Date.now(), msg })
+    toastTimer.current = setTimeout(() => setToast(null), 2200)
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [view])
+
+  useEffect(() => () => clearTimeout(toastTimer.current), [])
+
+  const isInPlay = view.k === 'play' && view.id === 'vaikunthapali'
+  const currentGame = (view.k === 'detail' || view.k === 'play')
+    ? GAMES.find((g) => g.id === view.id)
+    : undefined
+
+  let body: JSX.Element
+  if (view.k === 'home') {
+    body = <HomeView onOpen={(id) => {
+      if (id === 'vaikunthapali') {
+        setView({ k: 'lang-select', id })
+      } else if (GAME_ROUTES[id]) {
+        window.location.assign(GAME_ROUTES[id])
+      } else {
+        setView({ k: 'detail', id })
+      }
+    }} />
+  } else if (view.k === 'detail') {
+    body = (
+      <GameDetailView
+        key={view.id}
+        game={GAMES.find((g) => g.id === view.id) ?? GAMES[0]}
+        onBack={() => setView({ k: 'home' })}
+        onStartPlay={(mode, vpVersion) => setView({ k: 'play', id: view.id, mode, vpVersion })}
+      />
+    )
+  } else if (view.k === 'lang-select') {
+    body = (
+      <LanguageModal
+        onSelect={(l) => {
+          handleLangChange(l)
+          setView({ k: 'detail', id: view.id })
+        }}
+        onBack={() => setView({ k: 'home' })}
+      />
+    )
+  } else {
+    body = (
+      <PlayView
+        key={`${view.id}-${view.mode}`}
+        gameId={view.id}
+        mode={view.mode}
+        showToast={showToast}
+        onBack={() => setView({ k: 'detail', id: view.id })}
+      />
+    )
+  }
+
+  return (
+    <LangContext.Provider value={lang}>
+      <div className="min-h-screen">
+        <Header
+          currentView={view.k}
+          onNavigateHome={() => setView({ k: 'home' })}
+          gameTitle={currentGame?.name}
+          gameNative={currentGame?.native}
+        />
+
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          {/* In-play language switcher */}
+          {isInPlay && (
+            <div className="flex justify-center gap-1 mb-4 bg-[#F6ECD2] border-[2px] border-[#5C140F] p-1 inline-flex mx-auto">
+              {LANGS.map((c) => (
+                <button
+                  key={c}
+                  className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-[1.5px] border-[#5C140F] transition-colors cursor-pointer ${
+                    c === lang
+                      ? 'bg-[#D8401F] text-white'
+                      : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-[#F6ECD2]'
+                  }`}
+                  onClick={() => handleLangChange(c)}
+                >
+                  {VP_I18N[c].label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {body}
+        </div>
+
+        {toast && (
+          <div key={toast.id} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#5C140F] text-[#F6ECD2] px-5 py-2.5 border-[2px] border-[#3D1A0A] font-bold text-sm shadow-lg animate-[slideUp_.3s_ease]">
+            {toast.msg}
+          </div>
+        )}
+      </div>
+    </LangContext.Provider>
+  )
 }
