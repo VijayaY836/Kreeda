@@ -11,7 +11,7 @@ type Game = {
 };
 
 const games: Game[] = [
-  { slug: 'vaikunthapali', name: 'Vaikunthapali', nativeName: 'వైకుంఠపాళి', description: 'Climb toward liberation in the ancestor of Snakes and Ladders.', icon: '🪜', color: 'var(--color-blue)' },
+  { slug: 'vaikunthapali', name: 'Vaikunthapali', nativeName: 'వైకుంఠపాళి', description: 'Climb toward liberation in the ancestor of Snakes and Ladders.', icon: '🪜', color: 'var(--color-blue)', href: './games/vaikunthapali/site/' },
   { slug: 'puli-meka-aata', name: 'Puli Meka Aata', nativeName: 'పులి మేక ఆట', description: 'A tense hunt where clever goats surround powerful tigers.', icon: '🐅', color: 'var(--color-terracotta)' },
   { slug: 'ashta-chamma', name: 'Ashta Chamma', nativeName: 'అష్ట చెమ్మ', description: 'Race your pieces home with cowrie shells and sharp tactics.', icon: '🐚', color: 'var(--color-marigold)' },
   { slug: 'vaamana-guntalu', name: 'Vaamana Guntalu', nativeName: 'వామన గుంటలు', description: 'Sow, capture, and count in this rhythmic mancala tradition.', icon: '🌰', color: 'var(--color-green)' },
