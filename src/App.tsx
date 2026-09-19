@@ -16,7 +16,7 @@ const games: Game[] = [
   { slug: 'ashta-chamma', name: 'Ashta Chamma', nativeName: 'అష్ట చెమ్మ', description: 'Race your pieces home with cowrie shells and sharp tactics.', icon: '🐚', color: 'var(--color-marigold)', href: './games/ashta-chamma/site/' },
   { slug: 'vaamana-guntalu', name: 'Vaamana Guntalu', nativeName: 'వామన గుంటలు', description: 'Sow, capture, and count in this rhythmic mancala tradition.', icon: '🌰', color: 'var(--color-green)', href: './games/vaamana-guntalu/site/' },
   { slug: 'chaturangam', name: 'Chaturangam', nativeName: 'చతురంగం', description: 'Command the four divisions in the ancient forerunner of chess.', icon: '♞', color: 'var(--color-teal)', href: './games/chaturangam/site/' },
-  { slug: 'daadi-aata', name: 'Daadi Aata', nativeName: 'దాడి ఆట', description: 'Form mills, block your rival, and control the crossing lines.', icon: '◉', color: 'var(--color-pink)' },
+  { slug: 'daadi-aata', name: 'Daadi Aata', nativeName: 'దాడి ఆట', description: 'Form mills, block your rival, and control the crossing lines.', icon: '◉', color: 'var(--color-pink)', href: './games/daadi-aata/site/' },
 ];
 
 function GameCard({ game, index }: { game: Game; index: number }) {
