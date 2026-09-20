@@ -45,9 +45,9 @@ html[lang="te"] body,html[lang="te"] .language-select{font-family:'Noto Sans Tel
 html[lang="ta"] body,html[lang="ta"] .language-select{font-family:'Noto Sans Tamil',sans-serif}
 html[lang="kn"] body,html[lang="kn"] .language-select{font-family:'Noto Sans Kannada',sans-serif}
 html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="kn"] :is(h1,h2,h3,.brand,.origin-quote){font-family:inherit}
-.saree-border{height:14px;background:linear-gradient(to bottom,var(--accent) 0 3px,transparent 3px 5px,var(--accent2) 5px 9px,transparent 9px 11px,var(--accent) 11px 14px)}
-.hero{position:relative;isolation:isolate;padding:44px 40px;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.hero::before{content:"";position:absolute;z-index:-1;inset-block:0;inset-inline:calc(50% - 50vw);background:var(--hero-bg)}
+.saree-border{width:100%;height:14px;background:linear-gradient(to bottom,var(--accent) 0 3px,transparent 3px 5px,var(--accent2) 5px 9px,transparent 9px 11px,var(--accent) 11px 14px)}
+.hero-shell{background:var(--hero-bg)}
+.hero{padding:44px 40px;color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .hero-copy{max-width:520px;flex:1 1 440px}
 .hero h1{margin:0 0 20px;color:var(--hero-ink);font-family:var(--head);font-size:clamp(34px,5.4vw,56px);font-weight:500;line-height:1.08}
 .hero p{margin:0 0 28px;max-width:510px;font-size:18px}
@@ -59,7 +59,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
 .button:focus-visible,.nav a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .hero-art{width:min(340px,100%);flex:0 1 340px;color:var(--kolam)}
 .hero-art svg{display:block;width:100%;height:auto}
-.kolam-strip{height:28px;overflow:hidden;background:var(--primary)}
+.kolam-strip{width:100%;height:28px;overflow:hidden;background:var(--primary)}
 .kolam-strip svg{display:block;width:100%;height:28px}
 .games-section{padding:44px 32px 20px}
 .section-title{margin:0 0 6px;color:var(--primary);font-family:var(--head);font-size:clamp(26px,3.6vw,36px);font-weight:400;line-height:1.2}
@@ -141,9 +141,10 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
     </div>
   </nav>
 </header>
-<div class="saree-border container" aria-hidden="true"></div>
-<main id="top" class="container">
-  <section class="hero" aria-labelledby="hero-title">
+<div class="saree-border" aria-hidden="true"></div>
+<main id="top">
+  <section class="hero-shell" aria-labelledby="hero-title">
+    <div class="hero container">
     <div class="hero-copy">
       <h1 id="hero-title" data-i18n="heroTitle">The games our grandmothers played</h1>
       <p data-i18n="heroText">Learn the rules, the seeds and shells, and the stories behind India's oldest board games.</p>
@@ -155,11 +156,12 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
     <div class="hero-art">
       <svg class="js-kolam" viewBox="-100 -100 200 200" role="img" aria-label="Traditional kolam pattern with petals, loops and pulli dots" data-i18n-aria="kolamLabel"></svg>
     </div>
+    </div>
   </section>
   <div class="kolam-strip" aria-hidden="true">
     <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kp)"/></svg>
   </div>
-  <section id="g" class="games-section" aria-labelledby="games-title">
+  <section id="g" class="games-section container" aria-labelledby="games-title">
     <h2 id="games-title" class="section-title" data-i18n="gamesTitle">Pick a game</h2>
     <p class="section-intro" data-i18n="gamesIntro">Each game page has the board, the rules, and where it came from.</p>
     <div class="game-grid">
@@ -207,7 +209,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
       </a>
     </div>
   </section>
-  <section id="o" class="origin-section" aria-labelledby="origin-title">
+  <section id="o" class="origin-section container" aria-labelledby="origin-title">
     <div class="origin-copy">
       <h2 id="origin-title" class="section-title" data-i18n="originTitle">Drawn at dawn, played all day</h2>
       <p data-i18n="originText1">Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.</p>
