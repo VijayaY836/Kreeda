@@ -6,6 +6,7 @@ import { Vaikunthapali } from './vp/Vaikunthapali'
 import type { PlayMode } from '../App'
 import { useLang } from '../data/LangContext'
 import { SHELL_I18N, fmt } from '../data/i18n'
+import { shellText } from '../siteLanguage'
 
 export function PlayView({
   gameId,
@@ -33,9 +34,14 @@ export function PlayView({
 
   return (
     <>
-      <button className="backbtn" onClick={onBack}>
-        {S.backToGameInfo}
-      </button>
+      <div className="play-nav">
+        <button className="backbtn" onClick={onBack}>
+          {S.backToGameInfo}
+        </button>
+        <a className="backbtn" href="../../../index.html">
+          {shellText('allGames')}
+        </a>
+      </div>
 
       {isVP ? (
         <Vaikunthapali mode={mode} vpVersion={vpVersion ?? 'india'} onExit={onBack} />
