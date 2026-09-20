@@ -85,7 +85,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
 .origin-subtitle{margin:24px 0 0;color:var(--primary);font-family:var(--head);font-size:22px;font-weight:400;scroll-margin-top:18px}
 .origin-quote{margin:0;padding:26px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-family:var(--head);font-size:22px;line-height:1.45;flex:1 1 300px}
 .site-footer{background:var(--surface);border-top:1px solid var(--border);color:var(--muted);text-align:center;font-size:14px}
-.footer-kolam{--kolam:var(--primary);background:var(--surface)}
+.footer-kolam{background:var(--surface)}
 .footer-name{margin:0;padding:20px 32px 24px}
 .pattern-defs{position:absolute;width:0;height:0;overflow:hidden}
 @media(max-width:760px){
@@ -117,6 +117,11 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
       <path d="M22 4 C30 8 34 10 38 14 C34 18 30 20 22 24 C14 20 10 18 6 14 C10 10 14 8 22 4Z" style="stroke:var(--kolam)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
       <path d="M0 14 C4 10 6 10 6 14 C6 18 4 18 0 14 M44 14 C40 10 38 10 38 14 C38 18 40 18 44 14" style="stroke:var(--kolam)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
       <circle cx="22" cy="14" r="2.2" style="fill:var(--kolam)"/>
+    </pattern>
+    <pattern id="kpFooter" width="44" height="28" patternUnits="userSpaceOnUse">
+      <path d="M22 4 C30 8 34 10 38 14 C34 18 30 20 22 24 C14 20 10 18 6 14 C10 10 14 8 22 4Z" style="stroke:var(--primary)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <path d="M0 14 C4 10 6 10 6 14 C6 18 4 18 0 14 M44 14 C40 10 38 10 38 14 C38 18 40 18 44 14" style="stroke:var(--primary)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <circle cx="22" cy="14" r="2.2" style="fill:var(--primary)"/>
     </pattern>
   </defs>
 </svg>
@@ -224,7 +229,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
 </main>
 <footer class="site-footer">
   <div class="footer-kolam kolam-strip" aria-hidden="true">
-    <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kp)"/></svg>
+    <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kpFooter)"/></svg>
   </div>
   <p class="footer-name">Aata Kalam</p>
 </footer>
