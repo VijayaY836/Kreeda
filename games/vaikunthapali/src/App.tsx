@@ -29,7 +29,10 @@ export default function App() {
       : { k: 'home' },
   )
   const [toast, setToast] = useState<ToastState | null>(null)
-  const [lang, setLang] = useState<Lang>(loadLang)
+  const [lang, setLang] = useState<Lang>(() => {
+    const requested = new URLSearchParams(window.location.search).get('lang') as Lang | null
+    return requested && LANGS.includes(requested) ? requested : loadLang()
+  })
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const handleLangChange = useCallback((l: Lang) => {

@@ -37,6 +37,14 @@ a{color:inherit}
 .nav-links{display:flex;align-items:center;justify-content:flex-end;gap:24px;flex-wrap:wrap}
 .nav-links a{color:var(--ink);font-size:15px;text-decoration:none;text-underline-offset:5px}
 .nav-links a:hover,.nav-links a:focus-visible{color:var(--primary);text-decoration:underline}
+.nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:20px;flex-wrap:wrap}
+.language-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font:600 14px var(--body)}
+.language-select:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-color:var(--primary)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+html[lang="te"] body,html[lang="te"] .language-select{font-family:'Noto Sans Telugu',sans-serif}
+html[lang="ta"] body,html[lang="ta"] .language-select{font-family:'Noto Sans Tamil',sans-serif}
+html[lang="kn"] body,html[lang="kn"] .language-select{font-family:'Noto Sans Kannada',sans-serif}
+html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="kn"] :is(h1,h2,h3,.brand,.origin-quote){font-family:inherit}
 .saree-border{height:14px;background:linear-gradient(to bottom,var(--accent) 0 3px,transparent 3px 5px,var(--accent2) 5px 9px,transparent 9px 11px,var(--accent) 11px 14px)}
 .hero{position:relative;isolation:isolate;padding:44px 40px;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .hero::before{content:"";position:absolute;z-index:-1;inset-block:0;inset-inline:calc(50% - 50vw);background:var(--hero-bg)}
@@ -80,7 +88,7 @@ a{color:inherit}
 .pattern-defs{position:absolute;width:0;height:0;overflow:hidden}
 @media(max-width:760px){
   .nav{align-items:flex-start;flex-direction:column}
-  .nav-links{justify-content:flex-start;gap:12px 20px}
+  .nav-actions,.nav-links{justify-content:flex-start;gap:12px 20px}
   .hero{padding:40px 28px}
   .hero-copy,.hero-art{flex-basis:100%}
   .hero-art{width:min(300px,85vw);margin-inline:auto}
@@ -111,16 +119,25 @@ a{color:inherit}
   </defs>
 </svg>
 <header class="site-header">
-  <nav class="nav container" aria-label="Main navigation">
-    <a class="brand" href="#top" aria-label="Aata Kalam home">
+  <nav class="nav container" aria-label="Main navigation" data-i18n-aria="navLabel">
+    <a class="brand" href="#top" aria-label="Aata Kalam home" data-i18n-aria="homeLabel">
       <svg class="nav-kolam js-kolam" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
       <span>Aata Kalam</span>
     </a>
-    <div class="nav-links">
-      <a href="#g">Games</a>
-      <a href="#o">Origins</a>
-      <a href="#g">How to play</a>
-      <a href="#o">Kolams</a>
+    <div class="nav-actions">
+      <div class="nav-links">
+        <a href="#g" data-i18n="navGames">Games</a>
+        <a href="#o" data-i18n="navOrigins">Origins</a>
+        <a href="#g" data-i18n="navHow">How to play</a>
+        <a href="#o" data-i18n="navKolams">Kolams</a>
+      </div>
+      <label class="sr-only" for="language" data-i18n="languageLabel">Language</label>
+      <select class="language-select" id="language" aria-label="Choose language" data-i18n-aria="languageAria">
+        <option value="en">English</option>
+        <option value="te">తెలుగు</option>
+        <option value="ta">தமிழ்</option>
+        <option value="kn">ಕನ್ನಡ</option>
+      </select>
     </div>
   </nav>
 </header>
@@ -128,75 +145,75 @@ a{color:inherit}
 <main id="top" class="container">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <h1 id="hero-title">The games our grandmothers played</h1>
-      <p>Learn the rules, the seeds and shells, and the stories behind India's oldest board games.</p>
+      <h1 id="hero-title" data-i18n="heroTitle">The games our grandmothers played</h1>
+      <p data-i18n="heroText">Learn the rules, the seeds and shells, and the stories behind India's oldest board games.</p>
       <div class="hero-actions">
-        <a class="button button-primary" href="#g">Start playing</a>
-        <a class="button button-ghost" href="#o">Read the origins</a>
+        <a class="button button-primary" href="#g" data-i18n="startPlaying">Start playing</a>
+        <a class="button button-ghost" href="#o" data-i18n="readOrigins">Read the origins</a>
       </div>
     </div>
     <div class="hero-art">
-      <svg class="js-kolam" viewBox="-100 -100 200 200" role="img" aria-label="Traditional kolam pattern with petals, loops and pulli dots"></svg>
+      <svg class="js-kolam" viewBox="-100 -100 200 200" role="img" aria-label="Traditional kolam pattern with petals, loops and pulli dots" data-i18n-aria="kolamLabel"></svg>
     </div>
   </section>
   <div class="kolam-strip" aria-hidden="true">
     <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kp)"/></svg>
   </div>
   <section id="g" class="games-section" aria-labelledby="games-title">
-    <h2 id="games-title" class="section-title">Pick a game</h2>
-    <p class="section-intro">Each game page has the board, the rules, and where it came from.</p>
+    <h2 id="games-title" class="section-title" data-i18n="gamesTitle">Pick a game</h2>
+    <p class="section-intro" data-i18n="gamesIntro">Each game page has the board, the rules, and where it came from.</p>
     <div class="game-grid">
-      <a class="game-card" href="games/vaikunthapali/site/?play=1" aria-label="Play Vaikuntha Pali">
+      <a class="game-card" href="games/vaikunthapali/site/?play=1" aria-label="Play Vaikuntha Pali" data-i18n-aria="playVaikuntha">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><path opacity=".45" d="M24 8V72M40 8V72M56 8V72M8 24H72M8 40H72M8 56H72"/><path stroke-width="3" d="M14 64C27 56 18 41 34 35S48 17 63 13"/><path d="M49 65L62 35M56 68L69 38M53 56L65 59M56 49L68 52M59 42L71 45"/></g></svg>
         <h3>Vaikuntha Pali</h3>
         <p class="native-name telugu" lang="te">వైకుంఠపాళి</p>
-        <p class="game-description">A ladder-and-serpent race. Virtues lift you up, vices pull you down. The ancestor of Snakes and Ladders.</p>
-        <p class="play-info">Dice · 2+ players</p>
+        <p class="game-description" data-i18n="vaikunthaDescription">A ladder-and-serpent race. Virtues lift you up, vices pull you down. The ancestor of Snakes and Ladders.</p>
+        <p class="play-info" data-i18n="vaikunthaInfo">Dice · 2+ players</p>
       </a>
-      <a class="game-card" href="games/ashta-chamma/site/?play=1" aria-label="Play Ashta Chamma">
+      <a class="game-card" href="games/ashta-chamma/site/?play=1" aria-label="Play Ashta Chamma" data-i18n-aria="playAshta">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><rect x="24" y="24" width="32" height="32"/><path d="M24 8V72M56 8V72M8 24H72M8 56H72M30 30L50 50M50 30L30 50"/><circle cx="40" cy="40" r="2.5" fill="currentColor" stroke="none"/></g></svg>
         <h3>Ashta Chamma</h3>
         <p class="native-name telugu" lang="te">అష్టా చెమ్మా</p>
-        <p class="game-description">A race around a square grid, moved by throws of cowrie shells. Cross-marked squares are safe.</p>
-        <p class="play-info">Cowries · 2–4 players</p>
+        <p class="game-description" data-i18n="ashtaDescription">A race around a square grid, moved by throws of cowrie shells. Cross-marked squares are safe.</p>
+        <p class="play-info" data-i18n="ashtaInfo">Cowries · 2–4 players</p>
       </a>
-      <a class="game-card" href="games/vaamana-guntalu/site/" aria-label="Play Pallanguzhi">
+      <a class="game-card" href="games/vaamana-guntalu/site/" aria-label="Play Pallanguzhi" data-i18n-aria="playPallanguzhi">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="15" width="70" height="50" rx="12"/><circle cx="13" cy="30" r="5"/><circle cx="24" cy="30" r="5"/><circle cx="35" cy="30" r="5"/><circle cx="46" cy="30" r="5"/><circle cx="57" cy="30" r="5"/><circle cx="68" cy="30" r="5"/><circle cx="13" cy="50" r="5"/><circle cx="24" cy="50" r="5"/><circle cx="35" cy="50" r="5"/><circle cx="46" cy="50" r="5"/><circle cx="57" cy="50" r="5"/><circle cx="68" cy="50" r="5"/></g></svg>
         <h3>Pallanguzhi</h3>
         <p class="native-name tamil" lang="ta">பல்லாங்குழி</p>
-        <p class="game-description">Sow tamarind seeds or cowries around two rows of pits and capture the most. India's own mancala.</p>
-        <p class="play-info">Seeds · 2 players</p>
+        <p class="game-description" data-i18n="pallanguzhiDescription">Sow tamarind seeds or cowries around two rows of pits and capture the most. India's own mancala.</p>
+        <p class="play-info" data-i18n="pallanguzhiInfo">Seeds · 2 players</p>
       </a>
-      <a class="game-card" href="games/puli-meka-aata/site/?play=1" aria-label="Play Aadu Puli Aattam">
+      <a class="game-card" href="games/puli-meka-aata/site/?play=1" aria-label="Play Aadu Puli Aattam" data-i18n-aria="playAaduPuli">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M40 7L73 70H7Z M40 7V70M23 39H57M15 55H65"/><circle cx="40" cy="7" r="3" fill="currentColor" stroke="none"/><circle cx="23" cy="39" r="3" fill="currentColor" stroke="none"/><circle cx="57" cy="39" r="3" fill="currentColor" stroke="none"/></g></svg>
         <h3>Aadu Puli Aattam</h3>
         <p class="native-name tamil" lang="ta">ஆடு புலி ஆட்டம்</p>
-        <p class="game-description">Goats and tigers. The tigers hunt, the goats try to trap them. A game of patience and traps.</p>
-        <p class="play-info">Pebbles · 2 players</p>
+        <p class="game-description" data-i18n="aaduPuliDescription">Goats and tigers. The tigers hunt, the goats try to trap them. A game of patience and traps.</p>
+        <p class="play-info" data-i18n="aaduPuliInfo">Pebbles · 2 players</p>
       </a>
-      <a class="game-card" href="games/chaturangam/site/?play=1" aria-label="Play Chaturangam">
+      <a class="game-card" href="games/chaturangam/site/?play=1" aria-label="Play Chaturangam" data-i18n-aria="playChaturangam">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><path opacity=".45" d="M16 8V72M24 8V72M32 8V72M40 8V72M48 8V72M56 8V72M64 8V72M8 16H72M8 24H72M8 32H72M8 40H72M8 48H72M8 56H72M8 64H72"/><path stroke-width="3" d="M29 60H52M32 55H49L47 48H34Z M35 48C38 42 35 37 40 31L34 27L39 17C48 20 53 29 49 38L46 48"/></g></svg>
         <h3>Chaturangam</h3>
         <p class="native-name telugu" lang="te">చతురంగం</p>
-        <p class="game-description">Command the four divisions of an ancient army in the Indian strategy game that became chess.</p>
-        <p class="play-info">Pieces · 2 players</p>
+        <p class="game-description" data-i18n="chaturangamDescription">Command the four divisions of an ancient army in the Indian strategy game that became chess.</p>
+        <p class="play-info" data-i18n="chaturangamInfo">Pieces · 2 players</p>
       </a>
-      <a class="game-card" href="games/daadi-aata/site/?play=1" aria-label="Play Daadi Aata">
+      <a class="game-card" href="games/daadi-aata/site/?play=1" aria-label="Play Daadi Aata" data-i18n-aria="playDaadi">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><rect x="20" y="20" width="40" height="40"/><rect x="31" y="31" width="18" height="18"/><path d="M40 8V31M40 49V72M8 40H31M49 40H72"/><circle cx="8" cy="8" r="3" fill="currentColor" stroke="none"/><circle cx="40" cy="20" r="3" fill="currentColor" stroke="none"/><circle cx="60" cy="60" r="3" fill="currentColor" stroke="none"/></g></svg>
         <h3>Daadi Aata</h3>
         <p class="native-name telugu" lang="te">దాడి ఆట</p>
-        <p class="game-description">Form rows of three, remove your rival's pieces, and control the crossing lines of this traditional mill game.</p>
-        <p class="play-info">Pieces · 2 players</p>
+        <p class="game-description" data-i18n="daadiDescription">Form rows of three, remove your rival's pieces, and control the crossing lines of this traditional mill game.</p>
+        <p class="play-info" data-i18n="daadiInfo">Pieces · 2 players</p>
       </a>
     </div>
   </section>
   <section id="o" class="origin-section" aria-labelledby="origin-title">
     <div class="origin-copy">
-      <h2 id="origin-title" class="section-title">Drawn at dawn, played all day</h2>
-      <p>Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.</p>
-      <p>This site keeps both traditions together: the boards, and the patterns around them.</p>
+      <h2 id="origin-title" class="section-title" data-i18n="originTitle">Drawn at dawn, played all day</h2>
+      <p data-i18n="originText1">Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.</p>
+      <p data-i18n="originText2">This site keeps both traditions together: the boards, and the patterns around them.</p>
     </div>
-    <blockquote class="origin-quote">“A board needs nothing but a floor, a few seeds and someone to play with.”</blockquote>
+    <blockquote class="origin-quote" data-i18n="originQuote">“A board needs nothing but a floor, a few seeds and someone to play with.”</blockquote>
   </section>
 </main>
 <footer class="site-footer">
@@ -224,6 +241,96 @@ function kolam(svg){
   g+='<circle r="4"/></g>';
   svg.innerHTML=g;
 }
+
+const translations={
+  en:{
+    pageTitle:"Aata Kalam — Old Indian Board Games",navLabel:"Main navigation",homeLabel:"Aata Kalam home",navGames:"Games",navOrigins:"Origins",navHow:"How to play",navKolams:"Kolams",languageLabel:"Language",languageAria:"Choose language",
+    heroTitle:"The games our grandmothers played",heroText:"Learn the rules, the seeds and shells, and the stories behind India's oldest board games.",startPlaying:"Start playing",readOrigins:"Read the origins",kolamLabel:"Traditional kolam pattern with petals, loops and pulli dots",
+    gamesTitle:"Pick a game",gamesIntro:"Each game page has the board, the rules, and where it came from.",
+    playVaikuntha:"Play Vaikuntha Pali",playAshta:"Play Ashta Chamma",playPallanguzhi:"Play Pallanguzhi",playAaduPuli:"Play Aadu Puli Aattam",playChaturangam:"Play Chaturangam",playDaadi:"Play Daadi Aata",
+    vaikunthaDescription:"A ladder-and-serpent race. Virtues lift you up, vices pull you down. The ancestor of Snakes and Ladders.",vaikunthaInfo:"Dice · 2+ players",
+    ashtaDescription:"A race around a square grid, moved by throws of cowrie shells. Cross-marked squares are safe.",ashtaInfo:"Cowries · 2–4 players",
+    pallanguzhiDescription:"Sow tamarind seeds or cowries around two rows of pits and capture the most. India's own mancala.",pallanguzhiInfo:"Seeds · 2 players",
+    aaduPuliDescription:"Goats and tigers. The tigers hunt, the goats try to trap them. A game of patience and traps.",aaduPuliInfo:"Pebbles · 2 players",
+    chaturangamDescription:"Command the four divisions of an ancient army in the Indian strategy game that became chess.",chaturangamInfo:"Pieces · 2 players",
+    daadiDescription:"Form rows of three, remove your rival's pieces, and control the crossing lines of this traditional mill game.",daadiInfo:"Pieces · 2 players",
+    originTitle:"Drawn at dawn, played all day",originText1:"Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.",originText2:"This site keeps both traditions together: the boards, and the patterns around them.",originQuote:"“A board needs nothing but a floor, a few seeds and someone to play with.”"
+  },
+  te:{
+    pageTitle:"ఆట కాలం — భారతీయ పురాతన బోర్డు ఆటలు",navLabel:"ప్రధాన నావిగేషన్",homeLabel:"ఆట కాలం హోమ్",navGames:"ఆటలు",navOrigins:"మూలాలు",navHow:"ఎలా ఆడాలి",navKolams:"ముగ్గులు",languageLabel:"భాష",languageAria:"భాషను ఎంచుకోండి",
+    heroTitle:"మా అమ్మమ్మలు ఆడిన ఆటలు",heroText:"భారతదేశపు పురాతన బోర్డు ఆటల నియమాలు, గింజలు, గవ్వలు మరియు వాటి వెనుక కథలను తెలుసుకోండి.",startPlaying:"ఆడటం ప్రారంభించండి",readOrigins:"మూలాలను చదవండి",kolamLabel:"రేకులు, వలయాలు, చుక్కలతో సంప్రదాయ ముగ్గు",
+    gamesTitle:"ఒక ఆటను ఎంచుకోండి",gamesIntro:"ప్రతి ఆట పేజీలో బోర్డు, నియమాలు మరియు దాని మూలస్థానం ఉన్నాయి.",
+    playVaikuntha:"వైకుంఠపాళి ఆడండి",playAshta:"అష్టా చెమ్మా ఆడండి",playPallanguzhi:"పల్లాంగుళి ఆడండి",playAaduPuli:"ఆడు పులి ఆట ఆడండి",playChaturangam:"చతురంగం ఆడండి",playDaadi:"దాడి ఆట ఆడండి",
+    vaikunthaDescription:"నిచ్చెనలు, పాములతో సాగే పందెం. సద్గుణాలు పైకి తీసుకెళ్తాయి, దుర్గుణాలు కిందకు లాగుతాయి. స్నేక్స్ అండ్ లాడర్స్‌కు పూర్వ రూపం.",vaikunthaInfo:"పాచిక · 2+ ఆటగాళ్లు",
+    ashtaDescription:"గవ్వల వేయింపుతో చతురస్ర బోర్డు చుట్టూ సాగే పందెం. గుణింతం గుర్తున్న గడులు సురక్షితం.",ashtaInfo:"గవ్వలు · 2–4 ఆటగాళ్లు",
+    pallanguzhiDescription:"రెండు వరుసల గుంటల్లో చింత గింజలు లేదా గవ్వలు విత్తి, ఎక్కువగా సేకరించండి. భారతదేశపు మంకాలా.",pallanguzhiInfo:"గింజలు · 2 ఆటగాళ్లు",
+    aaduPuliDescription:"మేకలు, పులులు. పులులు వేటాడతాయి; మేకలు వాటిని బంధించడానికి ప్రయత్నిస్తాయి. ఓర్పు, ఉచ్చుల ఆట.",aaduPuliInfo:"రాళ్లు · 2 ఆటగాళ్లు",
+    chaturangamDescription:"చదరంగంగా మారిన భారతీయ వ్యూహాత్మక ఆటలో పురాతన సైన్యపు నాలుగు విభాగాలను నడిపించండి.",chaturangamInfo:"పావులు · 2 ఆటగాళ్లు",
+    daadiDescription:"మూడు పావుల వరుసలు చేసి, ప్రత్యర్థి పావులను తొలగించి, గీతల కూడళ్లను నియంత్రించండి.",daadiInfo:"పావులు · 2 ఆటగాళ్లు",
+    originTitle:"వేకువనే గీసి, రోజంతా ఆడినవి",originText1:"ప్రతి ఉదయం ఇంటి ముంగిట బియ్యపు పిండితో ముగ్గులు వేస్తారు: ముందుగా చుక్కలు, వాటి చుట్టూ ఒకే నిరంతర గీత. ఈ ఆటల్లో చాలావాటిని కూడా ఇలాగే నేలపై లేదా ఆలయ మెట్లపై గీసి, చింత గింజలు, గవ్వలు లేదా రాళ్లతో ఆడేవారు.",originText2:"ఈ సైట్ రెండు సంప్రదాయాలనూ కలిపి ఉంచుతుంది: బోర్డులు మరియు వాటి చుట్టూ ఉన్న ముగ్గులు.",originQuote:"“ఒక ఆట బోర్డుకు నేల, కొన్ని గింజలు, తోడుగా ఆడే ఒకరు చాలు.”"
+  },
+  ta:{
+    pageTitle:"ஆட்ட காலம் — பழமையான இந்தியப் பலகை விளையாட்டுகள்",navLabel:"முதன்மை வழிசெலுத்தல்",homeLabel:"ஆட்ட காலம் முகப்பு",navGames:"விளையாட்டுகள்",navOrigins:"தோற்றம்",navHow:"விளையாடுவது எப்படி",navKolams:"கோலங்கள்",languageLabel:"மொழி",languageAria:"மொழியைத் தேர்ந்தெடுக்கவும்",
+    heroTitle:"நம் பாட்டிகள் விளையாடிய விளையாட்டுகள்",heroText:"இந்தியாவின் பழமையான பலகை விளையாட்டுகளின் விதிகள், விதைகள், சோழிகள் மற்றும் கதைகளை அறிந்துகொள்ளுங்கள்.",startPlaying:"விளையாடத் தொடங்குங்கள்",readOrigins:"தோற்றத்தைப் படியுங்கள்",kolamLabel:"இதழ்கள், வளையங்கள், புள்ளிகளுடன் பாரம்பரியக் கோலம்",
+    gamesTitle:"ஒரு விளையாட்டைத் தேர்ந்தெடுங்கள்",gamesIntro:"ஒவ்வொரு விளையாட்டுப் பக்கத்திலும் பலகை, விதிகள் மற்றும் அதன் தோற்றம் உள்ளன.",
+    playVaikuntha:"வைகுண்டபாளி விளையாடுங்கள்",playAshta:"அஷ்ட செம்மா விளையாடுங்கள்",playPallanguzhi:"பல்லாங்குழி விளையாடுங்கள்",playAaduPuli:"ஆடு புலி ஆட்டம் விளையாடுங்கள்",playChaturangam:"சதுரங்கம் விளையாடுங்கள்",playDaadi:"தாடி ஆட்டம் விளையாடுங்கள்",
+    vaikunthaDescription:"ஏணிகளும் பாம்புகளும் நிறைந்த ஓட்டம். நற்குணங்கள் மேலே உயர்த்தும்; தீய குணங்கள் கீழே இழுக்கும். பாம்பும் ஏணியும் விளையாட்டின் முன்னோடி.",vaikunthaInfo:"தாயம் · 2+ வீரர்கள்",
+    ashtaDescription:"சோழி வீச்சுகளால் சதுரப் பாதையில் நகரும் ஓட்டம். குறுக்குக் குறியிட்ட கட்டங்கள் பாதுகாப்பானவை.",ashtaInfo:"சோழிகள் · 2–4 வீரர்கள்",
+    pallanguzhiDescription:"இரண்டு வரிசைக் குழிகளில் புளியங்கொட்டைகள் அல்லது சோழிகளை விதைத்து, அதிகமாகப் பிடியுங்கள். இந்தியாவின் மங்கலா.",pallanguzhiInfo:"விதைகள் · 2 வீரர்கள்",
+    aaduPuliDescription:"ஆடுகளும் புலிகளும். புலிகள் வேட்டையாடும்; ஆடுகள் அவற்றைச் சிக்கவைக்க முயலும். பொறுமையும் பொறிகளும் நிறைந்த ஆட்டம்.",aaduPuliInfo:"கற்கள் · 2 வீரர்கள்",
+    chaturangamDescription:"சதுரங்கமாக வளர்ந்த இந்திய உத்தி விளையாட்டில் பண்டைய படையின் நான்கு பிரிவுகளையும் வழிநடத்துங்கள்.",chaturangamInfo:"காய்கள் · 2 வீரர்கள்",
+    daadiDescription:"மூன்று காய்களை வரிசைப்படுத்தி, எதிரியின் காய்களை நீக்கி, கோடுகளின் சந்திப்புகளைக் கட்டுப்படுத்துங்கள்.",daadiInfo:"காய்கள் · 2 வீரர்கள்",
+    originTitle:"விடியலில் வரையப்பட்டு, நாளெல்லாம் விளையாடப்பட்டது",originText1:"ஒவ்வொரு காலையிலும் வீட்டு வாசலில் அரிசி மாவால் கோலம் இடப்படுகிறது: முதலில் புள்ளிகள், பின்னர் அவற்றைச் சுற்றி ஒரே தொடர்ச்சியான கோடு. இந்த விளையாட்டுகளும் முற்றத் தரையிலோ கோவில் படியிலோ வரையப்பட்டு, புளியங்கொட்டைகள், சோழிகள் அல்லது கற்களால் விளையாடப்பட்டன.",originText2:"இந்தத் தளம் இரு மரபுகளையும் ஒன்றாகப் பாதுகாக்கிறது: பலகைகளையும் அவற்றைச் சுற்றிய கோலங்களையும்.",originQuote:"“ஒரு விளையாட்டுப் பலகைக்கு ஒரு தரை, சில விதைகள், விளையாட ஒருவர் மட்டுமே போதும்.”"
+  },
+  kn:{
+    pageTitle:"ಆಟ ಕಾಲಂ — ಹಳೆಯ ಭಾರತೀಯ ಬೋರ್ಡ್ ಆಟಗಳು",navLabel:"ಮುಖ್ಯ ಸಂಚರಣೆ",homeLabel:"ಆಟ ಕಾಲಂ ಮುಖಪುಟ",navGames:"ಆಟಗಳು",navOrigins:"ಮೂಲಗಳು",navHow:"ಆಡುವ ವಿಧಾನ",navKolams:"ರಂಗೋಲಿಗಳು",languageLabel:"ಭಾಷೆ",languageAria:"ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    heroTitle:"ನಮ್ಮ ಅಜ್ಜಿಯರು ಆಡಿದ ಆಟಗಳು",heroText:"ಭಾರತದ ಅತ್ಯಂತ ಹಳೆಯ ಬೋರ್ಡ್ ಆಟಗಳ ನಿಯಮಗಳು, ಬೀಜಗಳು, ಕವಡೆಗಳು ಮತ್ತು ಅವುಗಳ ಹಿಂದಿನ ಕಥೆಗಳನ್ನು ತಿಳಿಯಿರಿ.",startPlaying:"ಆಟ ಆರಂಭಿಸಿ",readOrigins:"ಮೂಲಗಳನ್ನು ಓದಿ",kolamLabel:"ದಳಗಳು, ಕುಣಿಕೆಗಳು ಮತ್ತು ಚುಕ್ಕೆಗಳಿರುವ ಸಾಂಪ್ರದಾಯಿಕ ರಂಗೋಲಿ",
+    gamesTitle:"ಒಂದು ಆಟವನ್ನು ಆರಿಸಿ",gamesIntro:"ಪ್ರತಿ ಆಟದ ಪುಟದಲ್ಲಿ ಬೋರ್ಡ್, ನಿಯಮಗಳು ಮತ್ತು ಅದರ ಮೂಲಸ್ಥಾನವಿದೆ.",
+    playVaikuntha:"ವೈಕುಂಠಪಾಳಿ ಆಡಿ",playAshta:"ಅಷ್ಟ ಚಮ್ಮಾ ಆಡಿ",playPallanguzhi:"ಪಲ್ಲಾಂಗುಳಿ ಆಡಿ",playAaduPuli:"ಆಡು ಹುಲಿ ಆಟ ಆಡಿ",playChaturangam:"ಚತುರಂಗ ಆಡಿ",playDaadi:"ದಾಡಿ ಆಟ ಆಡಿ",
+    vaikunthaDescription:"ಏಣಿ ಮತ್ತು ಹಾವುಗಳ ಓಟ. ಸದ್ಗುಣಗಳು ಮೇಲಕ್ಕೆತ್ತುತ್ತವೆ, ದುರ್ಗುಣಗಳು ಕೆಳಗೆಳೆಯುತ್ತವೆ. ಹಾವು-ಏಣಿ ಆಟದ ಪೂರ್ವಜ.",vaikunthaInfo:"ದಾಳ · 2+ ಆಟಗಾರರು",
+    ashtaDescription:"ಕವಡೆ ಎಸೆತಗಳಿಂದ ಚೌಕದ ಹಾದಿಯಲ್ಲಿ ಸಾಗುವ ಓಟ. ಅಡ್ಡ ಗುರುತಿನ ಮನೆಗಳು ಸುರಕ್ಷಿತ.",ashtaInfo:"ಕವಡೆಗಳು · 2–4 ಆಟಗಾರರು",
+    pallanguzhiDescription:"ಎರಡು ಸಾಲಿನ ಗುಳಿಗಳಲ್ಲಿ ಹುಣಸೆ ಬೀಜಗಳು ಅಥವಾ ಕವಡೆಗಳನ್ನು ಬಿತ್ತಿ, ಅತಿ ಹೆಚ್ಚು ಸಂಗ್ರಹಿಸಿ. ಭಾರತದ ಮಂಕಾಲಾ.",pallanguzhiInfo:"ಬೀಜಗಳು · 2 ಆಟಗಾರರು",
+    aaduPuliDescription:"ಆಡುಗಳು ಮತ್ತು ಹುಲಿಗಳು. ಹುಲಿಗಳು ಬೇಟೆಯಾಡುತ್ತವೆ; ಆಡುಗಳು ಅವುಗಳನ್ನು ಬಂಧಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತವೆ. ತಾಳ್ಮೆ ಮತ್ತು ಬಲೆಗಳ ಆಟ.",aaduPuliInfo:"ಕಲ್ಲುಗಳು · 2 ಆಟಗಾರರು",
+    chaturangamDescription:"ಚದುರಂಗವಾಗಿ ಬೆಳೆದ ಭಾರತೀಯ ತಂತ್ರದ ಆಟದಲ್ಲಿ ಪುರಾತನ ಸೇನೆಯ ನಾಲ್ಕು ವಿಭಾಗಗಳನ್ನು ಮುನ್ನಡೆಸಿ.",chaturangamInfo:"ಕಾಯಿಗಳು · 2 ಆಟಗಾರರು",
+    daadiDescription:"ಮೂರು ಕಾಯಿಗಳ ಸಾಲು ಮಾಡಿ, ಎದುರಾಳಿಯ ಕಾಯಿಗಳನ್ನು ತೆಗೆದು, ರೇಖೆಗಳ ಸಂಧಿಗಳನ್ನು ನಿಯಂತ್ರಿಸಿ.",daadiInfo:"ಕಾಯಿಗಳು · 2 ಆಟಗಾರರು",
+    originTitle:"ಬೆಳಗಾಗುವಾಗ ಬರೆದು, ದಿನವಿಡೀ ಆಡಿದವು",originText1:"ಪ್ರತಿ ಬೆಳಿಗ್ಗೆ ಮನೆಯ ಬಾಗಿಲಲ್ಲಿ ಅಕ್ಕಿಹಿಟ್ಟಿನಿಂದ ರಂಗೋಲಿ ಬಿಡಿಸಲಾಗುತ್ತದೆ: ಮೊದಲು ಚುಕ್ಕೆಗಳು, ನಂತರ ಅವುಗಳ ಸುತ್ತ ಒಂದೇ ಮುರಿಯದ ರೇಖೆ. ಈ ಆಟಗಳನ್ನೂ ಅಂಗಳದ ನೆಲ ಅಥವಾ ದೇವಾಲಯದ ಮೆಟ್ಟಿಲಲ್ಲಿ ಬರೆದು, ಹುಣಸೆ ಬೀಜಗಳು, ಕವಡೆಗಳು ಅಥವಾ ಕಲ್ಲುಗಳಿಂದ ಆಡಲಾಗುತ್ತಿತ್ತು.",originText2:"ಈ ತಾಣ ಎರಡೂ ಸಂಪ್ರದಾಯಗಳನ್ನು ಒಟ್ಟಿಗೆ ಉಳಿಸುತ್ತದೆ: ಬೋರ್ಡ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ಸುತ್ತಲಿನ ವಿನ್ಯಾಸಗಳು.",originQuote:"“ಒಂದು ಆಟದ ಬೋರ್ಡಿಗೆ ನೆಲ, ಕೆಲವು ಬೀಜಗಳು ಮತ್ತು ಜೊತೆ ಆಡಲು ಒಬ್ಬರು ಸಾಕು.”"
+  }
+};
+
+const languageSelect=document.querySelector('#language');
+const gameLinks=[...document.querySelectorAll('.game-card')];
+gameLinks.forEach(link=>{link.dataset.baseHref=link.getAttribute('href')});
+
+function applyLanguage(language){
+  const lang=translations[language]?language:'en';
+  const copy=translations[lang];
+  document.documentElement.lang=lang;
+  document.title=copy.pageTitle;
+  document.querySelectorAll('[data-i18n]').forEach(element=>{
+    const value=copy[element.dataset.i18n];
+    if(value)element.textContent=value;
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(element=>{
+    const value=copy[element.dataset.i18nAria];
+    if(value)element.setAttribute('aria-label',value);
+  });
+  languageSelect.value=lang;
+  gameLinks.forEach(link=>{
+    const url=new URL(link.dataset.baseHref,window.location.href);
+    url.searchParams.set('lang',lang);
+    link.href=url.href;
+  });
+  try{
+    localStorage.setItem('aata-kalam-language',lang);
+    if(['en','te','ta'].includes(lang))localStorage.setItem('kreeda-vp-lang',lang);
+  }catch{}
+}
+
+let savedLanguage='en';
+try{savedLanguage=localStorage.getItem('aata-kalam-language')||'en'}catch{}
+const requestedLanguage=new URLSearchParams(window.location.search).get('lang');
+applyLanguage(requestedLanguage||savedLanguage);
+languageSelect.addEventListener('change',event=>applyLanguage(event.target.value));
 document.querySelectorAll('.js-kolam').forEach(kolam);
 </script>
 </body>
