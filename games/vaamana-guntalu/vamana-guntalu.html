@@ -1374,5 +1374,17 @@ window.addEventListener('load', ()=>{ if(zoom === 1) resetView(); else refit(); 
 
 newGame();
 </script>
+<script>
+  (() => {
+    const supported = ['en', 'te', 'ta', 'kn'];
+    let language = new URLSearchParams(location.search).get('lang');
+    try { language = language || localStorage.getItem('aata-kalam-language'); } catch (_) {}
+    if (!supported.includes(language)) language = 'en';
+    document.documentElement.lang = language;
+    try { localStorage.setItem('aata-kalam-language', language); } catch (_) {}
+    const labels = { en: 'All games', te: 'అన్ని ఆటలు', ta: 'அனைத்து விளையாட்டுகள்', kn: 'ಎಲ್ಲಾ ಆಟಗಳು' };
+    document.querySelector('.backbtn').textContent = `← ${labels[language]}`;
+  })();
+</script>
 </body>
 </html>

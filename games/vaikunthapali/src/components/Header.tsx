@@ -1,6 +1,7 @@
 import React from 'react';
 import { LotusIcon } from './FolkArtMotifs';
 import { Play, Globe } from 'lucide-react';
+import { shellText } from '../siteLanguage';
 
 type ViewKind = 'home' | 'detail' | 'lang-select' | 'play';
 
@@ -64,14 +65,14 @@ export const Header: React.FC<HeaderProps> = ({
             href="../../../index.html"
             className="flex items-center px-3 py-1.5 bg-[#5C140F] hover:bg-[#7B1E2B] border-[2px] border-[#5C140F] text-[#F6ECD2] text-xs font-bold uppercase tracking-wider transition-colors"
           >
-            Aata Kalam
+            {shellText('allGames')}
           </a>
           <button
             onClick={onNavigateHome}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] text-[#5C140F] text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             <Globe className="w-3.5 h-3.5" />
-            <span>Game Home</span>
+            <span>{shellText('gameHome')}</span>
           </button>
         </div>
       </div>

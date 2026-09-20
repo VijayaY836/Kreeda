@@ -2,6 +2,7 @@ import React from 'react';
 import { ViewTab } from '../types';
 import { ChariotWheelIcon } from './FolkArtMotifs';
 import { Volume2, VolumeX, HelpCircle, Play, Compass, Sparkles } from 'lucide-react';
+import { shellText } from '../siteLanguage';
 
 interface HeaderProps {
   currentTab: ViewTab;
@@ -66,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
             href="../../../index.html"
             className="flex items-center px-2.5 h-8 sm:h-9 bg-[#5C140F] hover:bg-[#7B1E2B] border-2 border-[#5C140F] text-[#F6ECD2] text-[10px] font-bold uppercase tracking-wider"
           >
-            All games
+            {shellText('allGames')}
           </a>
           <button
             onClick={onToggleSound}
