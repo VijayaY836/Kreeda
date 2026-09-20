@@ -62,6 +62,12 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
         </nav>
 
         <div className="flex items-center gap-2">
+          <a
+            href="../../../index.html"
+            className="flex items-center px-2.5 h-8 sm:h-9 bg-[#5C140F] hover:bg-[#7B1E2B] border-2 border-[#5C140F] text-[#F6ECD2] text-[10px] font-bold uppercase tracking-wider"
+          >
+            All games
+          </a>
           <button
             onClick={onToggleSound}
             aria-label={soundEnabled ? 'Mute audio' : 'Unmute audio'}

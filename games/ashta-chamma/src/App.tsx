@@ -24,6 +24,7 @@ function Header({ view, onNavigate }: { view: View; onNavigate: (view: View) => 
           {nav.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => onNavigate(item.id)}>{item.label}</button>)}
         </nav>
         <div className="header-tools">
+          <a className="hub-link" href="../../../index.html">All games</a>
           <button className="icon-button" aria-label="Sound on" title="Sound on"><Volume2 size={17} /></button>
           <button className="icon-button" aria-label="How to play" title="How to play" onClick={() => onNavigate('RULES')}><CircleHelp size={17} /></button>
           <button className="mobile-play" onClick={() => onNavigate('GAME')}><Play size={14} fill="currentColor" /> Play</button>
