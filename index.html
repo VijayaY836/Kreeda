@@ -38,7 +38,8 @@ a{color:inherit}
 .nav-links a{color:var(--ink);font-size:15px;text-decoration:none;text-underline-offset:5px}
 .nav-links a:hover,.nav-links a:focus-visible{color:var(--primary);text-decoration:underline}
 .saree-border{height:14px;background:linear-gradient(to bottom,var(--accent) 0 3px,transparent 3px 5px,var(--accent2) 5px 9px,transparent 9px 11px,var(--accent) 11px 14px)}
-.hero{padding:44px 40px;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hero{position:relative;isolation:isolate;padding:44px 40px;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hero::before{content:"";position:absolute;z-index:-1;inset-block:0;inset-inline:calc(50% - 50vw);background:var(--hero-bg)}
 .hero-copy{max-width:520px;flex:1 1 440px}
 .hero h1{margin:0 0 20px;color:var(--hero-ink);font-family:var(--head);font-size:clamp(34px,5.4vw,56px);font-weight:500;line-height:1.08}
 .hero p{margin:0 0 28px;max-width:510px;font-size:18px}
