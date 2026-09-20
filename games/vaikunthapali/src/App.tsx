@@ -23,7 +23,11 @@ interface ToastState {
 }
 
 export default function App() {
-  const [view, setView] = useState<View>({ k: 'home' })
+  const [view, setView] = useState<View>(() =>
+    new URLSearchParams(window.location.search).get('play') === '1'
+      ? { k: 'play', id: 'vaikunthapali', mode: 'mascot', vpVersion: 'india' }
+      : { k: 'home' },
+  )
   const [toast, setToast] = useState<ToastState | null>(null)
   const [lang, setLang] = useState<Lang>(loadLang)
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined)

@@ -16,7 +16,7 @@ import { sounds } from './utils/soundEngine';
 import { HelpCircle, X } from 'lucide-react';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<ViewTab>('HOME');
+  const [currentTab, setCurrentTab] = useState<ViewTab>(() => new URLSearchParams(window.location.search).get('play') === '1' ? 'GAME' : 'HOME');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [showGlobalHelp, setShowGlobalHelp] = useState<boolean>(false);
   const [gameMode, setGameMode] = useState<GameMode>('PVC');

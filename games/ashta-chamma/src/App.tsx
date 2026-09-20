@@ -63,7 +63,7 @@ function GameView({ onBack }: { onBack: () => void }) {
 }
 
 export default function App() {
-  const [view, setView] = useState<View>('HOME');
+  const [view, setView] = useState<View>(() => new URLSearchParams(window.location.search).get('play') === '1' ? 'GAME' : 'HOME');
   const navigate = (next: View) => { setView(next); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   return <div className="app-shell"><Header view={view} onNavigate={navigate} /><div className="content"><>{view === 'HOME' && <Home onNavigate={navigate} />}{view === 'GAME' && <GameView onBack={() => navigate('HOME')} />}{view !== 'HOME' && view !== 'GAME' && <InfoView view={view} onNavigate={navigate} />}</></div><footer><b>KREEDA</b><span>Traditional games, kept in play.</span><span>Ashta Chamma · offline edition</span></footer></div>;
 }

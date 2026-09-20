@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS: GameSettings = {
 };
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<ViewTab>('HOME');
+  const [currentTab, setCurrentTab] = useState<ViewTab>(() => new URLSearchParams(window.location.search).get('play') === '1' ? 'GAME' : 'HOME');
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGlobalHelp, setShowGlobalHelp] = useState(false);
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
