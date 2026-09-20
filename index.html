@@ -64,6 +64,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
 .games-section{padding:44px 32px 20px}
 .section-title{margin:0 0 6px;color:var(--primary);font-family:var(--head);font-size:clamp(26px,3.6vw,36px);font-weight:400;line-height:1.2}
 .section-intro{margin:0 0 28px;color:var(--muted)}
+.anchor-note{margin:-14px 0 28px;padding-left:14px;border-left:3px solid var(--accent2);color:var(--muted);font-size:14px;scroll-margin-top:18px}
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
 .game-card{min-height:360px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--ink);display:flex;flex-direction:column;gap:8px;text-decoration:none;transition:transform .2s ease,border-color .2s ease}
 .game-card:hover{border-color:var(--primary);transform:translateY(-3px)}
@@ -81,6 +82,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
 .origin-section{padding:36px 32px 48px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
 .origin-copy{flex:1 1 520px}
 .origin-copy p{margin:14px 0 0}
+.origin-subtitle{margin:24px 0 0;color:var(--primary);font-family:var(--head);font-size:22px;font-weight:400;scroll-margin-top:18px}
 .origin-quote{margin:0;padding:26px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-family:var(--head);font-size:22px;line-height:1.45;flex:1 1 300px}
 .site-footer{background:var(--surface);border-top:1px solid var(--border);color:var(--muted);text-align:center;font-size:14px}
 .footer-kolam{--kolam:var(--primary);background:var(--surface)}
@@ -128,8 +130,8 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
       <div class="nav-links">
         <a href="#g" data-i18n="navGames">Games</a>
         <a href="#o" data-i18n="navOrigins">Origins</a>
-        <a href="#g" data-i18n="navHow">How to play</a>
-        <a href="#o" data-i18n="navKolams">Kolams</a>
+        <a href="#how" data-i18n="navHow">How to play</a>
+        <a href="#kolams" data-i18n="navKolams">Kolams</a>
       </div>
       <label class="sr-only" for="language" data-i18n="languageLabel">Language</label>
       <select class="language-select" id="language" aria-label="Choose language" data-i18n-aria="languageAria">
@@ -164,6 +166,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
   <section id="g" class="games-section container" aria-labelledby="games-title">
     <h2 id="games-title" class="section-title" data-i18n="gamesTitle">Pick a game</h2>
     <p class="section-intro" data-i18n="gamesIntro">Each game page has the board, the rules, and where it came from.</p>
+    <p id="how" class="anchor-note" data-i18n="howText">Choose a game, open its home screen, then use its How to Play or Tutorial control before starting a match.</p>
     <div class="game-grid">
       <a class="game-card" href="games/vaikunthapali/site/" aria-label="Open Vaikuntha Pali home" data-i18n-aria="playVaikuntha">
         <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><path opacity=".45" d="M24 8V72M40 8V72M56 8V72M8 24H72M8 40H72M8 56H72"/><path stroke-width="3" d="M14 64C27 56 18 41 34 35S48 17 63 13"/><path d="M49 65L62 35M56 68L69 38M53 56L65 59M56 49L68 52M59 42L71 45"/></g></svg>
@@ -213,6 +216,7 @@ html[lang="te"] :is(h1,h2,h3,.brand,.origin-quote),html[lang="ta"] :is(h1,h2,h3,
     <div class="origin-copy">
       <h2 id="origin-title" class="section-title" data-i18n="originTitle">Drawn at dawn, played all day</h2>
       <p data-i18n="originText1">Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.</p>
+      <h3 id="kolams" class="origin-subtitle" data-i18n="kolamTitle">Kolams and game boards</h3>
       <p data-i18n="originText2">This site keeps both traditions together: the boards, and the patterns around them.</p>
     </div>
     <blockquote class="origin-quote" data-i18n="originQuote">“A board needs nothing but a floor, a few seeds and someone to play with.”</blockquote>
@@ -248,7 +252,7 @@ const translations={
   en:{
     pageTitle:"Aata Kalam — Old Indian Board Games",navLabel:"Main navigation",homeLabel:"Aata Kalam home",navGames:"Games",navOrigins:"Origins",navHow:"How to play",navKolams:"Kolams",languageLabel:"Language",languageAria:"Choose language",
     heroTitle:"The games our grandmothers played",heroText:"Learn the rules, the seeds and shells, and the stories behind India's oldest board games.",startPlaying:"Start playing",readOrigins:"Read the origins",kolamLabel:"Traditional kolam pattern with petals, loops and pulli dots",
-    gamesTitle:"Pick a game",gamesIntro:"Each game page has the board, the rules, and where it came from.",
+    gamesTitle:"Pick a game",gamesIntro:"Each game page has the board, the rules, and where it came from.",howText:"Choose a game, open its home screen, then use its How to Play or Tutorial control before starting a match.",
     playVaikuntha:"Open Vaikuntha Pali home",playAshta:"Open Ashta Chamma home",playPallanguzhi:"Open Pallanguzhi home",playAaduPuli:"Open Aadu Puli Aattam home",playChaturangam:"Open Chaturangam home",playDaadi:"Open Daadi Aata home",
     vaikunthaDescription:"A ladder-and-serpent race. Virtues lift you up, vices pull you down. The ancestor of Snakes and Ladders.",vaikunthaInfo:"Dice · 2+ players",
     ashtaDescription:"A race around a square grid, moved by throws of cowrie shells. Cross-marked squares are safe.",ashtaInfo:"Cowries · 2–4 players",
@@ -256,12 +260,12 @@ const translations={
     aaduPuliDescription:"Goats and tigers. The tigers hunt, the goats try to trap them. A game of patience and traps.",aaduPuliInfo:"Pebbles · 2 players",
     chaturangamDescription:"Command the four divisions of an ancient army in the Indian strategy game that became chess.",chaturangamInfo:"Pieces · 2 players",
     daadiDescription:"Form rows of three, remove your rival's pieces, and control the crossing lines of this traditional mill game.",daadiInfo:"Pieces · 2 players",
-    originTitle:"Drawn at dawn, played all day",originText1:"Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.",originText2:"This site keeps both traditions together: the boards, and the patterns around them.",originQuote:"“A board needs nothing but a floor, a few seeds and someone to play with.”"
+    originTitle:"Drawn at dawn, played all day",originText1:"Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.",kolamTitle:"Kolams and game boards",originText2:"This site keeps both traditions together: the boards, and the patterns around them.",originQuote:"“A board needs nothing but a floor, a few seeds and someone to play with.”"
   },
   te:{
     pageTitle:"ఆట కాలం — భారతీయ పురాతన బోర్డు ఆటలు",navLabel:"ప్రధాన నావిగేషన్",homeLabel:"ఆట కాలం హోమ్",navGames:"ఆటలు",navOrigins:"మూలాలు",navHow:"ఎలా ఆడాలి",navKolams:"ముగ్గులు",languageLabel:"భాష",languageAria:"భాషను ఎంచుకోండి",
     heroTitle:"మా అమ్మమ్మలు ఆడిన ఆటలు",heroText:"భారతదేశపు పురాతన బోర్డు ఆటల నియమాలు, గింజలు, గవ్వలు మరియు వాటి వెనుక కథలను తెలుసుకోండి.",startPlaying:"ఆడటం ప్రారంభించండి",readOrigins:"మూలాలను చదవండి",kolamLabel:"రేకులు, వలయాలు, చుక్కలతో సంప్రదాయ ముగ్గు",
-    gamesTitle:"ఒక ఆటను ఎంచుకోండి",gamesIntro:"ప్రతి ఆట పేజీలో బోర్డు, నియమాలు మరియు దాని మూలస్థానం ఉన్నాయి.",
+    gamesTitle:"ఒక ఆటను ఎంచుకోండి",gamesIntro:"ప్రతి ఆట పేజీలో బోర్డు, నియమాలు మరియు దాని మూలస్థానం ఉన్నాయి.",howText:"ఒక ఆటను ఎంచుకుని, దాని హోమ్ స్క్రీన్ తెరిచి, మ్యాచ్ ప్రారంభించే ముందు ఎలా ఆడాలి లేదా ట్యుటోరియల్‌ను ఉపయోగించండి.",
     playVaikuntha:"వైకుంఠపాళి హోమ్‌ను తెరవండి",playAshta:"అష్టా చెమ్మా హోమ్‌ను తెరవండి",playPallanguzhi:"పల్లాంగుళి హోమ్‌ను తెరవండి",playAaduPuli:"ఆడు పులి ఆట హోమ్‌ను తెరవండి",playChaturangam:"చతురంగం హోమ్‌ను తెరవండి",playDaadi:"దాడి ఆట హోమ్‌ను తెరవండి",
     vaikunthaDescription:"నిచ్చెనలు, పాములతో సాగే పందెం. సద్గుణాలు పైకి తీసుకెళ్తాయి, దుర్గుణాలు కిందకు లాగుతాయి. స్నేక్స్ అండ్ లాడర్స్‌కు పూర్వ రూపం.",vaikunthaInfo:"పాచిక · 2+ ఆటగాళ్లు",
     ashtaDescription:"గవ్వల వేయింపుతో చతురస్ర బోర్డు చుట్టూ సాగే పందెం. గుణింతం గుర్తున్న గడులు సురక్షితం.",ashtaInfo:"గవ్వలు · 2–4 ఆటగాళ్లు",
@@ -269,12 +273,12 @@ const translations={
     aaduPuliDescription:"మేకలు, పులులు. పులులు వేటాడతాయి; మేకలు వాటిని బంధించడానికి ప్రయత్నిస్తాయి. ఓర్పు, ఉచ్చుల ఆట.",aaduPuliInfo:"రాళ్లు · 2 ఆటగాళ్లు",
     chaturangamDescription:"చదరంగంగా మారిన భారతీయ వ్యూహాత్మక ఆటలో పురాతన సైన్యపు నాలుగు విభాగాలను నడిపించండి.",chaturangamInfo:"పావులు · 2 ఆటగాళ్లు",
     daadiDescription:"మూడు పావుల వరుసలు చేసి, ప్రత్యర్థి పావులను తొలగించి, గీతల కూడళ్లను నియంత్రించండి.",daadiInfo:"పావులు · 2 ఆటగాళ్లు",
-    originTitle:"వేకువనే గీసి, రోజంతా ఆడినవి",originText1:"ప్రతి ఉదయం ఇంటి ముంగిట బియ్యపు పిండితో ముగ్గులు వేస్తారు: ముందుగా చుక్కలు, వాటి చుట్టూ ఒకే నిరంతర గీత. ఈ ఆటల్లో చాలావాటిని కూడా ఇలాగే నేలపై లేదా ఆలయ మెట్లపై గీసి, చింత గింజలు, గవ్వలు లేదా రాళ్లతో ఆడేవారు.",originText2:"ఈ సైట్ రెండు సంప్రదాయాలనూ కలిపి ఉంచుతుంది: బోర్డులు మరియు వాటి చుట్టూ ఉన్న ముగ్గులు.",originQuote:"“ఒక ఆట బోర్డుకు నేల, కొన్ని గింజలు, తోడుగా ఆడే ఒకరు చాలు.”"
+    originTitle:"వేకువనే గీసి, రోజంతా ఆడినవి",originText1:"ప్రతి ఉదయం ఇంటి ముంగిట బియ్యపు పిండితో ముగ్గులు వేస్తారు: ముందుగా చుక్కలు, వాటి చుట్టూ ఒకే నిరంతర గీత. ఈ ఆటల్లో చాలావాటిని కూడా ఇలాగే నేలపై లేదా ఆలయ మెట్లపై గీసి, చింత గింజలు, గవ్వలు లేదా రాళ్లతో ఆడేవారు.",kolamTitle:"ముగ్గులు మరియు ఆట బోర్డులు",originText2:"ఈ సైట్ రెండు సంప్రదాయాలనూ కలిపి ఉంచుతుంది: బోర్డులు మరియు వాటి చుట్టూ ఉన్న ముగ్గులు.",originQuote:"“ఒక ఆట బోర్డుకు నేల, కొన్ని గింజలు, తోడుగా ఆడే ఒకరు చాలు.”"
   },
   ta:{
     pageTitle:"ஆட்ட காலம் — பழமையான இந்தியப் பலகை விளையாட்டுகள்",navLabel:"முதன்மை வழிசெலுத்தல்",homeLabel:"ஆட்ட காலம் முகப்பு",navGames:"விளையாட்டுகள்",navOrigins:"தோற்றம்",navHow:"விளையாடுவது எப்படி",navKolams:"கோலங்கள்",languageLabel:"மொழி",languageAria:"மொழியைத் தேர்ந்தெடுக்கவும்",
     heroTitle:"நம் பாட்டிகள் விளையாடிய விளையாட்டுகள்",heroText:"இந்தியாவின் பழமையான பலகை விளையாட்டுகளின் விதிகள், விதைகள், சோழிகள் மற்றும் கதைகளை அறிந்துகொள்ளுங்கள்.",startPlaying:"விளையாடத் தொடங்குங்கள்",readOrigins:"தோற்றத்தைப் படியுங்கள்",kolamLabel:"இதழ்கள், வளையங்கள், புள்ளிகளுடன் பாரம்பரியக் கோலம்",
-    gamesTitle:"ஒரு விளையாட்டைத் தேர்ந்தெடுங்கள்",gamesIntro:"ஒவ்வொரு விளையாட்டுப் பக்கத்திலும் பலகை, விதிகள் மற்றும் அதன் தோற்றம் உள்ளன.",
+    gamesTitle:"ஒரு விளையாட்டைத் தேர்ந்தெடுங்கள்",gamesIntro:"ஒவ்வொரு விளையாட்டுப் பக்கத்திலும் பலகை, விதிகள் மற்றும் அதன் தோற்றம் உள்ளன.",howText:"ஒரு விளையாட்டைத் தேர்ந்தெடுத்து அதன் முகப்பைத் திறந்து, ஆட்டத்தைத் தொடங்குமுன் விளையாடுவது எப்படி அல்லது பயிற்சியைப் பயன்படுத்துங்கள்.",
     playVaikuntha:"வைகுண்டபாளி முகப்பைத் திறக்கவும்",playAshta:"அஷ்ட செம்மா முகப்பைத் திறக்கவும்",playPallanguzhi:"பல்லாங்குழி முகப்பைத் திறக்கவும்",playAaduPuli:"ஆடு புலி ஆட்ட முகப்பைத் திறக்கவும்",playChaturangam:"சதுரங்க முகப்பைத் திறக்கவும்",playDaadi:"தாடி ஆட்ட முகப்பைத் திறக்கவும்",
     vaikunthaDescription:"ஏணிகளும் பாம்புகளும் நிறைந்த ஓட்டம். நற்குணங்கள் மேலே உயர்த்தும்; தீய குணங்கள் கீழே இழுக்கும். பாம்பும் ஏணியும் விளையாட்டின் முன்னோடி.",vaikunthaInfo:"தாயம் · 2+ வீரர்கள்",
     ashtaDescription:"சோழி வீச்சுகளால் சதுரப் பாதையில் நகரும் ஓட்டம். குறுக்குக் குறியிட்ட கட்டங்கள் பாதுகாப்பானவை.",ashtaInfo:"சோழிகள் · 2–4 வீரர்கள்",
@@ -282,12 +286,12 @@ const translations={
     aaduPuliDescription:"ஆடுகளும் புலிகளும். புலிகள் வேட்டையாடும்; ஆடுகள் அவற்றைச் சிக்கவைக்க முயலும். பொறுமையும் பொறிகளும் நிறைந்த ஆட்டம்.",aaduPuliInfo:"கற்கள் · 2 வீரர்கள்",
     chaturangamDescription:"சதுரங்கமாக வளர்ந்த இந்திய உத்தி விளையாட்டில் பண்டைய படையின் நான்கு பிரிவுகளையும் வழிநடத்துங்கள்.",chaturangamInfo:"காய்கள் · 2 வீரர்கள்",
     daadiDescription:"மூன்று காய்களை வரிசைப்படுத்தி, எதிரியின் காய்களை நீக்கி, கோடுகளின் சந்திப்புகளைக் கட்டுப்படுத்துங்கள்.",daadiInfo:"காய்கள் · 2 வீரர்கள்",
-    originTitle:"விடியலில் வரையப்பட்டு, நாளெல்லாம் விளையாடப்பட்டது",originText1:"ஒவ்வொரு காலையிலும் வீட்டு வாசலில் அரிசி மாவால் கோலம் இடப்படுகிறது: முதலில் புள்ளிகள், பின்னர் அவற்றைச் சுற்றி ஒரே தொடர்ச்சியான கோடு. இந்த விளையாட்டுகளும் முற்றத் தரையிலோ கோவில் படியிலோ வரையப்பட்டு, புளியங்கொட்டைகள், சோழிகள் அல்லது கற்களால் விளையாடப்பட்டன.",originText2:"இந்தத் தளம் இரு மரபுகளையும் ஒன்றாகப் பாதுகாக்கிறது: பலகைகளையும் அவற்றைச் சுற்றிய கோலங்களையும்.",originQuote:"“ஒரு விளையாட்டுப் பலகைக்கு ஒரு தரை, சில விதைகள், விளையாட ஒருவர் மட்டுமே போதும்.”"
+    originTitle:"விடியலில் வரையப்பட்டு, நாளெல்லாம் விளையாடப்பட்டது",originText1:"ஒவ்வொரு காலையிலும் வீட்டு வாசலில் அரிசி மாவால் கோலம் இடப்படுகிறது: முதலில் புள்ளிகள், பின்னர் அவற்றைச் சுற்றி ஒரே தொடர்ச்சியான கோடு. இந்த விளையாட்டுகளும் முற்றத் தரையிலோ கோவில் படியிலோ வரையப்பட்டு, புளியங்கொட்டைகள், சோழிகள் அல்லது கற்களால் விளையாடப்பட்டன.",kolamTitle:"கோலங்களும் விளையாட்டுப் பலகைகளும்",originText2:"இந்தத் தளம் இரு மரபுகளையும் ஒன்றாகப் பாதுகாக்கிறது: பலகைகளையும் அவற்றைச் சுற்றிய கோலங்களையும்.",originQuote:"“ஒரு விளையாட்டுப் பலகைக்கு ஒரு தரை, சில விதைகள், விளையாட ஒருவர் மட்டுமே போதும்.”"
   },
   kn:{
     pageTitle:"ಆಟ ಕಾಲಂ — ಹಳೆಯ ಭಾರತೀಯ ಬೋರ್ಡ್ ಆಟಗಳು",navLabel:"ಮುಖ್ಯ ಸಂಚರಣೆ",homeLabel:"ಆಟ ಕಾಲಂ ಮುಖಪುಟ",navGames:"ಆಟಗಳು",navOrigins:"ಮೂಲಗಳು",navHow:"ಆಡುವ ವಿಧಾನ",navKolams:"ರಂಗೋಲಿಗಳು",languageLabel:"ಭಾಷೆ",languageAria:"ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     heroTitle:"ನಮ್ಮ ಅಜ್ಜಿಯರು ಆಡಿದ ಆಟಗಳು",heroText:"ಭಾರತದ ಅತ್ಯಂತ ಹಳೆಯ ಬೋರ್ಡ್ ಆಟಗಳ ನಿಯಮಗಳು, ಬೀಜಗಳು, ಕವಡೆಗಳು ಮತ್ತು ಅವುಗಳ ಹಿಂದಿನ ಕಥೆಗಳನ್ನು ತಿಳಿಯಿರಿ.",startPlaying:"ಆಟ ಆರಂಭಿಸಿ",readOrigins:"ಮೂಲಗಳನ್ನು ಓದಿ",kolamLabel:"ದಳಗಳು, ಕುಣಿಕೆಗಳು ಮತ್ತು ಚುಕ್ಕೆಗಳಿರುವ ಸಾಂಪ್ರದಾಯಿಕ ರಂಗೋಲಿ",
-    gamesTitle:"ಒಂದು ಆಟವನ್ನು ಆರಿಸಿ",gamesIntro:"ಪ್ರತಿ ಆಟದ ಪುಟದಲ್ಲಿ ಬೋರ್ಡ್, ನಿಯಮಗಳು ಮತ್ತು ಅದರ ಮೂಲಸ್ಥಾನವಿದೆ.",
+    gamesTitle:"ಒಂದು ಆಟವನ್ನು ಆರಿಸಿ",gamesIntro:"ಪ್ರತಿ ಆಟದ ಪುಟದಲ್ಲಿ ಬೋರ್ಡ್, ನಿಯಮಗಳು ಮತ್ತು ಅದರ ಮೂಲಸ್ಥಾನವಿದೆ.",howText:"ಒಂದು ಆಟವನ್ನು ಆರಿಸಿ, ಅದರ ಮುಖಪುಟ ತೆರೆಯಿರಿ ಮತ್ತು ಪಂದ್ಯ ಆರಂಭಿಸುವ ಮೊದಲು ಆಡುವ ವಿಧಾನ ಅಥವಾ ಟ್ಯುಟೋರಿಯಲ್ ಬಳಸಿ.",
     playVaikuntha:"ವೈಕುಂಠಪಾಳಿ ಮುಖಪುಟ ತೆರೆಯಿರಿ",playAshta:"ಅಷ್ಟ ಚಮ್ಮಾ ಮುಖಪುಟ ತೆರೆಯಿರಿ",playPallanguzhi:"ಪಲ್ಲಾಂಗುಳಿ ಮುಖಪುಟ ತೆರೆಯಿರಿ",playAaduPuli:"ಆಡು ಹುಲಿ ಆಟದ ಮುಖಪುಟ ತೆರೆಯಿರಿ",playChaturangam:"ಚತುರಂಗ ಮುಖಪುಟ ತೆರೆಯಿರಿ",playDaadi:"ದಾಡಿ ಆಟದ ಮುಖಪುಟ ತೆರೆಯಿರಿ",
     vaikunthaDescription:"ಏಣಿ ಮತ್ತು ಹಾವುಗಳ ಓಟ. ಸದ್ಗುಣಗಳು ಮೇಲಕ್ಕೆತ್ತುತ್ತವೆ, ದುರ್ಗುಣಗಳು ಕೆಳಗೆಳೆಯುತ್ತವೆ. ಹಾವು-ಏಣಿ ಆಟದ ಪೂರ್ವಜ.",vaikunthaInfo:"ದಾಳ · 2+ ಆಟಗಾರರು",
     ashtaDescription:"ಕವಡೆ ಎಸೆತಗಳಿಂದ ಚೌಕದ ಹಾದಿಯಲ್ಲಿ ಸಾಗುವ ಓಟ. ಅಡ್ಡ ಗುರುತಿನ ಮನೆಗಳು ಸುರಕ್ಷಿತ.",ashtaInfo:"ಕವಡೆಗಳು · 2–4 ಆಟಗಾರರು",
@@ -295,7 +299,7 @@ const translations={
     aaduPuliDescription:"ಆಡುಗಳು ಮತ್ತು ಹುಲಿಗಳು. ಹುಲಿಗಳು ಬೇಟೆಯಾಡುತ್ತವೆ; ಆಡುಗಳು ಅವುಗಳನ್ನು ಬಂಧಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತವೆ. ತಾಳ್ಮೆ ಮತ್ತು ಬಲೆಗಳ ಆಟ.",aaduPuliInfo:"ಕಲ್ಲುಗಳು · 2 ಆಟಗಾರರು",
     chaturangamDescription:"ಚದುರಂಗವಾಗಿ ಬೆಳೆದ ಭಾರತೀಯ ತಂತ್ರದ ಆಟದಲ್ಲಿ ಪುರಾತನ ಸೇನೆಯ ನಾಲ್ಕು ವಿಭಾಗಗಳನ್ನು ಮುನ್ನಡೆಸಿ.",chaturangamInfo:"ಕಾಯಿಗಳು · 2 ಆಟಗಾರರು",
     daadiDescription:"ಮೂರು ಕಾಯಿಗಳ ಸಾಲು ಮಾಡಿ, ಎದುರಾಳಿಯ ಕಾಯಿಗಳನ್ನು ತೆಗೆದು, ರೇಖೆಗಳ ಸಂಧಿಗಳನ್ನು ನಿಯಂತ್ರಿಸಿ.",daadiInfo:"ಕಾಯಿಗಳು · 2 ಆಟಗಾರರು",
-    originTitle:"ಬೆಳಗಾಗುವಾಗ ಬರೆದು, ದಿನವಿಡೀ ಆಡಿದವು",originText1:"ಪ್ರತಿ ಬೆಳಿಗ್ಗೆ ಮನೆಯ ಬಾಗಿಲಲ್ಲಿ ಅಕ್ಕಿಹಿಟ್ಟಿನಿಂದ ರಂಗೋಲಿ ಬಿಡಿಸಲಾಗುತ್ತದೆ: ಮೊದಲು ಚುಕ್ಕೆಗಳು, ನಂತರ ಅವುಗಳ ಸುತ್ತ ಒಂದೇ ಮುರಿಯದ ರೇಖೆ. ಈ ಆಟಗಳನ್ನೂ ಅಂಗಳದ ನೆಲ ಅಥವಾ ದೇವಾಲಯದ ಮೆಟ್ಟಿಲಲ್ಲಿ ಬರೆದು, ಹುಣಸೆ ಬೀಜಗಳು, ಕವಡೆಗಳು ಅಥವಾ ಕಲ್ಲುಗಳಿಂದ ಆಡಲಾಗುತ್ತಿತ್ತು.",originText2:"ಈ ತಾಣ ಎರಡೂ ಸಂಪ್ರದಾಯಗಳನ್ನು ಒಟ್ಟಿಗೆ ಉಳಿಸುತ್ತದೆ: ಬೋರ್ಡ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ಸುತ್ತಲಿನ ವಿನ್ಯಾಸಗಳು.",originQuote:"“ಒಂದು ಆಟದ ಬೋರ್ಡಿಗೆ ನೆಲ, ಕೆಲವು ಬೀಜಗಳು ಮತ್ತು ಜೊತೆ ಆಡಲು ಒಬ್ಬರು ಸಾಕು.”"
+    originTitle:"ಬೆಳಗಾಗುವಾಗ ಬರೆದು, ದಿನವಿಡೀ ಆಡಿದವು",originText1:"ಪ್ರತಿ ಬೆಳಿಗ್ಗೆ ಮನೆಯ ಬಾಗಿಲಲ್ಲಿ ಅಕ್ಕಿಹಿಟ್ಟಿನಿಂದ ರಂಗೋಲಿ ಬಿಡಿಸಲಾಗುತ್ತದೆ: ಮೊದಲು ಚುಕ್ಕೆಗಳು, ನಂತರ ಅವುಗಳ ಸುತ್ತ ಒಂದೇ ಮುರಿಯದ ರೇಖೆ. ಈ ಆಟಗಳನ್ನೂ ಅಂಗಳದ ನೆಲ ಅಥವಾ ದೇವಾಲಯದ ಮೆಟ್ಟಿಲಲ್ಲಿ ಬರೆದು, ಹುಣಸೆ ಬೀಜಗಳು, ಕವಡೆಗಳು ಅಥವಾ ಕಲ್ಲುಗಳಿಂದ ಆಡಲಾಗುತ್ತಿತ್ತು.",kolamTitle:"ರಂಗೋಲಿಗಳು ಮತ್ತು ಆಟದ ಬೋರ್ಡ್‌ಗಳು",originText2:"ಈ ತಾಣ ಎರಡೂ ಸಂಪ್ರದಾಯಗಳನ್ನು ಒಟ್ಟಿಗೆ ಉಳಿಸುತ್ತದೆ: ಬೋರ್ಡ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ಸುತ್ತಲಿನ ವಿನ್ಯಾಸಗಳು.",originQuote:"“ಒಂದು ಆಟದ ಬೋರ್ಡಿಗೆ ನೆಲ, ಕೆಲವು ಬೀಜಗಳು ಮತ್ತು ಜೊತೆ ಆಡಲು ಒಬ್ಬರು ಸಾಕು.”"
   }
 };
 
