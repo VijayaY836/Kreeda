@@ -23,11 +23,16 @@ interface ToastState {
 }
 
 export default function App() {
-  const [view, setView] = useState<View>(() =>
-    new URLSearchParams(window.location.search).get('play') === '1'
-      ? { k: 'play', id: 'vaikunthapali', mode: 'mascot', vpVersion: 'india' }
-      : { k: 'home' },
-  )
+  const [view, setView] = useState<View>(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('play') === '1') {
+      return { k: 'play', id: 'vaikunthapali', mode: 'mascot', vpVersion: 'india' }
+    }
+    if (params.get('info') === '1') {
+      return { k: 'detail', id: 'vaikunthapali' }
+    }
+    return { k: 'home' }
+  })
   const [toast, setToast] = useState<ToastState | null>(null)
   const [lang, setLang] = useState<Lang>(() => {
     const requested = new URLSearchParams(window.location.search).get('lang') as Lang | null
