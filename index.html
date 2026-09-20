@@ -1,16 +1,222 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Play six traditional Indian board games and discover the stories behind them." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;800;900&family=Manrope:wght@500;600;700;800&family=Tiro+Telugu&display=swap" rel="stylesheet" />
-    <title>KREEDA — Six ancient Indian games</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aata Kalam showcases old Indian board games, their rules and their origins.">
+<title>Aata Kalam — Old Indian Board Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Marcellus&family=Noto+Sans+Kannada&family=Noto+Sans+Tamil&family=Noto+Sans+Telugu&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3EAD3;
+  --surface:#FBF5E4;
+  --ink:#33121A;
+  --muted:#6E4B4F;
+  --primary:#7B1E2B;
+  --on-primary:#FBF1DC;
+  --accent:#D4A017;
+  --accent2:#1F5A45;
+  --hero-bg:#7B1E2B;
+  --hero-ink:#FBF1DC;
+  --kolam:#E9BE4A;
+  --border:#D9C79B;
+  --head:'Marcellus','Georgia',serif;
+  --body:'Lora','Georgia',serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;font-family:var(--body)}
+a{color:inherit}
+.container{width:min(100%,1100px);margin-inline:auto}
+.site-header{background:var(--surface);border-bottom:1px solid var(--border)}
+.nav{min-height:72px;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--primary);font-family:var(--head);font-size:24px;line-height:1;text-decoration:none;white-space:nowrap}
+.nav-kolam{width:30px;height:30px;color:var(--primary);flex:0 0 auto}
+.nav-links{display:flex;align-items:center;justify-content:flex-end;gap:24px;flex-wrap:wrap}
+.nav-links a{color:var(--ink);font-size:15px;text-decoration:none;text-underline-offset:5px}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--primary);text-decoration:underline}
+.saree-border{height:14px;background:linear-gradient(to bottom,var(--accent) 0 3px,transparent 3px 5px,var(--accent2) 5px 9px,transparent 9px 11px,var(--accent) 11px 14px)}
+.hero{padding:44px 40px;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hero-copy{max-width:520px;flex:1 1 440px}
+.hero h1{margin:0 0 20px;color:var(--hero-ink);font-family:var(--head);font-size:clamp(34px,5.4vw,56px);font-weight:500;line-height:1.08}
+.hero p{margin:0 0 28px;max-width:510px;font-size:18px}
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px 0}
+.button{display:inline-block;padding:12px 26px;border:1.5px solid transparent;border-radius:6px;font-weight:600;text-decoration:none;text-align:center}
+.button-primary{background:var(--accent);color:#1b1410}
+.button-ghost{margin-left:10px;border-color:var(--hero-ink);background:transparent;color:var(--hero-ink)}
+.button:hover{text-decoration:underline;text-underline-offset:4px}
+.button:focus-visible,.nav a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.hero-art{width:min(340px,100%);flex:0 1 340px;color:var(--kolam)}
+.hero-art svg{display:block;width:100%;height:auto}
+.kolam-strip{height:28px;overflow:hidden;background:var(--primary)}
+.kolam-strip svg{display:block;width:100%;height:28px}
+.games-section{padding:44px 32px 20px}
+.section-title{margin:0 0 6px;color:var(--primary);font-family:var(--head);font-size:clamp(26px,3.6vw,36px);font-weight:400;line-height:1.2}
+.section-intro{margin:0 0 28px;color:var(--muted)}
+.game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.game-card{min-height:360px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;gap:8px;transition:transform .2s ease,border-color .2s ease}
+.game-card:hover{border-color:var(--primary);transform:translateY(-3px)}
+.game-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-color:var(--primary)}
+.board-icon{width:76px;height:76px;color:var(--primary);flex:0 0 auto}
+.game-card:nth-child(even) .board-icon{color:var(--accent)}
+.game-card:nth-child(3n) .board-icon{color:var(--accent2)}
+.game-card h3{margin:3px 0 0;color:var(--primary);font-family:var(--head);font-size:22px;font-weight:400;line-height:1.25}
+.native-name{margin:0;color:var(--muted);font-size:14px}
+.telugu{font-family:'Noto Sans Telugu',sans-serif}
+.tamil{font-family:'Noto Sans Tamil',sans-serif}
+.kannada{font-family:'Noto Sans Kannada',sans-serif}
+.game-description{margin:0;font-size:15px}
+.play-info{margin:auto 0 0;padding-top:12px;border-top:1px dashed var(--border);color:var(--muted);font-size:13px}
+.origin-section{padding:36px 32px 48px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.origin-copy{flex:1 1 520px}
+.origin-copy p{margin:14px 0 0}
+.origin-quote{margin:0;padding:26px;border-radius:12px;background:var(--primary);color:var(--on-primary);font-family:var(--head);font-size:22px;line-height:1.45;flex:1 1 300px}
+.site-footer{background:var(--surface);border-top:1px solid var(--border);color:var(--muted);text-align:center;font-size:14px}
+.footer-kolam{--kolam:var(--primary);background:var(--surface)}
+.footer-name{margin:0;padding:20px 32px 24px}
+.pattern-defs{position:absolute;width:0;height:0;overflow:hidden}
+@media(max-width:760px){
+  .nav{align-items:flex-start;flex-direction:column}
+  .nav-links{justify-content:flex-start;gap:12px 20px}
+  .hero{padding:40px 28px}
+  .hero-copy,.hero-art{flex-basis:100%}
+  .hero-art{width:min(300px,85vw);margin-inline:auto}
+}
+@media(max-width:430px){
+  .nav,.games-section,.origin-section{padding-left:20px;padding-right:20px}
+  .hero{padding:36px 20px}
+  .hero-actions{align-items:stretch;flex-direction:column}
+  .button{width:100%}
+  .button-ghost{margin-left:0}
+  .game-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .game-card{transition:none}
+  .game-card:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<svg class="pattern-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="kp" width="44" height="28" patternUnits="userSpaceOnUse">
+      <path d="M22 4 C30 8 34 10 38 14 C34 18 30 20 22 24 C14 20 10 18 6 14 C10 10 14 8 22 4Z" style="stroke:var(--kolam)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <path d="M0 14 C4 10 6 10 6 14 C6 18 4 18 0 14 M44 14 C40 10 38 10 38 14 C38 18 40 18 44 14" style="stroke:var(--kolam)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <circle cx="22" cy="14" r="2.2" style="fill:var(--kolam)"/>
+    </pattern>
+  </defs>
+</svg>
+<header class="site-header">
+  <nav class="nav container" aria-label="Main navigation">
+    <a class="brand" href="#top" aria-label="Aata Kalam home">
+      <svg class="nav-kolam js-kolam" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+      <span>Aata Kalam</span>
+    </a>
+    <div class="nav-links">
+      <a href="#g">Games</a>
+      <a href="#o">Origins</a>
+      <a href="#g">How to play</a>
+      <a href="#o">Kolams</a>
+    </div>
+  </nav>
+</header>
+<div class="saree-border container" aria-hidden="true"></div>
+<main id="top" class="container">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <h1 id="hero-title">The games our grandmothers played</h1>
+      <p>Learn the rules, the seeds and shells, and the stories behind India's oldest board games.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#g">Start playing</a>
+        <a class="button button-ghost" href="#o">Read the origins</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <svg class="js-kolam" viewBox="-100 -100 200 200" role="img" aria-label="Traditional kolam pattern with petals, loops and pulli dots"></svg>
+    </div>
+  </section>
+  <div class="kolam-strip" aria-hidden="true">
+    <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kp)"/></svg>
+  </div>
+  <section id="g" class="games-section" aria-labelledby="games-title">
+    <h2 id="games-title" class="section-title">Pick a game</h2>
+    <p class="section-intro">Each game page has the board, the rules, and where it came from.</p>
+    <div class="game-grid">
+      <article class="game-card" tabindex="0">
+        <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><path opacity=".45" d="M24 8V72M40 8V72M56 8V72M8 24H72M8 40H72M8 56H72"/><path stroke-width="3" d="M14 64C27 56 18 41 34 35S48 17 63 13"/><path d="M49 65L62 35M56 68L69 38M53 56L65 59M56 49L68 52M59 42L71 45"/></g></svg>
+        <h3>Vaikuntha Pali</h3>
+        <p class="native-name telugu" lang="te">వైకుంఠపాళి</p>
+        <p class="game-description">A ladder-and-serpent race. Virtues lift you up, vices pull you down. The ancestor of Snakes and Ladders.</p>
+        <p class="play-info">Dice · 2+ players</p>
+      </article>
+      <article class="game-card" tabindex="0">
+        <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="64" height="64"/><rect x="24" y="24" width="32" height="32"/><path d="M24 8V72M56 8V72M8 24H72M8 56H72M30 30L50 50M50 30L30 50"/><circle cx="40" cy="40" r="2.5" fill="currentColor" stroke="none"/></g></svg>
+        <h3>Ashta Chamma</h3>
+        <p class="native-name telugu" lang="te">అష్టా చెమ్మా</p>
+        <p class="game-description">A race around a square grid, moved by throws of cowrie shells. Cross-marked squares are safe.</p>
+        <p class="play-info">Cowries · 2–4 players</p>
+      </article>
+      <article class="game-card" tabindex="0">
+        <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="15" width="70" height="50" rx="12"/><circle cx="13" cy="30" r="5"/><circle cx="24" cy="30" r="5"/><circle cx="35" cy="30" r="5"/><circle cx="46" cy="30" r="5"/><circle cx="57" cy="30" r="5"/><circle cx="68" cy="30" r="5"/><circle cx="13" cy="50" r="5"/><circle cx="24" cy="50" r="5"/><circle cx="35" cy="50" r="5"/><circle cx="46" cy="50" r="5"/><circle cx="57" cy="50" r="5"/><circle cx="68" cy="50" r="5"/></g></svg>
+        <h3>Pallanguzhi</h3>
+        <p class="native-name tamil" lang="ta">பல்லாங்குழி</p>
+        <p class="game-description">Sow tamarind seeds or cowries around two rows of pits and capture the most. India's own mancala.</p>
+        <p class="play-info">Seeds · 2 players</p>
+      </article>
+      <article class="game-card" tabindex="0">
+        <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M40 7L73 70H7Z M40 7V70M23 39H57M15 55H65"/><circle cx="40" cy="7" r="3" fill="currentColor" stroke="none"/><circle cx="23" cy="39" r="3" fill="currentColor" stroke="none"/><circle cx="57" cy="39" r="3" fill="currentColor" stroke="none"/></g></svg>
+        <h3>Aadu Puli Aattam</h3>
+        <p class="native-name tamil" lang="ta">ஆடு புலி ஆட்டம்</p>
+        <p class="game-description">Goats and tigers. The tigers hunt, the goats try to trap them. A game of patience and traps.</p>
+        <p class="play-info">Pebbles · 2 players</p>
+      </article>
+      <article class="game-card" tabindex="0">
+        <svg class="board-icon" viewBox="0 0 80 80" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 8H52V28H72V52H52V72H28V52H8V28H28Z"/><rect x="28" y="28" width="24" height="24"/><path d="M30 30L50 50M50 30L30 50M36 8V28M44 8V28M36 52V72M44 52V72M8 36H28M8 44H28M52 36H72M52 44H72"/></g></svg>
+        <h3>Chowka Bhara</h3>
+        <p class="native-name kannada" lang="kn">ಚೌಕಾಬಾರಾ</p>
+        <p class="game-description">A cross-shaped race game played with cowries. A close cousin of Pachisi and Ludo.</p>
+        <p class="play-info">Cowries · 2–4 players</p>
+      </article>
+    </div>
+  </section>
+  <section id="o" class="origin-section" aria-labelledby="origin-title">
+    <div class="origin-copy">
+      <h2 id="origin-title" class="section-title">Drawn at dawn, played all day</h2>
+      <p>Kolams are drawn with rice flour at the doorstep every morning: dots first, then one unbroken line looping around them. Many of these games were drawn the same way, scratched into a courtyard floor or a temple step, then played with tamarind seeds, cowries or pebbles.</p>
+      <p>This site keeps both traditions together: the boards, and the patterns around them.</p>
+    </div>
+    <blockquote class="origin-quote">“A board needs nothing but a floor, a few seeds and someone to play with.”</blockquote>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="footer-kolam kolam-strip" aria-hidden="true">
+    <svg width="100%" height="28"><rect width="100%" height="28" fill="url(#kp)"/></svg>
+  </div>
+  <p class="footer-name">Aata Kalam</p>
+</footer>
+<script>
+function kolam(svg){
+  const P=(d,w,r)=>`<path d="${d}" transform="rotate(${r})" stroke-width="${w}"/>`;
+  let g='<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">';
+  for(let k=0;k<8;k++){
+    g+=P("M0 0C16 -22 16 -54 0 -80C-16 -54 -16 -22 0 0Z",2.2,k*45);          // 8 large petals
+    g+=P("M0 -8C9 -18 9 -34 0 -48C-9 -34 -9 -18 0 -8Z",1.6,22.5+k*45);        // 8 small petals between
+  }
+  g+='<circle r="86" stroke-width="1.4"/><circle r="94" stroke-width="1" opacity=".6"/>';
+  for(let k=0;k<8;k++){ const a=(22.5+k*45)*Math.PI/180;
+    g+=`<circle cx="${(62*Math.sin(a)).toFixed(1)}" cy="${(-62*Math.cos(a)).toFixed(1)}" r="9" stroke-width="1.6"/>`; }   // 8 small loops
+  g+='</g><g fill="currentColor">';
+  for(let k=0;k<16;k++){ const a=k*22.5*Math.PI/180;
+    g+=`<circle cx="${(90*Math.sin(a)).toFixed(1)}" cy="${(-90*Math.cos(a)).toFixed(1)}" r="2.2"/>`; }                   // 16 pulli dots on the outer ring
+  for(let k=0;k<8;k++){ const a=(22.5+k*45)*Math.PI/180;
+    g+=`<circle cx="${(62*Math.sin(a)).toFixed(1)}" cy="${(-62*Math.cos(a)).toFixed(1)}" r="1.8"/>`; }                   // dot inside each small loop
+  g+='<circle r="4"/></g>';
+  svg.innerHTML=g;
+}
+document.querySelectorAll('.js-kolam').forEach(kolam);
+</script>
+</body>
 </html>
