@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { UserProfile, FocusTag, Contraindication, FitnessLevel, DailyTimeMinutes } from '../types';
+import { UserProfile, FocusTag, Contraindication, FitnessLevel, MeditationMinutes } from '../types';
 import { FolkArtFrame } from './FolkArtFrame';
 import { ArrowLeft, ArrowRight, AlertTriangle, Check } from 'lucide-react';
 
-const FOCUS_OPTIONS: { tag: FocusTag; label: string }[] = [
-  { tag: 'back_stiffness', label: 'Back stiffness' },
-  { tag: 'desk_posture', label: 'Desk posture' },
-  { tag: 'flexibility', label: 'Flexibility' },
-  { tag: 'strength', label: 'Strength' },
-  { tag: 'stamina', label: 'Stamina' },
-  { tag: 'balance', label: 'Balance' },
-  { tag: 'stress', label: 'Stress' },
-  { tag: 'sleep', label: 'Sleep' },
-  { tag: 'digestion', label: 'Digestion' },
-  { tag: 'focus', label: 'Focus' },
-  { tag: 'mood', label: 'Mood' },
-];
+// Record<FocusTag, string> makes this exhaustive at compile time — adding a
+// new FocusTag without a label here is a type error, so "Goals" can never
+// drift from the actual focus_tags the plan engine matches against.
+const FOCUS_LABELS: Record<FocusTag, string> = {
+  back_stiffness: 'Back stiffness',
+  desk_posture: 'Desk posture',
+  flexibility: 'Flexibility',
+  strength: 'Strength',
+  stamina: 'Stamina',
+  balance: 'Balance',
+  stress: 'Stress',
+  sleep: 'Sleep',
+  digestion: 'Digestion',
+  focus: 'Focus',
+  mood: 'Mood',
+};
+const FOCUS_OPTIONS = (Object.keys(FOCUS_LABELS) as FocusTag[]).map(tag => ({ tag, label: FOCUS_LABELS[tag] }));
 
 const CONTRA_OPTIONS: { tag: Contraindication; label: string }[] = [
   { tag: 'high_bp', label: 'High blood pressure' },
@@ -31,7 +35,9 @@ const CONTRA_OPTIONS: { tag: Contraindication; label: string }[] = [
   { tag: 'eye_condition', label: 'Eye condition' },
 ];
 
-const TIME_OPTIONS: DailyTimeMinutes[] = [10, 15, 20, 30, 45];
+const YOGA_COUNT_OPTIONS = [3, 4, 5, 6, 8, 10];
+const VYAYAM_COUNT_OPTIONS = [2, 3, 4, 5, 6];
+const MEDITATION_OPTIONS: MeditationMinutes[] = [3, 5, 10, 20];
 
 const DEFAULT_DRAFT: UserProfile = {
   focusAreas: [],
@@ -39,7 +45,9 @@ const DEFAULT_DRAFT: UserProfile = {
   heightCm: null,
   weightKg: null,
   fitnessLevel: 'beginner',
-  dailyTimeMinutes: 20,
+  yogaAsanaCount: 6,
+  vyayamItemCount: 3,
+  meditationMinutes: 5,
   daysPerWeek: 4,
   healthChecklist: [],
   acknowledgedDoctorNotice: false,
@@ -59,7 +67,7 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<UserProfile>(initialProfile ?? DEFAULT_DRAFT);
 
-  const steps = ['Focus', 'Body Data', 'Health Checklist', 'Time', 'Review'];
+  const steps = ['Focus', 'Body Data', 'Health Checklist', 'Session Size', 'Review'];
   const hasHealthConcerns = draft.healthChecklist.length > 0;
 
   const canAdvance = () => {
@@ -219,17 +227,49 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
         {step === 3 && (
           <div className="space-y-5">
             <div>
-              <p className="text-xs font-bold text-[#5C140F] mb-1.5">Daily time available</p>
+              <p className="text-xs font-bold text-[#5C140F] mb-1.5">Yoga asanas per session</p>
               <div className="flex gap-2 flex-wrap">
-                {TIME_OPTIONS.map(t => (
+                {YOGA_COUNT_OPTIONS.map(n => (
                   <button
-                    key={t}
-                    onClick={() => setDraft(d => ({ ...d, dailyTimeMinutes: t }))}
+                    key={n}
+                    onClick={() => setDraft(d => ({ ...d, yogaAsanaCount: n }))}
                     className={`px-4 py-2 text-xs font-bold border-2 border-[#5C140F] cursor-pointer ${
-                      draft.dailyTimeMinutes === t ? 'bg-[#D8401F] text-white' : 'bg-white text-[#5C140F] hover:bg-[#F6ECD2]'
+                      draft.yogaAsanaCount === n ? 'bg-[#D8401F] text-white' : 'bg-white text-[#5C140F] hover:bg-[#F6ECD2]'
                     }`}
                   >
-                    {t} min
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#5C140F] mb-1.5">Vyayam items per session</p>
+              <div className="flex gap-2 flex-wrap">
+                {VYAYAM_COUNT_OPTIONS.map(n => (
+                  <button
+                    key={n}
+                    onClick={() => setDraft(d => ({ ...d, vyayamItemCount: n }))}
+                    className={`px-4 py-2 text-xs font-bold border-2 border-[#5C140F] cursor-pointer ${
+                      draft.vyayamItemCount === n ? 'bg-[#D8401F] text-white' : 'bg-white text-[#5C140F] hover:bg-[#F6ECD2]'
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#5C140F] mb-1.5">Meditation duration</p>
+              <div className="flex gap-2 flex-wrap">
+                {MEDITATION_OPTIONS.map(m => (
+                  <button
+                    key={m}
+                    onClick={() => setDraft(d => ({ ...d, meditationMinutes: m }))}
+                    className={`px-4 py-2 text-xs font-bold border-2 border-[#5C140F] cursor-pointer ${
+                      draft.meditationMinutes === m ? 'bg-[#D8401F] text-white' : 'bg-white text-[#5C140F] hover:bg-[#F6ECD2]'
+                    }`}
+                  >
+                    {m} min
                   </button>
                 ))}
               </div>
@@ -253,7 +293,9 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
             <ReviewRow label="Age / Height / Weight" value={`${draft.age ?? '—'} / ${draft.heightCm ?? '—'} cm / ${draft.weightKg ?? '—'} kg`} />
             <ReviewRow label="Fitness level" value={draft.fitnessLevel} />
             <ReviewRow label="Health checklist" value={draft.healthChecklist.length ? draft.healthChecklist.join(', ') : 'None'} />
-            <ReviewRow label="Daily time" value={`${draft.dailyTimeMinutes} minutes`} />
+            <ReviewRow label="Yoga asanas / session" value={String(draft.yogaAsanaCount)} />
+            <ReviewRow label="Vyayam items / session" value={String(draft.vyayamItemCount)} />
+            <ReviewRow label="Meditation duration" value={`${draft.meditationMinutes} minutes`} />
             <ReviewRow label="Days per week" value={String(draft.daysPerWeek)} />
             <p className="text-[11px] text-[#6B4E3D] pt-2 border-t border-dashed border-[#5C140F]">
               This plan is generated locally by a rule-based engine — no data leaves your device.

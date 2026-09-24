@@ -2,8 +2,10 @@ import { Practice, Section } from '../types';
 import { YOGA_PRACTICES } from './yogaPractices';
 import { VYAYAM_PRACTICES } from './vyayamPractices';
 import { DHYANA_PRACTICES } from './dhyanaPractices';
+import { getImage, getDemoGif } from './images';
 
-export const ALL_PRACTICES: Practice[] = [...YOGA_PRACTICES, ...VYAYAM_PRACTICES, ...DHYANA_PRACTICES];
+export const ALL_PRACTICES: Practice[] = [...YOGA_PRACTICES, ...VYAYAM_PRACTICES, ...DHYANA_PRACTICES]
+  .map(p => ({ ...p, image: getImage(p.id), demoGif: getDemoGif(p.id) }));
 
 const BY_ID: Record<string, Practice> = Object.fromEntries(ALL_PRACTICES.map(p => [p.id, p]));
 

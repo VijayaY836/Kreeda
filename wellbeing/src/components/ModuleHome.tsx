@@ -111,16 +111,22 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
             <div
               key={section}
               onClick={() => onOpenSection(section)}
-              className={`relative cursor-pointer border-[3px] border-[#5C140F] p-5 text-[#EFDFB8] ${meta.tile} transition-transform hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[5px_5px_0_#5C140F]`}
+              className={`relative cursor-pointer border-[3px] border-[#5C140F] p-5 text-[#EFDFB8] overflow-hidden ${meta.tile} transition-transform hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[5px_5px_0_#5C140F]`}
             >
-              <span className="absolute top-3 right-3 font-fraunces font-black text-xs opacity-60">{meta.letter}</span>
-              <div className="w-13 h-13 flex items-center justify-center mb-3">{meta.icon}</div>
-              <h3 className="font-fraunces text-lg font-extrabold mb-0.5">{content.title}</h3>
-              <p className="font-telugu text-xs opacity-85 mb-2">{content.nativeName}</p>
-              <p className="text-[12.5px] leading-snug opacity-90 mb-4">{content.tagline}</p>
-              <span className="inline-flex items-center gap-1 text-xs font-bold">
-                Explore <ArrowRight className="w-3 h-3" />
-              </span>
+              {content.heroImage && (
+                <img src={content.heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              )}
+              <div className={`absolute inset-0 ${meta.tile}`} style={{ opacity: content.heroImage ? 0.78 : 1 }} />
+              <div className="relative">
+                <span className="absolute -top-1 -right-1 font-fraunces font-black text-xs opacity-60">{meta.letter}</span>
+                <div className="w-13 h-13 flex items-center justify-center mb-3 bg-[#EFDFB8]/15 border border-[#EFDFB8]/40">{meta.icon}</div>
+                <h3 className="font-fraunces text-lg font-extrabold mb-0.5">{content.title}</h3>
+                <p className="font-telugu text-xs opacity-85 mb-2">{content.nativeName}</p>
+                <p className="text-[12.5px] leading-snug opacity-90 mb-4">{content.tagline}</p>
+                <span className="inline-flex items-center gap-1 text-xs font-bold">
+                  Explore <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
             </div>
           );
         })}

@@ -38,10 +38,16 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
         <ArrowLeft className="w-4 h-4" /> Back to Physical Wellbeing
       </button>
 
-      <div className="mb-5 border-[3px] border-[#5C140F] p-5 text-[#EFDFB8]" style={{ backgroundColor: content.color }}>
-        <h1 className="font-fraunces text-2xl sm:text-3xl font-extrabold">{content.title}</h1>
-        <p className="font-telugu text-sm opacity-90">{content.nativeName}</p>
-        <p className="text-sm opacity-90 mt-1.5 max-w-xl">{content.tagline}</p>
+      <div className="relative mb-5 border-[3px] border-[#5C140F] overflow-hidden">
+        {content.heroImage && (
+          <img src={content.heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute inset-0" style={{ backgroundColor: content.color, opacity: content.heroImage ? 0.72 : 1 }} />
+        <div className="relative p-5 text-[#EFDFB8]">
+          <h1 className="font-fraunces text-2xl sm:text-3xl font-extrabold">{content.title}</h1>
+          <p className="font-telugu text-sm opacity-90">{content.nativeName}</p>
+          <p className="text-sm opacity-90 mt-1.5 max-w-xl">{content.tagline}</p>
+        </div>
       </div>
 
       <div className="flex gap-1.5 mb-6 border-b-[3px] border-[#5C140F] overflow-x-auto">
@@ -61,11 +67,16 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
       {tab === 'history' && (
         <div className="space-y-4 max-w-2xl">
           {content.timeline.map((ev, i) => (
-            <div key={i} className="flex gap-3">
+            <div key={ev.id ?? i} className="flex gap-3">
               <div className="w-24 shrink-0 text-right text-[11px] font-extrabold text-[#D8401F] pt-0.5">{ev.era}</div>
-              <div className="flex-1 border-l-2 border-[#5C140F]/40 pl-4 pb-4">
-                <h4 className="font-fraunces font-bold text-[#5C140F]">{ev.title}</h4>
-                <p className="text-[13.5px] text-[#2B1B12] leading-relaxed">{ev.text}</p>
+              <div className="flex-1 border-l-2 border-[#5C140F]/40 pl-4 pb-4 flex gap-3">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-fraunces font-bold text-[#5C140F]">{ev.title}</h4>
+                  <p className="text-[13.5px] text-[#2B1B12] leading-relaxed">{ev.text}</p>
+                </div>
+                {ev.image && (
+                  <img src={ev.image} alt="" className="w-16 h-16 shrink-0 object-cover border-2 border-[#5C140F]" />
+                )}
               </div>
             </div>
           ))}

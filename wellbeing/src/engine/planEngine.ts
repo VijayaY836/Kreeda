@@ -117,7 +117,7 @@ export function applyFeedback(progress: PracticeProgress, rating: FeedbackRating
   };
 }
 
-// ---------------- duration estimation, for filling the time budget ----------------
+// ---------------- duration estimation, for the session player's timer ----------------
 
 function estimatePracticeSeconds(practice: Practice, intensity: { durationSec: number | null; reps: number | null; rounds: number | null }): number {
   if (intensity.durationSec != null) return intensity.durationSec;
@@ -128,78 +128,66 @@ function estimatePracticeSeconds(practice: Practice, intensity: { durationSec: n
   return 30;
 }
 
-function toSlotItem(practice: Practice, profile: UserProfile, slot: PlanSlotItem['slot']): PlanSlotItem {
+function toSlotItem(practice: Practice, profile: UserProfile, slot: PlanSlotItem['slot'], forcedDurationSec?: number): PlanSlotItem {
   const intensity = startingIntensity(practice, profile);
   return {
     practiceId: practice.id,
     slot,
-    durationSec: estimatePracticeSeconds(practice, intensity),
+    durationSec: forcedDurationSec ?? estimatePracticeSeconds(practice, intensity),
     reps: intensity.reps,
     rounds: intensity.rounds,
   };
+}
+
+// Spreads a ranked pool across `groups` sessions, `perGroup` items each,
+// cycling through the pool before ever repeating an item — so as long as
+// groups * perGroup >= pool.length, every matched practice appears in the
+// week at least once instead of the same top-N being cloned onto every day.
+function distributeRoundRobin<T>(pool: T[], groups: number, perGroup: number): T[][] {
+  const result: T[][] = Array.from({ length: groups }, () => []);
+  if (pool.length === 0 || groups === 0 || perGroup <= 0) return result;
+  let idx = 0;
+  for (let g = 0; g < groups; g++) {
+    for (let s = 0; s < perGroup; s++) {
+      result[g].push(pool[idx % pool.length]);
+      idx++;
+    }
+  }
+  return result;
 }
 
 // ---------------- STEP 4/5 — TEMPLATE + SCALE (session template, spec §7.3) ----------------
 
 function buildSession(
   emphasis: 'yoga' | 'vyayam',
-  budgetSec: number,
+  mainPractices: Practice[],
   profile: UserProfile,
   rankedYoga: Practice[],
   rankedVyayam: Practice[],
-  rankedDhyana: Practice[],
 ): PlanSlotItem[] {
   const items: PlanSlotItem[] = [];
-  const warmupBudget = budgetSec * 0.15;
-  const mainBudget = budgetSec * 0.625;
-  const cooldownBudget = budgetSec * 0.225;
 
   // Warm-up: CYP loosening for a yoga day, Vyayam mobility drills for a vyayam day.
   const warmupPool = emphasis === 'yoga'
     ? rankedYoga.filter(p => p.category === 'loosening')
     : rankedVyayam.filter(p => p.category === 'mobility');
-  const capToWarmupBudget = (item: PlanSlotItem): PlanSlotItem => (
-    { ...item, durationSec: Math.min(item.durationSec, Math.round(warmupBudget)) }
-  );
   if (warmupPool.length > 0) {
-    items.push(capToWarmupBudget(toSlotItem(warmupPool[0], profile, 'warmup')));
+    items.push(toSlotItem(warmupPool[0], profile, 'warmup'));
   } else {
     const fallback = rankedYoga.find(p => p.category === 'loosening');
-    if (fallback) items.push(capToWarmupBudget(toSlotItem(fallback, profile, 'warmup')));
+    if (fallback) items.push(toSlotItem(fallback, profile, 'warmup'));
   }
 
-  // Main block: highest-scoring practices from the emphasised section, filling the time budget.
-  const mainPool = (emphasis === 'yoga'
-    ? rankedYoga.filter(p => p.category === 'asana' || p.category === 'surya_namaskar')
-    : rankedVyayam.filter(p => ['dand', 'baithak', 'sapate'].includes(p.category))
-  );
-  // Cap the count too — filling the budget with many very short holds (e.g.
-  // a dozen 15s asanas) technically fits the time but makes for a choppy,
-  // unrealistic session. Real classes hold fewer poses for longer.
-  const MAX_MAIN_ITEMS = 8;
-  let used = 0;
-  for (const practice of mainPool) {
-    if (used >= mainBudget || items.filter(i => i.slot === 'main').length >= MAX_MAIN_ITEMS) break;
-    const item = toSlotItem(practice, profile, 'main');
-    items.push(item);
-    used += item.durationSec;
-  }
-  if (items.filter(i => i.slot === 'main').length === 0 && mainPool.length > 0) {
-    items.push(toSlotItem(mainPool[0], profile, 'main'));
+  // Main block: exactly the practices this day was assigned by the
+  // round-robin distribution over every focus-tag-matched practice.
+  for (const practice of mainPractices) {
+    items.push(toSlotItem(practice, profile, 'main'));
   }
 
   // Cool-down: pranayama/Shavasana + a Dhyana practice — every session ends with Dhyana (spec §7.4).
-  const stressGoals = profile.focusAreas.some(f => ['stress', 'sleep', 'focus'].includes(f));
   const cooldownYoga = rankedYoga.find(p => p.category === 'pranayama') ?? getPractice('shavasana');
   if (cooldownYoga && !profile.healthChecklist.some(c => cooldownYoga.contraindications.includes(c))) {
     items.push(toSlotItem(cooldownYoga, profile, 'cooldown'));
-  }
-  const dhyanaPick = rankedDhyana[0] ?? getPractice('anapana');
-  if (dhyanaPick) {
-    const item = toSlotItem(dhyanaPick, profile, 'cooldown');
-    // Stress/sleep/focus goals increase the Dhyana share of cool-down (spec §7.4).
-    if (stressGoals) item.durationSec = Math.max(item.durationSec, Math.round(cooldownBudget * 0.6));
-    items.push(item);
   }
 
   return items;
@@ -258,29 +246,55 @@ export function buildWeeklyPlan(profile: UserProfile, totalSessionsCompleted: nu
   const rankedVyayam = rankPractices(vyayamPool, profile, rng);
   const rankedDhyana = rankPractices(dhyanaPool, profile, rng);
 
-  const vyayamAvailable = rankedVyayam.some(p => ['dand', 'baithak', 'sapate'].includes(p.category));
+  // Main-block pools: every gated practice matching at least one selected
+  // focus tag (goal) — falls back to the whole category if no goal matches
+  // anything (or none were picked), so the plan never comes back empty.
+  const matchPool = (ranked: Practice[], categories: string[]) => {
+    const inCategory = ranked.filter(p => categories.includes(p.category));
+    if (profile.focusAreas.length === 0) return inCategory;
+    const matched = inCategory.filter(p => scorePractice(p, profile) > 0);
+    return matched.length > 0 ? matched : inCategory;
+  };
+  const yogaMainPool = matchPool(rankedYoga, ['asana', 'surya_namaskar']);
+  const vyayamMainPool = matchPool(rankedVyayam, ['dand', 'baithak', 'sapate']);
+
+  const vyayamAvailable = vyayamMainPool.length > 0;
   const emphasisPattern = planEmphasis(profile.daysPerWeek, vyayamAvailable);
   const dayIndices = spreadDayIndices(profile.daysPerWeek);
 
+  // Round-robin every matched practice across the week's days for that
+  // emphasis, so (spec-driven) all of them get scheduled somewhere instead
+  // of the same top-N repeating identically on every Yoga/Vyayam day.
+  const yogaDayCount = emphasisPattern.filter(e => e === 'yoga').length;
+  const vyayamDayCount = emphasisPattern.filter(e => e === 'vyayam').length;
+  const yogaSlices = distributeRoundRobin(yogaMainPool, yogaDayCount, profile.yogaAsanaCount);
+  const vyayamSlices = distributeRoundRobin(vyayamMainPool, vyayamDayCount, profile.vyayamItemCount);
+
   const stressGoals = profile.focusAreas.some(f => ['stress', 'sleep', 'focus'].includes(f));
-  const budgetSec = profile.dailyTimeMinutes * 60;
+  const meditationSec = profile.meditationMinutes * 60;
 
   const restStandaloneDhyana = () => {
     if (!stressGoals) return undefined;
     const dhyanaPick = rankedDhyana[1] ?? rankedDhyana[0] ?? getPractice('anapana');
-    return dhyanaPick ? toSlotItem(dhyanaPick, profile, 'standalone') : undefined;
+    return dhyanaPick ? toSlotItem(dhyanaPick, profile, 'standalone', meditationSec) : undefined;
   };
+
+  let yogaCursor = 0;
+  let vyayamCursor = 0;
 
   const scheduledDays: DaySession[] = dayIndices.map((dayIndex, i) => {
     const emphasis = emphasisPattern[i];
     if (emphasis === 'rest') {
       return { dayIndex, emphasis: 'rest', items: [], standaloneDhyana: restStandaloneDhyana() };
     }
-    const items = buildSession(emphasis, budgetSec, profile, rankedYoga, rankedVyayam, rankedDhyana);
+    const mainPractices = emphasis === 'yoga' ? yogaSlices[yogaCursor++] : vyayamSlices[vyayamCursor++];
+    const items = buildSession(emphasis, mainPractices, profile, rankedYoga, rankedVyayam);
+    const dhyanaPick = rankedDhyana[0] ?? getPractice('anapana');
+    if (dhyanaPick) items.push(toSlotItem(dhyanaPick, profile, 'cooldown', meditationSec));
     const session: DaySession = { dayIndex, emphasis, items };
     if (stressGoals) {
-      const dhyanaPick = rankedDhyana[1] ?? rankedDhyana[0];
-      if (dhyanaPick) session.standaloneDhyana = toSlotItem(dhyanaPick, profile, 'standalone');
+      const standalonePick = rankedDhyana[1] ?? rankedDhyana[0];
+      if (standalonePick) session.standaloneDhyana = toSlotItem(standalonePick, profile, 'standalone', meditationSec);
     }
     return session;
   });

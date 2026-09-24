@@ -274,6 +274,17 @@ const asanas: Practice[] = [
     sources: [CYP, MEA],
   },
   {
+    id: 'ushtrasana', section: 'yoga', category: 'asana', name: 'Ushtrasana', name_iast: 'Uṣṭrāsana', name_english: 'Camel Posture',
+    posture_group: 'sitting', level: 'intermediate', unlock_after_sessions: 6,
+    focus_tags: ['back_stiffness', 'flexibility', 'desk_posture'], component_tags: ['flexibility'],
+    duration_sec: { min: 10, default: 20, max: 30 },
+    steps: ['Kneel with the tops of the feet on the floor, hips over the knees.', 'Place hands on the lower back for support.', 'Inhale and lean back, reaching one hand at a time to hold the heels if comfortable.', 'Keep the hips pushed forward, chest open; return upright hand by hand, supporting the lower back.'],
+    benefits: ['Traditionally associated with opening the chest and relieving stiffness from prolonged sitting.'],
+    cautions: ['Keep a hand on the lower back if reaching the heels strains the neck or back.'],
+    contraindications: ['back_disc', 'neck', 'high_bp', 'recent_surgery'],
+    sources: [MEA],
+  },
+  {
     id: 'simhasana', section: 'yoga', category: 'asana', name: 'Simhasana', name_iast: 'Siṃhāsana', name_english: 'Lion Posture',
     posture_group: 'sitting', level: 'beginner', unlock_after_sessions: 0,
     focus_tags: ['stress', 'focus'], component_tags: ['flexibility', 'breathing'],

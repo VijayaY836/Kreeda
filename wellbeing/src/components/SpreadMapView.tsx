@@ -46,14 +46,24 @@ export const SpreadMapView: React.FC<SpreadMapViewProps> = ({ content }) => {
 
       {active && (
         <div className="fixed inset-0 z-50 bg-[#2B1B12]/55 flex items-center justify-center p-5" onClick={() => setActive(null)}>
-          <div className="bg-[#EFDFB8] border-[3px] border-[#5C140F] max-w-sm w-full p-6 relative" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setActive(null)} className="absolute top-4 right-4 text-[#5C140F] cursor-pointer">
+          <div className="bg-[#EFDFB8] border-[3px] border-[#5C140F] max-w-sm w-full relative overflow-hidden" onClick={e => e.stopPropagation()}>
+            {active.image && (
+              <div className="relative h-36 w-full border-b-[3px] border-[#5C140F]">
+                <img src={active.image} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <button
+              onClick={() => setActive(null)}
+              className={`absolute top-4 right-4 p-1 text-[#5C140F] cursor-pointer ${active.image ? 'bg-[#EFDFB8]/90 border border-[#5C140F]' : ''}`}
+            >
               <X className="w-4 h-4" />
             </button>
-            <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#D8401F] mb-1">{active.place}</div>
-            <h3 className="font-fraunces text-xl font-extrabold text-[#5C140F] mb-2">{active.name}</h3>
-            <p className="text-sm text-[#2B1B12] leading-relaxed mb-2.5">{active.fact}</p>
-            <div className="text-xs text-[#6B4E3D] font-semibold border-t-2 border-dashed border-[#5C140F] pt-2.5">{active.how}</div>
+            <div className="p-6">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#D8401F] mb-1">{active.place}</div>
+              <h3 className="font-fraunces text-xl font-extrabold text-[#5C140F] mb-2">{active.name}</h3>
+              <p className="text-sm text-[#2B1B12] leading-relaxed mb-2.5">{active.fact}</p>
+              <div className="text-xs text-[#6B4E3D] font-semibold border-t-2 border-dashed border-[#5C140F] pt-2.5">{active.how}</div>
+            </div>
           </div>
         </div>
       )}

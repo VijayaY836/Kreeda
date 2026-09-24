@@ -85,14 +85,18 @@ export interface Practice {
   contraindications: Contraindication[];
   variants?: string[];
   sources: SourceRef[];
+  image?: string;
+  demoGif?: string;
 }
 
 // ---------- Section content (history / fun facts / map) ----------
 
 export interface TimelineEvent {
+  id?: string;
   era: string;
   title: string;
   text: string;
+  image?: string;
 }
 
 export interface MapPin {
@@ -103,6 +107,7 @@ export interface MapPin {
   name: string;
   fact: string;
   how: string;
+  image?: string;
 }
 
 export interface SectionContent {
@@ -111,6 +116,7 @@ export interface SectionContent {
   nativeName: string;
   tagline: string;
   color: string; // css var name
+  heroImage?: string;
   timeline: TimelineEvent[];
   funFacts: string[];
   mapCaption: string;
@@ -125,12 +131,13 @@ export interface HeritageCard {
   name_english: string;
   blurb: string;
   why_not_in_plan: string;
+  image?: string;
 }
 
 // ---------- User profile & plan builder (spec §7) ----------
 
 export type FitnessLevel = Level;
-export type DailyTimeMinutes = 10 | 15 | 20 | 30 | 45;
+export type MeditationMinutes = 3 | 5 | 10 | 20;
 
 export interface UserProfile {
   focusAreas: FocusTag[];
@@ -138,7 +145,9 @@ export interface UserProfile {
   heightCm: number | null;
   weightKg: number | null;
   fitnessLevel: FitnessLevel;
-  dailyTimeMinutes: DailyTimeMinutes;
+  yogaAsanaCount: number; // asanas included per yoga-emphasis session
+  vyayamItemCount: number; // dand/baithak/sapate items per vyayam-emphasis session
+  meditationMinutes: MeditationMinutes; // spec §5.4 session formats
   daysPerWeek: number; // 3-7
   healthChecklist: Contraindication[];
   acknowledgedDoctorNotice: boolean;

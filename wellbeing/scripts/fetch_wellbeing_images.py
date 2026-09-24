@@ -32,7 +32,10 @@ import urllib.request
 
 API = "https://commons.wikimedia.org/w/api.php"
 UA = "KREEDA-image-fetcher/1.0 (non-commercial student hackathon project)"
-THUMB_WIDTH = 800
+THUMB_WIDTH = 480  # kept small deliberately — vite-plugin-singlefile inlines
+# every asset as base64 into dist/index.html (by design, for offline
+# double-click use), so image weight directly bloats that one file. 480px is
+# already generous for a ~100px card thumbnail or a ~500px modal hero.
 ALLOWED_LICENSES = ("public domain", "pd", "cc0", "cc by", "cc-by")  # covers CC BY / CC BY-SA
 EXT_OK = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 RAW_POOL_MIN = 15  # over-fetch this many raw hits even when per-item is 1
@@ -72,7 +75,11 @@ ITEMS = {
         "sirsasana": "Sirsasana headstand yoga",
         "shavasana": "Savasana corpse pose",
         "nadi-shodhana": "Nadi Shodhana pranayama",
-        "sheetali": "cooling breath yoga tongue",
+        # "sheetali": every query tried ("Sheetali pranayama", "Sitali
+        # Pranayama", "cooling breath yoga tongue", etc.) either returned
+        # nothing or matched an unrelated file by coincidental keyword
+        # overlap (e.g. a Surya Namaskar booklet cover) — left without an
+        # image. Revisit if a better query emerges.
         "bhramari": "Bhramari pranayama",
         "kapalabhati": "Kapalabhati",
         "patanjali": "Patanjali statue",
@@ -85,13 +92,19 @@ ITEMS = {
         "akhada": "akhada wrestling India",
         "kushti": "Kushti pehlwani",
         "mudgar": "Indian club juggling",
-        "gada": "gada mace exercise India",
-        "jori": "jori Indian clubs",
+        "gada": "Mace weapon",
         "indian-clubs": "Indian clubs Victorian exercise",
-        "nal": "nal stone ring weight India",
-        "mallakhamb": "Mallakhamb",
+        "mallakhamb": "Mallakhamba",
         "kalaripayattu": "Kalaripayattu",
         "great-gama": "Great Gama wrestler",
+        # "jori", "nal", "sapate" and "vyayam-mobility-drills": no relevant
+        # openly-licensed image found on Commons after several query
+        # attempts (these niche akhada items and generic exercise drills
+        # aren't well-photographed under a free license there) — left
+        # without an image rather than force an irrelevant match (old book
+        # covers/diagrams/PDFs kept surfacing). Revisit if better queries
+        # emerge, or source a photo separately and drop it straight into
+        # src/assets/vyayam/<id>.jpg — the app picks it up automatically.
     },
     "dhyana": {
         "anapana": "breath meditation India",

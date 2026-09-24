@@ -133,6 +133,12 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
           </div>
         )}
 
+        {practice.demoGif && (
+          <div className="mb-4 bg-[#E4D19E] border-2 border-[#5C140F] p-2 inline-block">
+            <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="max-w-full max-h-64 mx-auto" />
+          </div>
+        )}
+
         <ol className="text-left text-[13px] text-[#2B1B12] leading-relaxed list-decimal list-inside space-y-1 max-w-md mx-auto">
           {practice.steps.map((s, i) => <li key={i}>{s}</li>)}
         </ol>
