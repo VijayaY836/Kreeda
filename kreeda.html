@@ -18,6 +18,7 @@
     --blue:#3E6E9E;
     --pink:#D9587B;
     --green:#5F8F3B;
+    --ochre:#C97B2E;
     --ink:#2B1B12;
     --ink-soft:#6B4E3D;
     --light-cream:#F6ECD2;
@@ -127,6 +128,33 @@
   .tile-green{background:var(--green);}
   .tile-teal{background:var(--teal);}
   .tile-pink{background:var(--pink);}
+  .tile-ochre{background:var(--ochre);}
+
+  /* ---------- WELLBEING module card (wide feature card, not a game) ---------- */
+  .module-card{
+    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+    border-radius:var(--radius); padding:26px 28px; cursor:pointer;
+    position:relative; border:var(--bw) solid var(--maroon);
+    background:var(--ochre); color:var(--paper);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .module-card:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--maroon);}
+  .module-card:active{transform:translate(0,0) scale(0.99); box-shadow:none;}
+  .module-card .icon-wrap{
+    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(239,223,184,.16); border:2px solid var(--paper);
+  }
+  .module-card .icon-wrap svg{width:40px; height:40px;}
+  .module-card .module-text{flex:1; min-width:220px;}
+  .module-card h3{font-family:'Fraunces', serif; font-size:22px; margin:0 0 2px; font-weight:800; color:var(--paper);}
+  .module-card .native{font-size:12.5px; color:var(--paper); opacity:.85; margin:0 0 8px;}
+  .module-card p.tagline{margin:0; font-size:13.5px; color:var(--paper); opacity:.92; max-width:560px; line-height:1.5;}
+  .module-card .sections-row{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .module-card .sections-row span{
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.3px;
+    padding:4px 9px; background:var(--paper); color:var(--ink); border:2px solid var(--maroon);
+  }
+  .module-card .explore{flex-shrink:0; font-size:13px; font-weight:800; color:var(--paper); white-space:nowrap;}
 
   .card .icon-wrap{
     width:52px; height:52px; display:flex; align-items:center; justify-content:center;
@@ -282,6 +310,20 @@
 
     <div class="section-label"><h2>Choose a game</h2><div class="thread"></div><span class="diamond"></span><div class="thread"></div></div>
     <div class="grid" id="game-grid"></div>
+
+    <div class="section-label"><h2>Physical Wellbeing</h2><div class="thread"></div><span class="diamond"></span><div class="thread"></div></div>
+    <div class="module-card has-corners" onclick="openWellbeing()">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 48 48" fill="none"><path d="M24 6 C20 18, 20 28, 24 38 C28 28, 28 18, 24 6 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 16 C16 20, 12 28, 16 36 C20 37, 23 37, 24 36 C21 28, 22 21, 24 16 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2" stroke-linejoin="round"/><path d="M24 16 C32 20, 36 28, 32 36 C28 37, 25 37, 24 36 C27 28, 26 21, 24 16 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="module-text">
+        <h3>Physical Wellbeing</h3>
+        <p class="native">శారీరిక &middot; Yoga &middot; Vyayam &middot; Dhyana</p>
+        <p class="tagline">India's traditional fitness system, brought together into one personal daily plan — flexibility from Yoga, strength from Vyayam, a settled mind from Dhyana, paced by the ancient <em>ardhashakti</em> principle. Not a game — a full offline wellbeing companion.</p>
+        <div class="sections-row"><span>A. Yoga</span><span>B. Vyayam</span><span>C. Dhyana</span></div>
+      </div>
+      <div class="explore">Build My Plan &rarr;</div>
+    </div>
   </div>
 
   <!-- ============ GAME DETAIL VIEW ============ -->
@@ -604,6 +646,12 @@ function startPlay(){
   document.getElementById('play-sub').textContent = 'Board and game logic mount here. This screen just confirms the navigation + mode selection works end to end.';
   showView('view-play');
   showToast(`Loaded: ${g.name} (${modeLabel})`);
+}
+
+function openWellbeing(){
+  // The Physical Wellbeing module is a full standalone React app (like
+  // Chaturangam) — hand off to its own built bundle instead of a placeholder.
+  window.location.href = 'wellbeing/dist/index.html';
 }
 
 function showToast(msg){
