@@ -584,6 +584,59 @@ body{
 }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
+/* ---------- KREEDA shared shell alignment ---------- */
+:root{
+  --cream-card:#F6EFDE;
+  --cream:#FBF3E2;
+  --gold:#C7A467;
+  --evergreen:#1F3B2E;
+}
+.topbar{
+  background:var(--cream);
+  border:1px solid rgba(42,36,30,.16);
+  border-radius:12px;
+  box-shadow:0 8px 24px rgba(42,30,20,.12);
+}
+.topbar::before,.topbar::after{display:none;}
+.wordmark{color:var(--evergreen); text-shadow:none;}
+.wordmark span.dev{color:var(--ink-soft); text-shadow:none;}
+.topbar button{
+  border-radius:999px !important;
+  background:var(--cream-card) !important;
+  border:1px solid rgba(42,36,30,.16) !important;
+  color:var(--ink) !important;
+}
+.topbar button:hover{border-color:var(--gold) !important; background:#FFFBF0 !important;}
+.panel{
+  background:var(--cream-card);
+  background-image:none;
+  border:1px solid rgba(199,164,103,.55);
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(42,30,20,.12);
+}
+.panel::before,.panel::after{display:none;}
+.panel h2{color:var(--evergreen); text-shadow:none;}
+.history-panel p{
+  position:relative;
+  z-index:1;
+  margin:0;
+  padding:10px 0;
+  border-bottom:1px dashed rgba(199,164,103,.8);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.6;
+}
+.history-panel p:last-child{border-bottom:none; padding-bottom:0;}
+.play-btn{
+  background:var(--evergreen);
+  background-image:none;
+  border:1px solid var(--gold);
+  border-radius:999px;
+  text-shadow:none;
+  box-shadow:0 8px 22px rgba(31,59,46,.25);
+}
+.play-btn:hover{box-shadow:0 12px 28px rgba(31,59,46,.3);}
+
 /* ===================================================================
    VAIKUNTHAPALI — ANTIQUE BOARD GAME AESTHETIC
    =================================================================== */

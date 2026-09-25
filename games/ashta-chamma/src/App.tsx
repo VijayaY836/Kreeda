@@ -20,16 +20,17 @@ function Header({ view, onNavigate }: { view: View; onNavigate: (view: View) => 
           <span className="brand-mark">✦</span>
           <span><strong>KREEDA</strong><small>క్రీడా · living games</small></span>
         </button>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {nav.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => onNavigate(item.id)}>{item.label}</button>)}
-        </nav>
         <div className="header-tools">
+          {view === 'GAME' && (
+            <button className="all-games-link" onClick={() => { window.location.href = '../../../kreeda.html'; }}>
+              ← All Games
+            </button>
+          )}
           <button className="icon-button" aria-label="Sound on" title="Sound on"><Volume2 size={17} /></button>
           <button className="icon-button" aria-label="How to play" title="How to play" onClick={() => onNavigate('RULES')}><CircleHelp size={17} /></button>
           <button className="mobile-play" onClick={() => onNavigate('GAME')}><Play size={14} fill="currentColor" /> Play</button>
         </div>
       </div>
-      <div className="mobile-nav">{nav.map((item) => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => onNavigate(item.id)}>{item.label}</button>)}</div>
     </header>
   );
 }
@@ -59,7 +60,7 @@ function InfoView({ view, onNavigate }: { view: 'ABOUT' | 'HISTORY' | 'RULES'; o
 function GameView({ onBack }: { onBack: () => void }) {
   const gameRoot = useRef<HTMLDivElement>(null);
   useEffect(() => { const root = gameRoot.current; if (!root || !window.KreedaAshtaChamma) return; window.KreedaAshtaChamma.mount(root); return () => window.KreedaAshtaChamma?.unmount(); }, []);
-  return <main className="page game-page"><div className="game-heading"><div><h1>Ashta Chamma</h1><p>Terracotta is you. Teal is Kreedu. May the shells be kind.</p></div></div><div ref={gameRoot} className="ashta-mount" /></main>;
+  return <main className="page game-page"><div className="game-heading"><div><h1>Ashta Chamma</h1><p>Four shells. Eight steps. One beautifully unpredictable journey home.</p></div></div><div ref={gameRoot} className="ashta-mount" /></main>;
 }
 
 const INITIAL_VIEW: View = new URLSearchParams(window.location.search).get('start') === 'play' ? 'GAME' : 'HOME';

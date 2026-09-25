@@ -33,10 +33,6 @@ export function PlayView({
 
   return (
     <>
-      <button className="backbtn" onClick={onBack}>
-        {S.backToGameInfo}
-      </button>
-
       {isVP ? (
         <Vaikunthapali mode={mode} vpVersion={vpVersion ?? 'india'} onExit={onBack} />
       ) : (

@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right utility buttons */}
         <div className="flex items-center gap-2">
           <button
-            onClick={onNavigateHome}
+            onClick={() => { window.location.href = '../../../kreeda.html' }}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] text-[#5C140F] text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             <Globe className="w-3.5 h-3.5" />

@@ -114,6 +114,7 @@ export const PuliMekaGameView: React.FC<PuliMekaGameViewProps> = ({ onNavigate, 
             KREEDA
           </div>
           <div className="ml-auto flex gap-3 text-[10px] sm:text-xs">
+            <button onClick={() => onNavigate('MODE_SELECT')} className="font-bold text-[#5C140F] hover:opacity-70">← Back</button>
             <button onClick={() => setShowRules(true)} className="font-bold text-[#5C140F] hover:opacity-70">? Rules</button>
             <button onClick={() => reset()} className="font-bold text-[#5C140F] hover:opacity-70">↻ Restart</button>
             <button onClick={() => onNavigate('MODE_SELECT')} className="font-bold text-[#5C140F] hover:opacity-70">← Change Game</button>
@@ -132,7 +133,7 @@ export const PuliMekaGameView: React.FC<PuliMekaGameViewProps> = ({ onNavigate, 
           {(['PULI', 'MEKA'] as Side[]).map((side) => (
             <div
               key={side}
-              className={`border-[2px] border-[#5C140F] p-2 sm:p-3 text-center transition-colors ${
+              className={`${side === 'PULI' ? 'col-start-1' : 'col-start-3'} border-[2px] border-[#5C140F] p-2 sm:p-3 text-center transition-colors ${
                 game.currentPlayer === side ? 'bg-[#EFA90C]' : 'bg-[#E4D19E]'
               }`}
               style={{borderRadius: '10px'}}
@@ -148,7 +149,7 @@ export const PuliMekaGameView: React.FC<PuliMekaGameViewProps> = ({ onNavigate, 
               )}
             </div>
           ))}
-          <span className="font-fraunces font-bold text-[#5C140F] text-xl text-center">VS</span>
+          <span className="col-start-2 row-start-1 font-fraunces font-bold text-[#5C140F] text-xl text-center">VS</span>
         </div>
 
         {/* Status Bar */}

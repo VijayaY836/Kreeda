@@ -86,6 +86,15 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right utility buttons */}
         <div className="flex items-center gap-2">
+          {currentTab === 'MODE_SELECT' && (
+            <button
+              onClick={() => { window.location.href = '../../../kreeda.html'; }}
+              className="flex items-center gap-1 px-3 py-1.5 bg-[#F6ECD2] hover:bg-white border-[2px] border-[#5C140F] text-[#5C140F] text-xs font-bold cursor-pointer"
+            >
+              ← All Games
+            </button>
+          )}
+
           {/* Sound Toggle */}
           <button
             onClick={onToggleSound}

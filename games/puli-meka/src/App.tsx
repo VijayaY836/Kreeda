@@ -15,7 +15,7 @@ import { FolkDivider, LotusIcon } from './components/FolkArtMotifs';
 import { sounds } from './utils/soundEngine';
 import { HelpCircle, X } from 'lucide-react';
 
-const INITIAL_TAB: ViewTab = new URLSearchParams(window.location.search).get('start') === 'play' ? 'GAME' : 'HOME';
+const INITIAL_TAB: ViewTab = new URLSearchParams(window.location.search).get('start') === 'play' ? 'MODE_SELECT' : 'HOME';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<ViewTab>(INITIAL_TAB);

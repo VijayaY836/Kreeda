@@ -41,27 +41,14 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
           </div>
         </button>
 
-        <nav className="hidden lg:flex items-center gap-1 bg-[#F6ECD2] border-2 border-[#5C140F] p-1">
-          {navItems.map((item) => {
-            const isActive = currentTab === item.tab || (item.tab === 'MODE_SELECT' && currentTab === 'GAME');
-            return (
-              <button
-                key={`nav-${item.tab}`}
-                onClick={() => onNavigate(item.tab)}
-                className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold transition-colors cursor-pointer ${
-                  isActive
-                    ? item.tab === 'MODE_SELECT' ? 'bg-[#D8401F] text-white border-[1.5px] border-[#5C140F]' : 'bg-[#5C140F] text-white'
-                    : item.tab === 'MODE_SELECT' ? 'bg-[#D8401F]/15 text-[#5C140F] hover:bg-[#D8401F]/30' : 'text-[#2B1B12] hover:bg-[#E4D19E]'
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => { window.location.href = '../../kreeda.html'; }}
+            className="flex items-center gap-1 px-3 py-1.5 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] text-[#5C140F] text-xs font-bold cursor-pointer"
+          >
+            ← All Games
+          </button>
+
           <button
             onClick={onToggleSound}
             aria-label={soundEnabled ? 'Mute audio' : 'Unmute audio'}
@@ -92,19 +79,6 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
         </div>
       </div>
 
-      <div className="lg:hidden overflow-x-auto border-t-2 border-[#5C140F] bg-[#F6ECD2] py-1 px-2 flex items-center gap-1.5">
-        {navItems.map((item) => (
-          <button
-            key={`mobile-nav-${item.tab}`}
-            onClick={() => onNavigate(item.tab)}
-            className={`whitespace-nowrap px-2.5 py-1 text-[11px] font-bold border-[1.5px] border-[#5C140F] transition-colors cursor-pointer ${
-              currentTab === item.tab ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12]'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
     </header>
   );
 };

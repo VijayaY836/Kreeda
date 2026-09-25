@@ -68,6 +68,13 @@ export function GameDetailView({
         <MapView pins={game.pins} path={game.path} lang={lang} onPinClick={setOpenPin} />
       </div>
 
+      <div className="panel history-panel">
+        <h2>History</h2>
+        <p>Virtues raise ladders — humility, charity, service, faith, knowledge, meditation, compassion</p>
+        <p>Vices raise snakes — anger, envy, greed, delusion, pride, ego, desire</p>
+        <p>Moksha rule: you must land exactly on 100 — overshoot and you wait.</p>
+      </div>
+
       <div className="panel instructions">
         <h2>{S.howToPlay}</h2>
         <ul>
