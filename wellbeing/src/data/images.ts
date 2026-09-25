@@ -12,7 +12,7 @@ const staticModules = import.meta.glob<string>('../assets/*/*.{jpg,jpeg,png,webp
   query: '?url',
   import: 'default',
 });
-const gifModules = import.meta.glob<string>('../assets/*/*.gif', {
+const animationModules = import.meta.glob<string>('../assets/*/*.{gif,webp}', {
   eager: true,
   query: '?url',
   import: 'default',
@@ -29,7 +29,7 @@ function toRegistry(modules: Record<string, string>): Record<string, string> {
 }
 
 const REGISTRY = toRegistry(staticModules);
-const GIF_REGISTRY = toRegistry(gifModules);
+const ANIMATION_REGISTRY = toRegistry(animationModules);
 
 // A handful of practice/content ids don't line up 1:1 with a fetched image
 // (several progressions share one reference photo, some content ids were
@@ -38,7 +38,7 @@ const GIF_REGISTRY = toRegistry(gifModules);
 const ALIASES: Record<string, string> = {
   'surya-namaskar-slow': 'surya-namaskar',
   'surya-namaskar-paced': 'surya-namaskar',
-  'dand-knee-supported': 'dand',
+  'dand-knee-supported': 'dand_knee',
   'dand-basic': 'dand',
   'dand-full': 'dand',
   'baithak-basic': 'baithak',
@@ -58,10 +58,15 @@ export function getImage(id: string): string | undefined {
 // here instead.
 const DEMO_GIF_ALIASES: Record<string, string> = {
   setubandhasana: 'setu_bandhasana_5_step',
+  'dand-knee-supported': 'dand_knee',
+  'dand-basic': 'dand_basic',
+  'dand-full': 'dand_full',
+  'baithak-high-rep': 'high_rep',
+  'vyayam-mobility-drills': 'Sukshma Vyayama',
 };
 
 export function getDemoGif(id: string): string | undefined {
-  return GIF_REGISTRY[id] ?? GIF_REGISTRY[DEMO_GIF_ALIASES[id]];
+  return ANIMATION_REGISTRY[id] ?? ANIMATION_REGISTRY[DEMO_GIF_ALIASES[id]];
 }
 
 // Per-step posture images live one level deeper, in
