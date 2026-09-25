@@ -3,441 +3,704 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KREEDA — Ancient Games, Mapped</title>
+<title>KREEDA — Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Manrope:wght@400;500;600;700;800&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Sora:wght@400;500;600;700&family=Tiro+Telugu&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#EFDFB8;
-    --paper-deep:#E4D19E;
-    --maroon:#5C140F;
-    --terracotta:#D8401F;
-    --marigold:#EFA90C;
-    --teal:#0E5C58;
-    --blue:#3E6E9E;
-    --pink:#D9587B;
-    --green:#5F8F3B;
-    --ochre:#C97B2E;
-    --ink:#2B1B12;
-    --ink-soft:#6B4E3D;
-    --light-cream:#F6ECD2;
-    --deep-cream:#E4D19E;
-    --radius:0px;
-    --bw:3px;
+    color-scheme: light;
+    --ink:#2A241E;
+    --ink-soft:#5C5142;
+    --navy:#1F3A5C;
+    --gold-deep:#C4881F;
+    --brick:#A8402E;
+    --evergreen:#1F3B2E;
+    --rose:#C0524A;
+    --plum:#4A3558;
+    --gold:#C7A467;
+    --cream-card:#F6EFDE;
+    --cream:#FBF3E2;
+    --page-bg:#F1E8D2;
   }
+
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;}
   body{
-    background:var(--paper);
-    font-family:'Manrope', sans-serif;
-    color:var(--ink);
     min-height:100vh;
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
   }
-  .display{font-family:'Fraunces', serif; font-weight:700;}
   .telugu{font-family:'Tiro Telugu', serif;}
-
-  /* subtle folk-pattern texture, echoed from the React shell's bg-kolam-dots */
-  .bg-kolam-dots{background-image:radial-gradient(var(--maroon) 1.2px, transparent 1.2px); background-size:24px 24px;}
-
-  ::-webkit-scrollbar{width:8px; height:8px;}
-  ::-webkit-scrollbar-track{background:var(--paper); border-left:2px solid var(--maroon);}
-  ::-webkit-scrollbar-thumb{background:var(--maroon);}
-  ::-webkit-scrollbar-thumb:hover{background:var(--terracotta);}
-
-  /* ---------- kolam corner accents (ported from the React FolkArtFrame/KolamCorner) ---------- */
-  .kolam-wrap{position:absolute; pointer-events:none; opacity:.75; z-index:3;}
-  .kolam-wrap.corner-tl{top:5px; left:5px;}
-  .kolam-wrap.corner-tr{top:5px; right:5px;}
-  .kolam-wrap.corner-bl{bottom:5px; left:5px;}
-  .kolam-wrap.corner-br{bottom:5px; right:5px;}
-  .has-corners{position:relative;}
-
-  /* ---------- shell ---------- */
-  .app{max-width:1180px; margin:0 auto; padding:0 20px 80px;}
-  .topbar{
-    display:flex; align-items:center; justify-content:space-between;
-    margin:0 -20px 28px; padding:16px 20px; border-bottom:var(--bw) solid var(--maroon);
-    background:var(--paper); position:sticky; top:0; z-index:40;
-  }
-  .wordmark{
-    font-family:'Fraunces', serif; font-weight:800; font-size:24px; letter-spacing:0.3px; color:var(--maroon);
-    display:flex; align-items:center; gap:12px;
-  }
-  .wordmark .logo-chip{
-    width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
-    background:var(--light-cream); border:2px solid var(--maroon);
-  }
-  .wordmark svg{width:28px; height:28px;}
-  .wordmark .word-text{display:flex; flex-direction:column; line-height:1.15;}
-  .wordmark span.dev{font-size:13px; color:var(--pink); font-family:'Tiro Telugu',serif; font-weight:700;}
 
   .view{display:none;}
   .view.active{display:block;}
 
-  /* ---------- HOME ---------- */
-  .hero{
+  /* ---------- shared header controls ---------- */
+  .header-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .pill-lang{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 14px;
+    border-radius:999px;
+    border:1px solid rgba(42,36,30,0.16);
+    background:rgba(251,243,226,0.9);
+    color:var(--ink);
+    font-family:'Sora', sans-serif;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:border-color .18s ease, background .18s ease;
+  }
+  .pill-lang:hover{ border-color:var(--gold); background:#FFFBF0; }
+  .pill-lang:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .pill-lang svg{ width:1em; height:1em; opacity:.7; }
+  .pill-lang .chev{ width:.7em; height:.7em; opacity:.55; }
+
+  .avatar{
+    appearance:none; -webkit-appearance:none;
+    width:40px; height:40px;
+    border-radius:50%;
+    background:var(--evergreen);
+    border:1px solid var(--gold);
+    color:var(--cream);
+    font-family:'Sora', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:filter .18s ease;
+  }
+  .avatar:hover{ filter:brightness(1.15); }
+  .avatar:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* ================= GAMES VIEW =================
+     Same pinned-illustration hero as kreeda-home.html: the image is capped by
+     both viewport dimensions and the content is laid over it. Sizes inside use
+     cqw (1% of the hero's rendered width) so the 2x3 grid scales with the
+     frame whether the image is width- or height-limited. */
+  .hero.view.active{
     position:relative;
-    border-radius:var(--radius);
-    background:var(--teal);
-    color:var(--paper);
-    padding:34px 30px;
-    margin:18px 0 34px;
-    border:var(--bw) solid var(--maroon);
+    display:block;
+    width:fit-content;
+    margin:0 auto;
+    line-height:0;
   }
-  .hero::before, .hero::after{ display:none; }
-  .hero-inner{position:relative; z-index:2; display:flex; align-items:center; gap:28px; flex-wrap:wrap;}
-  .mascot{width:118px; height:118px; flex-shrink:0;}
-  .mascot img{width:100%; height:100%; object-fit:contain; display:block;}
-  .hero-badge{
-    display:inline-flex; align-items:center; gap:7px; padding:5px 12px; margin-bottom:10px;
-    background:rgba(239,223,184,.14); border:1.5px solid var(--paper); color:var(--paper);
-    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.6px;
+  .hero .bg{
+    display:block;
+    max-width:100vw;
+    max-height:100vh;
+    width:auto;
+    height:auto;
   }
-  .hero-text h1{margin:0 0 8px; font-size:32px; font-weight:800; line-height:1.15;}
-  .hero-text p{margin:0; color:var(--paper); opacity:.9; max-width:520px; font-size:15px; line-height:1.55;}
-  .speech{
+  .hero-content{
+    position:absolute;
+    inset:0;
+    line-height:normal;
+    container-type:size;
+  }
+
+  .hero .header-controls{
+    position:absolute;
+    top:4.8%;
+    right:2.5%;
+  }
+  .hero .home-link{
+    position:absolute;
+    top:4.8%;
+    left:2.5%;
+    text-decoration:none;
+  }
+  .hero .pill-lang{ font-size:clamp(10px, 0.8cqw, 13px); }
+  .hero .avatar{ width:clamp(26px, 2.4cqw, 40px); height:clamp(26px, 2.4cqw, 40px); font-size:clamp(10px, 0.85cqw, 14px); }
+
+  .header-block{
+    position:absolute;
+    left:50%; top:7%;
+    transform:translateX(-50%);
+    width:100%;
+    text-align:center;
+  }
+  .masthead{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:clamp(20px, 3.2cqw, 52px);
+    letter-spacing:0.01em;
+    color:var(--evergreen);
+    margin:0;
+  }
+
+  .cards-block{
+    position:absolute;
+    left:50%; top:19%;
+    transform:translateX(-50%);
+    width:76%;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    column-gap:3.2cqw;
+    row-gap:2.2cqw;
+  }
+
+  .game-card{
     position:relative;
-    background:var(--marigold); color:var(--ink); padding:10px 16px;
-    border-radius:0; border:2.5px solid var(--maroon);
-    font-size:13.5px; font-weight:700; display:inline-block; margin-top:14px;
+    display:flex;
+    flex-direction:column;
+    background:var(--cream-card);
+    border-radius:clamp(6px, 0.9cqw, 16px);
+    border:clamp(1px, 0.14cqw, 2.5px) solid var(--accent);
+    box-shadow:0 clamp(2px,0.5cqw,10px) clamp(6px,1.4cqw,26px) rgba(42,30,20,0.22);
+    cursor:pointer;
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+  .game-card:hover{
+    transform:translateY(clamp(-8px,-0.45cqw,-3px));
+    box-shadow:0 clamp(4px,0.9cqw,16px) clamp(10px,2.2cqw,38px) rgba(42,30,20,0.28);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .game-card{ transition:none; }
   }
 
-  .section-label{display:flex; align-items:center; gap:12px; margin:6px 0 18px;}
-  .section-label h2{font-family:'Fraunces', serif; font-size:22px; margin:0; font-weight:800; color:var(--maroon); white-space:nowrap;}
-  .section-label .thread{flex:1; height:3px; background:repeating-linear-gradient(90deg, var(--maroon) 0 8px, transparent 8px 14px);}
-  .section-label .diamond{width:9px; height:9px; background:var(--marigold); border:2px solid var(--maroon); transform:rotate(45deg); flex-shrink:0;}
-
-  .grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px;}
-  @media (max-width:880px){.grid{grid-template-columns:repeat(2,1fr);}}
-  @media (max-width:560px){.grid{grid-template-columns:1fr;}}
-
-  .card{
-    border-radius:var(--radius); padding:20px; cursor:pointer;
-    position:relative;
-    border:var(--bw) solid var(--maroon);
-    transition:transform .12s ease, box-shadow .12s ease;
+  /* no per-game artwork yet — a tinted plate with the game's motif stands in
+     for the illustration slot the landing-page cards use */
+  .plate{
+    width:100%;
+    aspect-ratio:3/1;
+    border-radius:clamp(5px,0.8cqw,14px) clamp(5px,0.8cqw,14px) 0 0;
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 1.4px) 0 0 / 12px 12px,
+      color-mix(in srgb, var(--accent) 14%, var(--cream));
+    color:var(--accent);
+    border-bottom:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   }
-  .card:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--maroon);}
-  .card:active{transform:translate(0,0) scale(0.98); box-shadow:none;}
+  .plate svg{ width:clamp(20px, 3.2cqw, 54px); height:auto; }
 
-  /* one flat color block per game — no gradients */
-  .tile-blue{background:var(--blue);}
-  .tile-terracotta{background:var(--terracotta);}
-  .tile-marigold{background:var(--marigold);}
-  .tile-green{background:var(--green);}
-  .tile-teal{background:var(--teal);}
-  .tile-pink{background:var(--pink);}
-  .tile-ochre{background:var(--ochre);}
+  .card-body{
+    padding:clamp(4px,0.8cqw,16px) clamp(4px,1cqw,18px) clamp(5px,0.9cqw,16px);
+    text-align:center;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .card-eyebrow{
+    font-size:clamp(5.5px, 0.56cqw, 10px);
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 clamp(2px,0.25cqw,5px);
+  }
+  .game-card h2{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:clamp(9px, 1.35cqw, 23px);
+    line-height:1.1;
+    margin:0 0 clamp(2px,0.3cqw,6px);
+    color:var(--ink);
+  }
+  .game-card .native{
+    font-size:clamp(5.5px, 0.62cqw, 12px);
+    line-height:1.45;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .card-cta{
+    display:flex; align-items:center; justify-content:center;
+    gap:clamp(4px,0.6cqw,12px);
+    margin-top:auto;
+    padding-top:clamp(4px,0.6cqw,12px);
+  }
+  .flourish-line{
+    width:clamp(10px,2.2cqw,42px); height:1px;
+    background:var(--gold);
+    opacity:0.8;
+  }
+  .arrow-btn{
+    appearance:none; -webkit-appearance:none;
+    width:clamp(14px,2.1cqw,36px); height:clamp(14px,2.1cqw,36px);
+    border-radius:50%;
+    border:none;
+    background:var(--evergreen);
+    color:var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .arrow-btn svg{ width:38%; height:38%; }
+  .arrow-btn:hover{ transform:scale(1.08); filter:brightness(1.15); }
+  .arrow-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
 
-  /* ---------- WELLBEING module card (wide feature card, not a game) ---------- */
-  .module-card{
-    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
-    border-radius:var(--radius); padding:26px 28px; cursor:pointer;
-    position:relative; border:var(--bw) solid var(--maroon);
-    background:var(--ochre); color:var(--paper);
-    transition:transform .12s ease, box-shadow .12s ease;
+  /* ================= DETAIL + PLAY VIEWS ================= */
+  .page{
+    max-width:1000px;
+    margin:0 auto;
+    padding:22px 20px 60px;
   }
-  .module-card:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--maroon);}
-  .module-card:active{transform:translate(0,0) scale(0.99); box-shadow:none;}
-  .module-card .icon-wrap{
-    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
-    background:rgba(239,223,184,.16); border:2px solid var(--paper);
+  .page-top{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-bottom:22px;
   }
-  .module-card .icon-wrap svg{width:40px; height:40px;}
-  .module-card .module-text{flex:1; min-width:220px;}
-  .module-card h3{font-family:'Fraunces', serif; font-size:22px; margin:0 0 2px; font-weight:800; color:var(--paper);}
-  .module-card .native{font-size:12.5px; color:var(--paper); opacity:.85; margin:0 0 8px;}
-  .module-card p.tagline{margin:0; font-size:13.5px; color:var(--paper); opacity:.92; max-width:560px; line-height:1.5;}
-  .module-card .sections-row{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
-  .module-card .sections-row span{
-    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.3px;
-    padding:4px 9px; background:var(--paper); color:var(--ink); border:2px solid var(--maroon);
-  }
-  .module-card .explore{flex-shrink:0; font-size:13px; font-weight:800; color:var(--paper); white-space:nowrap;}
-
-  .card .icon-wrap{
-    width:52px; height:52px; display:flex; align-items:center; justify-content:center;
-    margin-bottom:14px; color:var(--paper);
-  }
-  .card .icon-wrap svg{width:38px; height:38px;}
-  .card h3{font-family:'Fraunces', serif; font-size:19px; margin:0 0 4px; font-weight:800; color:var(--paper);}
-  .card .native{font-size:12px; color:var(--paper); opacity:.85; margin:0 0 14px;}
-  .card .badge{
-    display:inline-block; font-size:11px; font-weight:800; padding:5px 10px; border-radius:0;
-    letter-spacing:.3px; text-transform:uppercase; color:var(--ink); background:var(--paper);
-    border:2px solid var(--maroon);
-  }
-  .card .explore{position:absolute; bottom:18px; right:18px; font-size:12.5px; font-weight:800; color:var(--paper);}
-  .card .stitch-underline{display:none;}
-
-  /* ---------- GAME DETAIL ---------- */
   .backbtn{
-    display:inline-flex; align-items:center; gap:6px; background:none; border:none; cursor:pointer;
-    color:var(--maroon); font-weight:800; font-size:14px; padding:8px 0; margin-bottom:10px; font-family:'Manrope',sans-serif;
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center; gap:8px;
+    background:none; border:none; cursor:pointer; padding:8px 0;
+    color:var(--evergreen); font-family:'Sora',sans-serif; font-weight:600; font-size:14px;
   }
+  .backbtn:hover{ color:var(--gold-deep); }
+  .backbtn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; border-radius:4px; }
 
-  .game-head{display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:22px;}
-  .game-head h1{font-family:'Fraunces',serif; font-size:32px; margin:0 0 4px; font-weight:800; color:var(--maroon);}
-  .game-head .native-line{color:var(--ink-soft); font-size:14.5px; font-weight:600;}
+  /* ================= GAME SCREEN =================
+     Same pinned illustration as the Games view. Left: name + actions;
+     right: map with the game's journey and a facts panel. */
+  .detail-shell{
+    position:absolute;
+    left:6.5%; right:6.5%;
+    top:14cqh; height:58cqh;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);
+    gap:2.6cqw;
+  }
+  .detail-card{
+    background:rgba(246,239,222,0.94);
+    border-radius:clamp(8px, 1cqw, 18px);
+    border:clamp(1px, 0.14cqw, 2.5px) solid var(--accent);
+    box-shadow:0 clamp(3px,0.6cqw,12px) clamp(8px,1.6cqw,30px) rgba(42,30,20,0.24);
+    min-height:0;
+  }
+  .detail-left{
+    display:flex; flex-direction:column;
+    padding:clamp(10px,1.6cqw,30px) clamp(10px,1.8cqw,34px);
+    gap:clamp(5px,0.75cqw,13px);
+  }
+  .detail-eyebrow{
+    font-size:clamp(7px, 0.62cqw, 11px); font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--accent); margin:0;
+  }
+  .detail-title{
+    font-family:'Fraunces', Georgia, serif; font-weight:600;
+    font-size:clamp(20px, 2.7cqw, 46px); line-height:1.05;
+    color:var(--ink); margin:0;
+  }
+  .detail-native{ font-size:clamp(8px, 0.72cqw, 13px); color:var(--ink-soft); margin:0; }
+  .detail-blurb{ font-size:clamp(8px, 0.78cqw, 14px); line-height:1.5; color:var(--ink); margin:0 0 auto; }
 
   .mode-toggle{
-    display:flex; gap:4px; border-radius:0; padding:4px;
-    background:var(--paper); border:2.5px solid var(--maroon);
+    display:inline-flex; align-self:flex-start; gap:3px; padding:3px;
+    border-radius:999px; background:var(--cream);
+    border:1px solid rgba(42,36,30,0.16);
   }
   .mode-toggle button{
-    border:none; background:none; padding:9px 16px; border-radius:0; font-weight:800; font-size:13px;
-    cursor:pointer; color:var(--maroon); font-family:'Manrope',sans-serif; transition:background .12s ease, color .12s ease;
+    border:none; background:none; padding:clamp(3px,0.35cqw,7px) clamp(9px,0.9cqw,16px); border-radius:999px;
+    font-family:'Sora',sans-serif; font-weight:600; font-size:clamp(8px,0.7cqw,12px);
+    cursor:pointer; color:var(--ink-soft);
+    transition:background .18s ease, color .18s ease;
   }
-  .mode-toggle button.active{ background:var(--terracotta); color:var(--paper); }
-  .mode-fixed{
-    background:var(--teal); color:var(--paper); padding:10px 18px; border-radius:0; font-size:13px; font-weight:800;
-    border:2.5px solid var(--maroon);
-  }
+  .mode-toggle button.active{ background:var(--evergreen); color:var(--cream); }
 
-  .panel{
-    background:var(--paper-deep);
-    border-radius:var(--radius); padding:24px; margin-bottom:22px;
-    border:var(--bw) solid var(--maroon);
+  .action-btn{
+    appearance:none; -webkit-appearance:none;
+    display:flex; align-items:center; justify-content:center; gap:clamp(5px,0.6cqw,10px);
+    width:100%;
+    padding:clamp(6px,0.8cqw,14px) 12px;
+    border-radius:999px;
+    border:1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Sora',sans-serif; font-weight:600; font-size:clamp(9px,0.9cqw,16px);
+    cursor:pointer;
+    transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
   }
-  .panel h2{font-family:'Fraunces',serif; font-size:19px; margin:0 0 4px; font-weight:800; color:var(--maroon);}
-  .panel .sub{color:var(--ink-soft); font-size:13.5px; margin:0 0 18px; font-weight:600;}
+  .action-btn svg{ width:1.05em; height:1.05em; flex-shrink:0; }
+  .action-btn:hover{ transform:translateY(-2px); border-color:var(--accent); background:#FFFBF0; box-shadow:0 6px 16px rgba(42,30,20,0.14); }
+  .action-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .action-btn.primary{
+    background:var(--evergreen); color:var(--cream); border-color:var(--gold);
+    font-family:'Fraunces',serif; font-size:clamp(11px,1.15cqw,20px); letter-spacing:.02em;
+    box-shadow:0 8px 22px rgba(31,59,46,0.25);
+  }
+  .action-btn.primary:hover{ background:var(--evergreen); filter:brightness(1.12); box-shadow:0 12px 28px rgba(31,59,46,0.3); }
 
-  /* map — flat color block, no gradient/shadow */
+  .difficulty{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(4px,0.6cqw,10px); }
+  .diff-btn{
+    appearance:none; -webkit-appearance:none;
+    padding:clamp(4px,0.5cqw,9px) 6px; border-radius:999px;
+    border:1px solid rgba(42,36,30,0.18); background:transparent;
+    color:var(--ink-soft); font-family:'Sora',sans-serif; font-weight:600; font-size:clamp(8px,0.72cqw,12.5px);
+    cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .diff-btn:hover{ border-color:var(--accent); color:var(--ink); }
+  .diff-btn[aria-checked="true"]{ background:var(--accent); border-color:var(--accent); color:var(--cream); }
+  .diff-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .diff-note{ font-size:clamp(7px,0.64cqw,11.5px); color:var(--ink-soft); margin:0; min-height:2.9em; line-height:1.45; }
+  .difficulty.disabled .diff-btn{ opacity:.45; pointer-events:none; }
+
+  .detail-right{
+    display:flex; flex-direction:column;
+    padding:clamp(6px,0.8cqw,14px);
+    gap:clamp(6px,0.8cqw,14px);
+    overflow:hidden;
+  }
   .map-frame{
-    position:relative; height:340px; border-radius:0; overflow:hidden;
-    background:var(--blue);
-    border:var(--bw) solid var(--maroon);
+    position:relative; flex:0 0 56%;
+    border-radius:clamp(6px,0.7cqw,12px); overflow:hidden;
+    background:
+      radial-gradient(rgba(251,243,226,0.10) 1px, transparent 1.4px) 0 0 / 14px 14px,
+      var(--navy);
   }
   .map-frame svg.paths{position:absolute; inset:0; width:100%; height:100%;}
+  .map-title{
+    position:absolute; top:clamp(6px,0.7cqw,12px); left:clamp(8px,0.9cqw,14px); right:clamp(8px,0.9cqw,14px);
+    color:var(--cream); font-size:clamp(8px,0.7cqw,12.5px); line-height:1.4; opacity:.9;
+  }
+  .map-title strong{ font-family:'Fraunces',serif; font-weight:600; font-size:1.25em; display:block; opacity:1; }
   .pin{
-    position:absolute; width:24px; height:24px; transform:translate(-50%,-100%); cursor:pointer;
-    transition:transform .12s ease;
+    appearance:none; -webkit-appearance:none; background:none; border:none; padding:0;
+    position:absolute; width:clamp(16px,1.5cqw,26px); height:clamp(21px,2cqw,34px); transform:translate(-50%,-100%); cursor:pointer;
+    transition:transform .18s ease; transform-origin:50% 100%;
   }
-  .pin:hover{transform:translate(-50%,-100%) scale(1.15);}
-  .map-caption{position:absolute; bottom:10px; left:14px; color:var(--paper); font-size:12px; font-weight:800;}
+  .pin svg{ width:100%; height:100%; display:block; }
+  .pin:hover, .pin.active{ transform:translate(-50%,-100%) scale(1.22); }
+  .pin:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; border-radius:4px; }
+  .map-caption{position:absolute; bottom:clamp(5px,0.6cqw,10px); left:clamp(8px,0.9cqw,14px); color:var(--cream); opacity:.75; font-size:clamp(7px,0.62cqw,11px);}
 
-  .instructions ul{margin:0; padding-left:18px; line-height:1.85; font-size:14.5px;}
-  .instructions li strong{color:var(--maroon);}
-  .instructions li{ border-bottom:2px dashed var(--maroon); padding-bottom:8px; margin-bottom:8px; opacity:.9;}
-  .instructions li:last-child{border-bottom:none; margin-bottom:0;}
-
-  .play-btn{
-    width:100%; padding:17px; border-radius:0; cursor:pointer;
-    font-family:'Fraunces',serif; font-size:19px; font-weight:800; color:var(--paper);
-    background:var(--terracotta);
-    border:var(--bw) solid var(--maroon);
-    transition:transform .1s ease, box-shadow .1s ease;
-    text-transform:uppercase; letter-spacing:.4px;
+  .facts{
+    flex:1; min-height:0; overflow-y:auto;
+    padding:0 clamp(4px,0.5cqw,8px) clamp(4px,0.5cqw,8px);
+    scrollbar-width:thin; scrollbar-color:var(--gold) transparent;
+    -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent);
+            mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent);
   }
-  .play-btn:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--maroon);}
-  .play-btn:active{transform:translate(0,0) scale(0.99); box-shadow:none;}
+  .facts h3{
+    font-family:'Fraunces',serif; font-weight:600; font-size:clamp(11px,1.15cqw,20px);
+    margin:0 0 clamp(3px,0.3cqw,6px); color:var(--ink);
+  }
+  .fact-place{ font-size:clamp(7px,0.6cqw,10.5px); letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--accent); margin:0; }
+  .fact-story{ font-size:clamp(8px,0.74cqw,13.5px); line-height:1.55; margin:0 0 clamp(3px,0.3cqw,6px); color:var(--ink); }
+  .fact-how{ font-size:clamp(7.5px,0.66cqw,12px); line-height:1.5; color:var(--ink-soft); margin:0; }
+  .did-you-know{
+    margin:clamp(8px,0.8cqw,14px) 0 0; padding:clamp(6px,0.7cqw,12px) 0 0;
+    border-top:1px dashed rgba(199,164,103,0.8);
+    list-style:none;
+  }
+  .did-you-know li{
+    position:relative; padding-left:1.2em; margin-bottom:clamp(4px,0.45cqw,8px);
+    font-size:clamp(8px,0.72cqw,13px); line-height:1.5; color:var(--ink);
+  }
+  .did-you-know li::before{
+    content:""; position:absolute; left:0; top:.55em; width:.42em; height:.42em;
+    background:var(--accent); transform:rotate(45deg);
+  }
+  .did-you-know .dyk-label{ padding:0; font-size:clamp(7px,0.6cqw,10.5px); letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--gold-deep); }
+  .did-you-know .dyk-label::before{ display:none; }
 
-  /* modal — flat card, no fold/shadow */
+  /* play placeholder */
+  .panel{
+    background:var(--cream-card);
+    border-radius:16px;
+    border:1px solid rgba(199,164,103,0.55);
+    box-shadow:0 8px 24px rgba(42,30,20,0.12);
+    padding:24px;
+  }
+  .play-shell{text-align:center; padding:50px 20px;}
+  .play-shell .mascot{width:130px; height:130px; margin:0 auto 18px;}
+  .play-shell .mascot img{width:100%; height:100%; object-fit:contain; display:block;}
+  .play-shell h2{font-family:'Fraunces',serif; font-size:26px; margin:0 0 6px; font-weight:600; color:var(--evergreen);}
+  .play-shell p{color:var(--ink-soft); font-size:14.5px; max-width:420px; margin:0 auto;}
+
+  /* modal */
   .modal-overlay{
-    position:fixed; inset:0; background:rgba(43,27,18,0.55); display:none; align-items:center; justify-content:center;
+    position:fixed; inset:0; background:rgba(42,36,30,0.45); display:none; align-items:center; justify-content:center;
     z-index:50; padding:20px;
   }
   .modal-overlay.active{display:flex;}
   .modal{
-    background:var(--paper); border-radius:var(--radius); max-width:380px; width:100%; padding:26px; position:relative;
-    border:var(--bw) solid var(--maroon);
+    --accent:var(--evergreen);
+    background:var(--cream-card); border-radius:18px; max-width:540px; width:100%;
+    max-height:min(86vh, 720px); display:flex; flex-direction:column;
+    position:relative;
+    border:1px solid var(--gold);
+    border-top:4px solid var(--accent);
+    box-shadow:0 20px 50px rgba(42,30,20,0.3);
   }
-  .modal::before{display:none;}
-  .modal .close{position:absolute; top:20px; right:22px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--maroon); font-weight:800; z-index:4;}
-  .modal .place{font-size:12px; letter-spacing:.6px; text-transform:uppercase; color:var(--terracotta); font-weight:800;}
-  .modal h3{font-family:'Fraunces',serif; margin:6px 0 10px; font-size:22px; font-weight:800; color:var(--maroon);}
-  .modal p{font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 10px;}
-  .modal .how{font-size:13px; color:var(--ink-soft); border-top:2px dashed var(--maroon); padding-top:10px; margin-top:10px; font-weight:600;}
+  .modal:focus{ outline:none; }
+  .modal-head{ padding:24px 26px 10px; }
+  .modal-body{ padding:6px 26px 8px; overflow-y:auto; flex:1; min-height:0; }
+  .modal-foot{ padding:14px 26px 22px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-top:1px dashed rgba(199,164,103,0.7); }
+  .modal .close{
+    position:absolute; top:14px; right:14px;
+    width:32px; height:32px; border-radius:50%;
+    background:none; border:1px solid rgba(42,36,30,0.16); cursor:pointer;
+    color:var(--ink-soft); font-size:14px;
+  }
+  .modal .close:hover{ border-color:var(--gold); color:var(--ink); }
+  .modal .close:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .modal .kicker{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0;}
+  .modal h3{font-family:'Fraunces',serif; margin:4px 0 0; font-size:26px; font-weight:600; color:var(--ink); padding-right:36px;}
 
-  /* ---------- PLAY placeholder ---------- */
-  .play-shell{text-align:center; padding:50px 20px;}
-  .play-shell .mascot{width:130px; height:130px; margin:0 auto 18px;}
-  .play-shell h2{font-family:'Fraunces',serif; font-size:24px; margin:0 0 6px; font-weight:800; color:var(--maroon);}
-  .play-shell p{color:var(--ink-soft); font-size:14.5px; max-width:400px; margin:0 auto; font-weight:600;}
+  /* tutorial steps */
+  .tut-step{ display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; }
+  .tut-num{
+    width:44px; height:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:color-mix(in srgb, var(--accent) 14%, var(--cream)); color:var(--accent);
+    border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    font-family:'Fraunces',serif; font-weight:600; font-size:20px;
+  }
+  .tut-step h4{ font-family:'Fraunces',serif; font-weight:600; font-size:20px; margin:4px 0 6px; color:var(--ink); }
+  .tut-step p{ font-size:14.5px; line-height:1.65; color:var(--ink); margin:0; }
+  .tut-tip{
+    margin-top:14px; padding:10px 14px; border-radius:12px;
+    background:color-mix(in srgb, var(--gold) 16%, var(--cream));
+    font-size:13px; line-height:1.55; color:var(--ink-soft);
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .tut-tip img{ width:34px; height:34px; object-fit:contain; flex-shrink:0; }
+  .tut-dots{ display:flex; gap:6px; }
+  .tut-dots span{ width:8px; height:8px; border-radius:50%; background:rgba(42,36,30,0.18); transition:background .18s ease, transform .18s ease; }
+  .tut-dots span.on{ background:var(--accent); transform:scale(1.25); }
+  .tut-nav{ display:flex; gap:8px; }
+  .pill-btn{
+    appearance:none; -webkit-appearance:none;
+    padding:9px 18px; border-radius:999px; cursor:pointer;
+    font-family:'Sora',sans-serif; font-weight:600; font-size:13px;
+    border:1px solid rgba(42,36,30,0.18); background:var(--cream); color:var(--ink);
+    transition:border-color .18s ease, filter .18s ease;
+  }
+  .pill-btn:hover{ border-color:var(--gold); }
+  .pill-btn:disabled{ opacity:.4; cursor:default; }
+  .pill-btn.solid{ background:var(--evergreen); border-color:var(--gold); color:var(--cream); }
+  .pill-btn.solid:hover{ filter:brightness(1.12); }
+  .pill-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* rules */
+  .rules-section{ margin-bottom:16px; }
+  .rules-section h4{
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    color:var(--accent); margin:0 0 6px;
+  }
+  .rules-section ul{ margin:0; padding-left:18px; }
+  .rules-section li{ font-size:14px; line-height:1.65; color:var(--ink); margin-bottom:4px; }
+  .rules-section li strong{ color:var(--evergreen); }
+  .rules-note{ font-size:12.5px; color:var(--ink-soft); margin:0; }
+
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--maroon); color:var(--paper); padding:12px 22px; border-radius:0; font-size:13.5px; font-weight:800;
+    background:var(--evergreen); color:var(--cream); padding:12px 22px; border-radius:999px;
+    font-size:13.5px; font-weight:600;
+    border:1px solid var(--gold);
     opacity:0; pointer-events:none; transition:all .3s ease; z-index:80;
-    border:2px solid var(--marigold);
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  /* ---------- footer ---------- */
-  .footer{
-    margin:48px -20px 0; padding:22px 20px; border-top:var(--bw) solid var(--maroon);
-    background:var(--light-cream);
-    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  /* ---------- narrow screens: collapse the pinned illustration into a normal flowing page ---------- */
+  @media (max-width:760px){
+    .hero.view.active{ width:100%; }
+    .hero .bg{ width:100%; max-width:none; max-height:none; height:28vh; min-height:150px; object-fit:cover; object-position:center 35%; }
+    .hero-content{ position:static; container-type:normal; }
+    .hero .header-controls{ position:static; justify-content:flex-end; padding:14px 16px 0; }
+    /* sits on the same row as the controls, just below the cropped image */
+    .hero .home-link{ top:calc(max(28vh, 150px) + 14px); left:16px; }
+    .hero .pill-lang{ font-size:13px; }
+    .hero .avatar{ width:36px; height:36px; font-size:14px; }
+    .header-block{ position:static; transform:none; padding:6px 16px 4px; }
+    .masthead{ font-size:34px; }
+    .cards-block{ position:static; transform:none; width:100%; max-width:520px; margin:18px auto 0; padding:0 16px 40px; }
+    .grid{ grid-template-columns:1fr; gap:16px; }
+    .game-card{ border-radius:14px; border-width:2px; }
+    .game-card:hover{ transform:translateY(-4px); }
+    .plate{ border-radius:12px 12px 0 0; }
+    .plate svg{ width:44px; }
+    .card-body{ padding:14px 18px 18px; }
+    .card-eyebrow{ font-size:11px; margin-bottom:4px; }
+    .game-card h2{ font-size:22px; margin-bottom:4px; }
+    .game-card .native{ font-size:13px; }
+    .card-cta{ gap:10px; padding-top:12px; }
+    .flourish-line{ width:40px; }
+    .arrow-btn{ width:38px; height:38px; }
+    .detail-shell{ position:static; display:flex; flex-direction:column; gap:16px; padding:14px 16px 40px; height:auto; }
+    .detail-left{ padding:20px 20px 22px; gap:10px; }
+    .detail-eyebrow{ font-size:11px; }
+    .detail-title{ font-size:32px; }
+    .detail-native{ font-size:13px; }
+    .detail-blurb{ font-size:14px; margin-bottom:6px; }
+    .mode-toggle button{ font-size:12.5px; padding:6px 14px; }
+    .action-btn{ font-size:15px; padding:12px; }
+    .action-btn.primary{ font-size:18px; padding:14px; }
+    .diff-btn{ font-size:13px; padding:8px 6px; }
+    .diff-note{ font-size:12px; }
+    .detail-right{ padding:10px; gap:12px; }
+    .map-frame{ flex:none; height:230px; }
+    .map-title{ font-size:12px; }
+    .pin{ width:24px; height:32px; }
+    .map-caption{ font-size:11px; }
+    .facts{ overflow:visible; -webkit-mask-image:none; mask-image:none; }
+    .facts h3{ font-size:20px; }
+    .fact-place{ font-size:10.5px; }
+    .fact-story{ font-size:14px; }
+    .fact-how{ font-size:12.5px; }
+    .did-you-know li{ font-size:13.5px; }
+    .did-you-know .dyk-label{ font-size:10.5px; }
+    .modal-head{ padding:22px 20px 8px; }
+    .modal-body{ padding:6px 20px 8px; }
+    .modal-foot{ padding:12px 20px 18px; }
   }
-  .footer .brand{display:flex; align-items:center; gap:10px;}
-  .footer .brand .chip{width:30px; height:30px; flex-shrink:0; background:var(--paper); border:2px solid var(--maroon); display:flex; align-items:center; justify-content:center;}
-  .footer .brand .chip svg{width:18px; height:18px;}
-  .footer .brand strong{font-family:'Fraunces',serif; font-size:14px; color:var(--maroon); display:block;}
-  .footer .brand span{font-size:11px; color:var(--ink-soft); font-weight:600;}
-  .footer .tag{font-size:11px; font-weight:700; color:var(--ink-soft); font-family:'Manrope',monospace; letter-spacing:.3px;}
-
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="topbar">
-    <div class="wordmark">
-      <div class="logo-chip">
-        <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/><circle cx="20" cy="6" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="20" cy="34" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="6" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="34" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/></svg>
-      </div>
-      <div class="word-text">
-        KREEDA
-        <span class="dev">క్రీడ · ancient games, mapped</span>
-      </div>
+<!-- ============ GAMES VIEW ============ -->
+<div class="view hero active" id="view-home">
+  <img class="bg" src="bg.png" alt="">
+
+  <div class="hero-content">
+
+    <a class="pill-lang home-link" href="kreeda-home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      Home
+    </a>
+
+    <div class="header-controls">
+      <button class="pill-lang" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"/></svg>
+        Languages
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="avatar" type="button" aria-label="Account">A</button>
     </div>
+
+    <div class="header-block">
+      <h1 class="masthead">Games</h1>
+    </div>
+
+    <div class="cards-block">
+      <div class="grid" id="game-grid"></div>
+    </div>
+
   </div>
+</div>
 
-  <!-- ============ HOME VIEW ============ -->
-  <div class="view active" id="view-home">
+<!-- ============ GAME SCREEN ============ -->
+<div class="view hero" id="view-detail">
+  <img class="bg" src="bg.png" alt="">
 
-    <div class="hero has-corners">
-      <div class="hero-inner">
-        <div class="mascot" id="mascot-home"></div>
-        <div class="hero-text">
-          <div class="hero-badge">⬢ Six Games · Six Journeys Out of India</div>
-          <h1 class="display">Six games. A thousand years.<br>One board each.</h1>
-          <p>Every game here was born in India — some stayed close to home, some crossed oceans and came back with new names. Tap a game to see where it's been.</p>
-          <div class="speech">Namaste! I'm Kreedu — pick a game and I'll play with you 🎲</div>
+  <div class="hero-content">
+
+    <button class="pill-lang home-link" type="button" onclick="goHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      All games
+    </button>
+
+    <div class="header-controls">
+      <button class="pill-lang" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"/></svg>
+        Languages
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="avatar" type="button" aria-label="Account">A</button>
+    </div>
+
+    <div class="detail-shell" id="detail-shell">
+
+      <section class="detail-card detail-left" aria-labelledby="d-title">
+        <p class="detail-eyebrow" id="d-eyebrow">—</p>
+        <h1 class="detail-title" id="d-title">—</h1>
+        <p class="detail-native" id="d-native">—</p>
+        <p class="detail-blurb" id="d-blurb">—</p>
+
+        <div id="d-mode-area"></div>
+
+        <button class="action-btn primary" type="button" onclick="startPlay()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+          Play Now
+        </button>
+        <button class="action-btn" type="button" onclick="openTutorial()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5M12 17h.01"/></svg>
+          Tutorial
+        </button>
+        <button class="action-btn" type="button" onclick="openRules()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/></svg>
+          Rules
+        </button>
+
+        <div class="difficulty" id="d-difficulty" role="radiogroup" aria-label="Difficulty">
+          <button class="diff-btn" type="button" role="radio" data-level="easy">Easy</button>
+          <button class="diff-btn" type="button" role="radio" data-level="medium">Medium</button>
+          <button class="diff-btn" type="button" role="radio" data-level="hard">Hard</button>
         </div>
-      </div>
-    </div>
+        <p class="diff-note" id="d-diff-note" aria-live="polite"></p>
+      </section>
 
-    <div class="section-label"><h2>Choose a game</h2><div class="thread"></div><span class="diamond"></span><div class="thread"></div></div>
-    <div class="grid" id="game-grid"></div>
+      <aside class="detail-card detail-right" aria-label="Where it's played">
+        <div class="map-frame" id="map-frame">
+          <svg class="paths" id="map-paths"></svg>
+          <div class="map-title" id="map-title"></div>
+          <div id="map-pins"></div>
+          <div class="map-caption" id="map-caption"></div>
+        </div>
+        <div class="facts" id="d-facts"></div>
+      </aside>
 
-    <div class="section-label"><h2>Physical Wellbeing</h2><div class="thread"></div><span class="diamond"></span><div class="thread"></div></div>
-    <div class="module-card has-corners" onclick="openWellbeing()">
-      <div class="icon-wrap">
-        <svg viewBox="0 0 48 48" fill="none"><path d="M24 6 C20 18, 20 28, 24 38 C28 28, 28 18, 24 6 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 16 C16 20, 12 28, 16 36 C20 37, 23 37, 24 36 C21 28, 22 21, 24 16 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2" stroke-linejoin="round"/><path d="M24 16 C32 20, 36 28, 32 36 C28 37, 25 37, 24 36 C27 28, 26 21, 24 16 Z" fill="#EFDFB8" stroke="#5C140F" stroke-width="2" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="module-text">
-        <h3>Physical Wellbeing</h3>
-        <p class="native">శారీరిక &middot; Yoga &middot; Vyayam &middot; Dhyana</p>
-        <p class="tagline">India's traditional fitness system, brought together into one personal daily plan — flexibility from Yoga, strength from Vyayam, a settled mind from Dhyana, paced by the ancient <em>ardhashakti</em> principle. Not a game — a full offline wellbeing companion.</p>
-        <div class="sections-row"><span>A. Yoga</span><span>B. Vyayam</span><span>C. Dhyana</span></div>
-      </div>
-      <div class="explore">Build My Plan &rarr;</div>
     </div>
   </div>
+</div>
 
-  <!-- ============ GAME DETAIL VIEW ============ -->
-  <div class="view" id="view-detail">
-    <button class="backbtn" onclick="goHome()">&larr; Back to all games</button>
-
-    <div class="game-head">
-      <div>
-        <h1 class="display" id="d-title">—</h1>
-        <div class="native-line" id="d-native">—</div>
-      </div>
-      <div id="d-mode-area"></div>
+<!-- ============ PLAY PLACEHOLDER VIEW ============ -->
+<div class="view" id="view-play">
+  <div class="page">
+    <div class="page-top">
+      <button class="backbtn" type="button" onclick="goDetail()">&larr; Back to game info</button>
     </div>
-
-    <div class="panel has-corners">
-      <h2>Where it's played</h2>
-      <p class="sub" id="d-map-sub">Tap a pin to read its story.</p>
-      <div class="map-frame" id="map-frame">
-        <svg class="paths" id="map-paths"></svg>
-        <div id="map-pins"></div>
-        <div class="map-caption" id="map-caption">scroll / tap pins</div>
-      </div>
-    </div>
-
-    <div class="panel instructions has-corners">
-      <h2>How to play</h2>
-      <ul id="d-instructions"></ul>
-    </div>
-
-    <button class="play-btn" onclick="startPlay()">▶ Play</button>
-  </div>
-
-  <!-- ============ PLAY PLACEHOLDER VIEW ============ -->
-  <div class="view" id="view-play">
-    <button class="backbtn" onclick="goDetail()">&larr; Back to game info</button>
-    <div class="play-shell panel has-corners">
-      <div class="mascot" id="mascot-play"></div>
+    <div class="play-shell panel">
+      <div class="mascot"><img src="kreedu-mascot.png" alt="Kreedu, the KREEDA mascot"></div>
       <h2 id="play-title">Loading board…</h2>
       <p id="play-sub">This is where the actual game board renders. Structural placeholder for now.</p>
     </div>
   </div>
-
-  <div class="footer">
-    <div class="brand">
-      <div class="chip"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/></svg></div>
-      <div>
-        <strong>KREEDA</strong>
-        <span>Six traditional Indian games, mapped &amp; playable offline</span>
-      </div>
-    </div>
-    <div class="tag">100% Offline · Six Games · One Mascot</div>
-  </div>
-
 </div>
 
-<!-- Pin dialog modal -->
+<!-- Tutorial / Rules sheet -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal has-corners">
-    <button class="close" onclick="closeModal()">✕</button>
-    <div class="place" id="modal-place">PLACE</div>
-    <h3 id="modal-name">Game name here</h3>
-    <p id="modal-fact">Fun fact here.</p>
-    <div class="how" id="modal-how">How it travelled here.</div>
+  <div class="modal" id="modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="close" type="button" aria-label="Close" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <p class="kicker" id="modal-kicker"></p>
+      <h3 id="modal-title"></h3>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot" id="modal-foot"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------------- Mascot SVG (Kreedu) ---------------- */
-const mascotImg = '<img src="kreedu-mascot.png" alt="Kreedu, the KREEDA mascot">';
-document.getElementById('mascot-home').innerHTML = mascotImg;
-document.getElementById('mascot-play').innerHTML = mascotImg;
-
-/* ---------------- kolam corner accents ----------------
-   Ported from the React FolkArtFrame/KolamCorner component so every bordered
-   card/panel/modal in this prototype gets the same folk-art bracket accents. */
-function kolamCornerSVG(rotation){
-  return `<svg width="16" height="16" viewBox="0 0 32 32"><g transform="rotate(${rotation} 16 16)">`
-    + `<path d="M2 2 L2 18 L6 18 L6 6 L18 6 L18 2 Z" fill="#5C140F"/>`
-    + `<circle cx="12" cy="12" r="3" fill="#D9587B" stroke="#5C140F" stroke-width="1.5"/>`
-    + `<circle cx="6" cy="24" r="2" fill="#5C140F"/>`
-    + `<circle cx="24" cy="6" r="2" fill="#5C140F"/>`
-    + `</g></svg>`;
-}
-function addCorners(el){
-  if(!el || el.dataset.corneredDone) return;
-  el.dataset.corneredDone = '1';
-  [['corner-tl',0], ['corner-tr',90], ['corner-br',180], ['corner-bl',270]].forEach(([cls,rot])=>{
-    const wrap = document.createElement('div');
-    wrap.className = 'kolam-wrap ' + cls;
-    wrap.innerHTML = kolamCornerSVG(rot);
-    el.appendChild(wrap);
-  });
-}
-function addCornersAll(root){
-  (root || document).querySelectorAll('.has-corners').forEach(addCorners);
-}
-
 /* ---------------- Icons per game (simple folk-motif svgs) ---------------- */
 const icons = {
-  ladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18M17 3v18M7 8h10M7 13h10M7 18h10"/></svg>`,
-  tiger:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 4H18l-2 3 2 3h-3.5L12 17l-2.5-4H6l2-3-2-3h3.5L12 3z"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>`,
-  dice:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/></svg>`,
-  seeds:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c0-3 4-5 9-5s9 2 9 5-4 5-9 5-9-2-9-5z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>`,
-  chess:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M8 21l1-5h6l1 5"/><path d="M9 16l-1-6h8l-1 6"/><path d="M12 10V5M9.5 6.5h5"/></svg>`,
-  mill:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16"/><rect x="8.5" y="8.5" width="7" height="7"/><path d="M4 12h4.5M15.5 12H20M12 4v4.5M12 15.5V20"/></svg>`
+  ladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18M17 3v18M7 8h10M7 13h10M7 18h10"/></svg>`,
+  tiger:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 4H18l-2 3 2 3h-3.5L12 17l-2.5-4H6l2-3-2-3h3.5L12 3z"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>`,
+  dice:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/></svg>`,
+  seeds:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c0-3 4-5 9-5s9 2 9 5-4 5-9 5-9-2-9-5z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>`,
+  chess:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M8 21l1-5h6l1 5"/><path d="M9 16l-1-6h8l-1 6"/><path d="M12 10V5M9.5 6.5h5"/></svg>`,
+  mill:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16"/><rect x="8.5" y="8.5" width="7" height="7"/><path d="M4 12h4.5M15.5 12H20M12 4v4.5M12 15.5V20"/></svg>`
 };
 
 /* ---------------- Game data ---------------- */
 const games = [
   {
     id:'vaikunthapali', name:'Vaikunthapali', native:'వైకుంఠపాళి · also Gyan Chauper, Moksha Patam',
-    icon:'ladder', tile:'blue', color:'var(--indigo)',
+    icon:'ladder', accent:'var(--navy)',
     hasSoloMode:true,
     mapSub:'Traced its own path out of India — tap to follow it.',
     path:true,
@@ -446,11 +709,10 @@ const games = [
       {x:52,y:26,place:'UNITED KINGDOM',name:'Snakes and Ladders',fact:'Colonial families carried the board home; publishers stripped the moral squares and made it a race.',how:'Brought back by returning colonial families and printed by British board-game makers.'},
       {x:74,y:24,place:'UNITED STATES',name:'Chutes and Ladders',fact:'Milton Bradley localised it further in the 1940s, swapping snakes for chutes.',how:'Licensed and re-illustrated from the British version.'}
     ],
-    instructions:['<strong>Objective:</strong> Be first to reach square 100 from square 1.','<strong>Move:</strong> Roll the die and advance that many squares.','<strong>Ladders</strong> carry you up, <strong>snakes</strong> pull you down.','<strong>Solo mode:</strong> play against the clock, no opponent needed — true to the original.']
   },
   {
     id:'puli-meka', name:'Puli Meka Aata', native:'పులి మేక ఆట · Aadu Puli Aatam, Bagh-Chal',
-    icon:'tiger', tile:'terracotta', color:'var(--vermilion)',
+    icon:'tiger', accent:'var(--brick)',
     hasSoloMode:false,
     mapSub:'A hunt that crossed the Himalayas.',
     path:true,
@@ -458,11 +720,10 @@ const games = [
       {x:38,y:42,place:'SOUTH INDIA',name:'Puli Meka Aata',fact:'Three tigers hunt fifteen goats on lines carved into temple floors — you can still find boards etched into stone at Chamundi Hill, Mysore.',how:'Origin. Played for centuries in Tamil Nadu, Andhra Pradesh and Karnataka temple courtyards.'},
       {x:56,y:22,place:'NEPAL',name:'Bagh-Chal',fact:'Same hunt, tougher odds — four tigers instead of three, twenty goats instead of fifteen, on a different grid.',how:'Carried across trade and pilgrim routes into the Himalayas.'}
     ],
-    instructions:['<strong>Two roles:</strong> tigers hunt, goats trap.','<strong>Tigers</strong> win by capturing enough goats.','<strong>Goats</strong> win by blocking every tiger from moving.','Play as either side against Kreedu.']
   },
   {
     id:'ashta-chamma', name:'Ashta Chamma', native:'అష్ట చెమ్మ · Chowka Bara, Daayam, Vimanam',
-    icon:'dice', tile:'marigold', color:'var(--saffron-deep)',
+    icon:'dice', accent:'var(--gold-deep)',
     hasSoloMode:false,
     mapSub:'One game, a dozen regional names — before it ever left India.',
     path:true,
@@ -472,11 +733,10 @@ const games = [
       {x:34,y:60,place:'TAMIL NADU',name:'Daayam',fact:'Played on cloth boards stitched with beads, passed down through generations of a household.',how:'Southern regional variant.'},
       {x:48,y:20,place:'NORTH INDIA',name:'Pachisi → Ludo',fact:'Its royal cousin — Akbar reportedly played a life-sized version at Fatehpur Sikri with courtiers as pieces.',how:'Parallel dice-and-cross lineage, later exported by the British as Ludo.'}
     ],
-    instructions:['<strong>Objective:</strong> Race all 4 tokens home before your opponents.','<strong>Move:</strong> Throw the cowries — only Atta (8) or Chamma (4) lets you enter the board.','Land on a rival to send them back to start.','Reach the centre square exactly to win.']
   },
   {
     id:'vamana-guntalu', name:'Vaamana Guntalu', native:'వామన గుంటలు · Pallanguzhi',
-    icon:'seeds', tile:'green', color:'var(--teal)',
+    icon:'seeds', accent:'var(--evergreen)',
     hasSoloMode:false,
     mapSub:'Seeds that sailed the Indian Ocean.',
     path:true,
@@ -486,11 +746,10 @@ const games = [
       {x:64,y:56,place:'MALAYSIA',name:'Congkak',fact:'The pit-and-seed format re-appears almost unchanged, thousands of kilometres east.',how:'Carried by Indian Ocean trade routes.'},
       {x:52,y:64,place:'EAST AFRICA',name:'Bao / Omweso family',fact:'Distant mancala cousins with a strikingly similar board logic.',how:'Possibly linked via the same pre-colonial trade network — history is still debated here.'}
     ],
-    instructions:['<strong>Objective:</strong> Collect more seeds than your opponent.','<strong>Sow</strong> seeds from one pit, one at a time, into the following pits.','Empty a pit on your side exactly — capture the opposite pit.','Round ends when one side is fully emptied.']
   },
   {
     id:'chaturangam', name:'Chaturangam', native:'చతురంగం · Chadarangam, Shatranj',
-    icon:'chess', tile:'teal', color:'#3D2B56',
+    icon:'chess', accent:'var(--plum)',
     hasSoloMode:false,
     mapSub:'Four divisions of an army, reborn on every continent.',
     path:true,
@@ -500,11 +759,10 @@ const games = [
       {x:48,y:22,place:'EUROPE',name:'Chess',fact:'The queen and bishop got their modern powers only in 15th-century Europe.',how:'Spread through the Islamic world into Spain and Italy.'},
       {x:76,y:34,place:'CHINA / JAPAN',name:'Xiangqi & Shogi',fact:'A separate eastward branch — different board, different pieces, same shared root.',how:'Parallel spread along Silk Road contact.'}
     ],
-    instructions:['<strong>Objective:</strong> Checkmate the opposing king.','Each piece moves by its own rule — pawns, knights, bishops, rooks, the queen, the king.','Capture by landing on an opponent\'s piece.','Play as Chaturanga\'s modern descendant, chess rules, against Kreedu.']
   },
   {
     id:'daadi-aata', name:'Daadi Aata', native:'దాడి ఆట · Navakankari, Nine Men\'s Morris',
-    icon:'mill', tile:'pink', color:'#7A5C3E',
+    icon:'mill', accent:'var(--rose)',
     hasSoloMode:false,
     mapSub:'No single birthplace — just pins where it has quietly lived for millennia.',
     path:false,
@@ -513,40 +771,156 @@ const games = [
       {x:52,y:30,place:'ROME',name:'Nine Men\'s Morris',fact:'Boards were carved into the stone of cathedrals and castles for soldiers and nobles alike.',how:'Independently documented from around 1400 BCE.'},
       {x:50,y:24,place:'EGYPT',name:'Mill game boards',fact:'Some of the oldest surviving boards of this family come from ancient Egyptian sites.',how:'A separate, equally old thread of the same idea.'}
     ],
-    instructions:['<strong>Objective:</strong> Reduce your opponent to two pieces, or block all their moves.','<strong>Phase 1:</strong> Place all 9 of your seeds, one per turn.','Line up 3 in a row to form a "mill" and remove an opponent\'s piece.','<strong>Phase 2:</strong> Slide pieces along lines to keep forming new mills.']
   }
 ];
 
-/* ---------------- render home grid ---------------- */
+/* ---------------- Per-game screen content ----------------
+   Everything the game screen shows beyond the map pins: intro line, tutorial
+   walkthrough, full rules, what each difficulty changes, and extra facts.
+   The rules are written as the house rules KREEDA's boards will follow. */
+const screens = {
+  'vaikunthapali': {
+    blurb:'A board of virtue and vice. Ladders of good deeds lift you, snakes of bad ones drag you down, and square 100 is Vaikuntha itself.',
+    tutorial:[
+      {t:'Meet the board', d:'One hundred squares, climbing from the bottom-left corner. The path snakes back and forth: left to right on one row, right to left on the next.'},
+      {t:'Roll and move', d:'Roll one die and move your token forward that many squares. Everyone starts just off the board, before square 1.'},
+      {t:'Climb the ladders', d:'Land exactly on the foot of a ladder and you climb straight to its top. Ladders start on squares of virtue: faith, generosity, knowledge.'},
+      {t:'Beware the snakes', d:'Land on a snake\'s head and you slide down to its tail. Snakes wait on squares of vice: greed, pride, anger.'},
+      {t:'Reach Vaikuntha', d:'You need the exact number to land on 100. Roll too high and your token stays where it is until next turn.', tip:'In Solo mode there\'s no opponent. Try to reach 100 in as few rolls as you can.'}
+    ],
+    rules:[
+      {h:'Goal', items:['Be the first to land exactly on square 100.']},
+      {h:'Your turn', items:['Roll the die and move that many squares along the path.','<strong>Ladder foot:</strong> climb to the top of the ladder.','<strong>Snake head:</strong> slide down to the tail.','Two tokens can share a square. Nobody gets knocked off.']},
+      {h:'Finishing', items:['You must land on 100 with an exact roll. If the roll would take you past 100, you don\'t move.']},
+      {h:'Modes', items:['<strong>vs Kreedu:</strong> take turns racing Kreedu.','<strong>Solo:</strong> just you and the board, true to its origins as a meditation on karma.']}
+    ],
+    difficulty:{easy:'More ladders and shorter snakes.', medium:'The classic balance of virtues and vices.', hard:'Longer snakes: greed and pride bite deeper.'},
+    facts:['Older boards often had more snakes than ladders, a reminder that the path of vice is easier to fall into.','In many Telugu homes the game is played through the night on Vaikuntha Ekadashi, when families stay awake in vigil.','The British version dropped the moral squares entirely, so ladders and snakes were just luck.']
+  },
+  'puli-meka': {
+    blurb:'Three tigers against fifteen goats. Tigers hunt by leaping; goats win together by leaving the tigers nowhere to go.',
+    tutorial:[
+      {t:'The board', d:'A triangle of lines crossed by horizontal rows, making 23 points where pieces stand. Pieces only ever move along the lines.'},
+      {t:'Tigers take their places', d:'The three tigers start on the board, one at the top point. The goats wait off the board.'},
+      {t:'Goats come in', d:'On each goat turn, place one new goat on any empty point. Tigers move while the goats are still arriving.'},
+      {t:'How tigers hunt', d:'A tiger captures by jumping over a goat next to it, in a straight line, onto the empty point just beyond. The goat is removed.'},
+      {t:'How goats win', d:'Once all goats are placed, they slide one step along a line. Surround the tigers so none of them can move or jump.', tip:'As the goats, keep them in solid rows. A goat with an empty point behind it can be jumped.'}
+    ],
+    rules:[
+      {h:'Setup', items:['3 tigers start on the board; 15 goats start off it.','Goats move first.']},
+      {h:'Moving', items:['Any piece may step to a neighbouring empty point along a line.','Goats may not move until all 15 have been placed.','Only tigers capture, by jumping one goat in a straight line onto an empty point.']},
+      {h:'Winning', items:['<strong>Tigers</strong> win by capturing 6 goats.','<strong>Goats</strong> win when no tiger can make a move.']},
+      {h:'Sides', items:['Play as the tigers or the goats. Kreedu takes the other side.']}
+    ],
+    difficulty:{easy:'Kreedu leaves gaps in its lines and misses some jumps.', medium:'Kreedu sees every jump one move ahead.', hard:'Kreedu plans traps several moves deep.'},
+    facts:['Boards for this game are carved into the stone floors of temples across South India. You can still spot them if you look down.','Nepal\'s Bagh-Chal is a close cousin with four tigers and twenty goats. The name means "tiger moves".','Played well by both sides, the game tends to favour the goats. The tigers have to strike early.']
+  },
+  'ashta-chamma': {
+    blurb:'A race of four tokens to the centre, decided by the throw of four cowrie shells. Throw Ashta or Chamma to bring a token onto the board.',
+    tutorial:[
+      {t:'The board', d:'A 5×5 grid. Each player starts from the middle square of their own side, their "home". The squares marked with a cross are safe.'},
+      {t:'Throw the cowries', d:'Throw four shells and count how many land mouth-up. 1, 2 or 3 moves that many. All four up is <strong>Chamma</strong> (4). All four down is <strong>Ashta</strong> (8).'},
+      {t:'Enter the board', d:'A token only enters with a Chamma or an Ashta. Either of those throws also gives you another throw.'},
+      {t:'Race and capture', d:'Tokens travel around the outer ring, then spiral inward. Land on an opponent\'s token outside a safe square and it goes back home. You also get an extra throw.'},
+      {t:'Reach the centre', d:'You must capture at least one token before you can enter the inner ring. Bring all four tokens to the centre square with exact throws to win.', tip:'Park tokens on crossed squares when an opponent is close behind. Nobody can capture you there.'}
+    ],
+    rules:[
+      {h:'Setup', items:['Each player has 4 tokens, waiting off the board at their home square.','Play moves anticlockwise.']},
+      {h:'Throws', items:['Mouths up 1–3: move that many squares.','<strong>Chamma</strong> (4 up) = 4, <strong>Ashta</strong> (4 down) = 8. Both earn another throw.','A token can only enter the board on a Chamma or Ashta.']},
+      {h:'Capturing', items:['Landing on an opponent\'s token sends it back home and earns an extra throw.','Crossed squares are safe. No captures there.','You must capture at least once before entering the inner ring.']},
+      {h:'Winning', items:['First to bring all 4 tokens to the centre square with exact throws.']}
+    ],
+    difficulty:{easy:'Kreedu moves its tokens one at a time and rarely hunts yours.', medium:'Kreedu captures whenever it can.', hard:'Kreedu blocks your path and plans ahead for safe squares.'},
+    facts:['Cowrie shells were once used as money across the Indian Ocean. Here they work as dice.','Kavade, the Kannada word for cowrie, gives the game one of its many names across Karnataka.','Some families play with tamarind seeds split in half, reading flat side up or down instead of cowries.']
+  },
+  'vamana-guntalu': {
+    blurb:'Fourteen pits, a handful of seeds each, and a lot of counting ahead. Sow seeds around the board and capture the pits that fall your way.',
+    tutorial:[
+      {t:'The board', d:'Two rows of seven pits: the row nearest you is yours. Every pit starts with 5 seeds.'},
+      {t:'Sowing', d:'Pick up all the seeds in one of your pits and drop them one at a time into the following pits, anticlockwise, around both rows.'},
+      {t:'Keep going', d:'When you drop your last seed, pick up everything in the <em>next</em> pit and keep sowing.'},
+      {t:'Capture', d:'If the next pit is empty, skip it and take every seed in the pit after that. Two empty pits in a row end your turn with nothing.'},
+      {t:'Pasu', d:'Whenever a pit reaches exactly 4 seeds during sowing, the player whose side it\'s on takes them straight away. This is called <strong>pasu</strong>.', tip:'Count before you pick up. The pit your last seed lands in decides everything.'}
+    ],
+    rules:[
+      {h:'Setup', items:['14 pits in two rows of 7, with 5 seeds in each pit.','Each player owns the row nearest them.']},
+      {h:'Your turn', items:['Pick up all seeds from one of your non-empty pits and sow them one by one, anticlockwise.','After the last seed, lift the next pit and keep sowing.','Next pit empty: capture the pit beyond it, then your turn ends.','Two empty pits in a row: your turn ends.']},
+      {h:'Pasu', items:['Any pit that reaches 4 seeds while sowing is captured at once by the owner of that side.']},
+      {h:'Winning', items:['The round ends when a player cannot move. The player with the most seeds wins.']}
+    ],
+    difficulty:{easy:'Kreedu sows from whichever pit looks fullest.', medium:'Kreedu counts ahead to capture where it can.', hard:'Kreedu counts whole chains of sowing, plus your best reply.'},
+    facts:['Boards are often carved from a single block of wood, some shaped like fish or boats, and handed down through generations.','"Pasu" means cow. A pit of four seeds is a prize worth taking.','Mancala games like this are among the oldest board games still played anywhere.']
+  },
+  'chaturangam': {
+    blurb:'The four divisions of an ancient Indian army on an 8×8 board, and the ancestor of chess. Trap the opposing Raja to win.',
+    tutorialHref:'chadarangam/dist/index.html?start=tutorial',
+    tutorial:[],
+    rules:[
+      {h:'Pieces', items:['<strong>Raja</strong> (king): one step in any direction.','<strong>Mantri</strong> (minister): one step diagonally.','<strong>Gaja</strong> (elephant): jumps exactly two squares diagonally, leaping over anything in between.','<strong>Ashva</strong> (horse): moves like a chess knight.','<strong>Ratha</strong> (chariot): any distance in a straight line.','<strong>Padati</strong> (foot soldier): one step forward, captures one step diagonally forward.']},
+      {h:'Special rules', items:['Foot soldiers never move two squares, even on their first move.','A foot soldier reaching the far rank becomes a Mantri.','There is no castling.']},
+      {h:'Winning', items:['Checkmate the opposing Raja, <strong>or</strong> capture every other piece and leave the Raja bare.']}
+    ],
+    rulesNote:'Tutorial opens the interactive Chaturangam lessons.',
+    difficulty:{easy:'Sishya, the novice: plays quickly and loosely.', medium:'Yodha, the warrior: solid and hard to trick.', hard:'Senapati, the general: calculates deeply and punishes mistakes.'},
+    facts:['"Chaturanga" means four limbs: infantry, cavalry, elephants and chariots, the divisions of a Gupta-era army.','The Gaja\'s two-square diagonal jump survived in Persian shatranj as the "alfil". It became the bishop only in 15th-century Europe.','The Mantri\'s single diagonal step grew into the modern queen, now the strongest piece on the board.']
+  },
+  'daadi-aata': {
+    blurb:'Nine pieces each on three nested squares. Line up three in a row to form a mill, and every mill takes one of your opponent\'s pieces.',
+    tutorial:[
+      {t:'The board', d:'Three squares, one inside another, joined at the middle of each side. That gives 24 points where lines meet.'},
+      {t:'Place your pieces', d:'Take turns placing one of your 9 pieces on any empty point. The game has already started, so place with purpose.'},
+      {t:'Make a mill', d:'Three of your pieces in a straight line along the board\'s lines form a <strong>mill</strong>. Each new mill lets you remove one of your opponent\'s pieces.'},
+      {t:'Slide', d:'Once everyone has placed all 9, take turns sliding a piece to a neighbouring empty point. Open a mill and close it again to capture again.'},
+      {t:'Fly and finish', d:'When a player is down to 3 pieces, they may jump to any empty point. Reduce your opponent to 2 pieces, or leave them no move, to win.', tip:'A piece that can swing back and forth between two mills captures every other turn.'}
+    ],
+    rules:[
+      {h:'Setup', items:['24 points on three nested squares. Each player has 9 pieces.']},
+      {h:'Phase 1: placing', items:['Take turns placing one piece on any empty point.']},
+      {h:'Phase 2: moving', items:['Slide one piece along a line to a neighbouring empty point.','With exactly 3 pieces left, you may jump to any empty point.']},
+      {h:'Mills', items:['Three in a row along a line forms a mill. Remove one opponent piece.','Pieces inside a mill can\'t be removed, unless every one of the opponent\'s pieces is in a mill.']},
+      {h:'Winning', items:['Reduce your opponent to 2 pieces, or block every move they have.']}
+    ],
+    difficulty:{easy:'Kreedu places pieces almost at random.', medium:'Kreedu blocks your two-in-a-rows.', hard:'Kreedu sets up double mills and traps your pieces.'},
+    facts:['The name Nine Men\'s Morris likely comes from "merels", an old word for game pieces, not from Morris dancing.','Boards of this game have been found scratched into stone on several continents. It seems to have been invented more than once.','Shakespeare mentions a "nine men\'s morris" board in A Midsummer Night\'s Dream.']
+  }
+};
+
+/* ---------------- render games grid ---------------- */
+const arrowSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
 const grid = document.getElementById('game-grid');
 games.forEach(g=>{
-  const card = document.createElement('div');
-  card.className='card has-corners tile-'+g.tile;
+  const card = document.createElement('article');
+  card.className = 'game-card';
+  card.style.setProperty('--accent', g.accent);
   card.innerHTML = `
-    <div class="icon-wrap">${icons[g.icon]}</div>
-    <h3>${g.name}</h3>
-    <p class="native">${g.native}</p>
-    <span class="badge">${g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu'}</span>
-    <div class="explore">Explore →</div>
+    <div class="plate">${icons[g.icon]}</div>
+    <div class="card-body">
+      <p class="card-eyebrow">${g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu'}</p>
+      <h2>${g.name}</h2>
+      <p class="native">${g.native}</p>
+      <div class="card-cta">
+        <span class="flourish-line"></span>
+        <button class="arrow-btn" type="button" aria-label="Explore ${g.name}">${arrowSVG}</button>
+        <span class="flourish-line"></span>
+      </div>
+    </div>
   `;
   card.onclick = ()=>openGame(g.id);
   grid.appendChild(card);
-  addCorners(card);
 });
-
-/* stamp corner accents on every static bordered surface (hero, panels, modal) */
-addCornersAll();
 
 /* ---------------- navigation ---------------- */
 let currentGame = null;
 let currentMode = 'mascot';
+let currentLevel = 'medium';
+const LEVEL_LABEL = {easy:'Easy', medium:'Medium', hard:'Hard'};
 
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
 }
-function goHome(){ showView('view-home'); }
+function goHome(){ closeModal(); showView('view-home'); }
 function goDetail(){ showView('view-detail'); }
 
 function openGame(id){
@@ -556,102 +930,209 @@ function openGame(id){
   showView('view-detail');
 }
 
+/* difficulty is remembered per game, per browser — a convenience only */
+function loadLevel(id){
+  try{ const v = localStorage.getItem('kreeda.difficulty.'+id); if(v in LEVEL_LABEL) return v; }catch(e){}
+  return 'medium';
+}
+function saveLevel(id, v){ try{ localStorage.setItem('kreeda.difficulty.'+id, v); }catch(e){} }
+
 function renderDetail(){
   const g = currentGame;
+  const sc = screens[g.id];
+  document.getElementById('detail-shell').style.setProperty('--accent', g.accent);
+  document.getElementById('d-eyebrow').textContent = g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu';
   document.getElementById('d-title').textContent = g.name;
   document.getElementById('d-native').textContent = g.native;
-  document.getElementById('d-map-sub').textContent = g.mapSub;
+  document.getElementById('d-blurb').textContent = sc.blurb;
 
-  // mode area
+  // mode toggle (only games that support solo play)
   const modeArea = document.getElementById('d-mode-area');
   if(g.hasSoloMode){
     modeArea.innerHTML = `
-      <div class="mode-toggle">
-        <button id="mode-solo" onclick="setMode('solo')">Solo</button>
-        <button id="mode-mascot" onclick="setMode('mascot')">vs Kreedu</button>
+      <div class="mode-toggle" role="radiogroup" aria-label="Mode">
+        <button id="mode-mascot" type="button" role="radio" onclick="setMode('mascot')">vs Kreedu</button>
+        <button id="mode-solo" type="button" role="radio" onclick="setMode('solo')">Solo</button>
       </div>`;
-    setMode('mascot');
   } else {
-    modeArea.innerHTML = `<div class="mode-fixed">vs Kreedu</div>`;
+    modeArea.innerHTML = '';
   }
 
-  // map pins
+  // difficulty
+  setLevel(loadLevel(g.id));
+  if(g.hasSoloMode) setMode('mascot');
+
+  // map — the pin coordinates are a schematic, not real geography, so each
+  // game's pins are stretched to fill the space under the map title
+  const xs = g.pins.map(p=>p.x), ys = g.pins.map(p=>p.y);
+  const spread = (v, lo, hi, a, b)=> hi===lo ? (a+b)/2 : a + (v-lo)/(hi-lo)*(b-a);
+  const pos = g.pins.map(p=>({
+    x: spread(p.x, Math.min(...xs), Math.max(...xs), 18, 82),
+    y: spread(p.y, Math.min(...ys), Math.max(...ys), 42, 82)
+  }));
+  document.getElementById('map-title').innerHTML = `<strong>Where it's played</strong>${g.mapSub}`;
   const pinsWrap = document.getElementById('map-pins');
   pinsWrap.innerHTML='';
   g.pins.forEach((p,i)=>{
-    const pin = document.createElement('div');
-    pin.className='pin';
-    pin.style.left = p.x+'%';
-    pin.style.top = p.y+'%';
-    const pc = i===0?'#EFA90C':'#D8401F';
+    const pin = document.createElement('button');
+    pin.type = 'button';
+    pin.className = 'pin';
+    pin.style.left = pos[i].x+'%';
+    pin.style.top = pos[i].y+'%';
+    pin.setAttribute('aria-label', `${p.name}, ${p.place}`);
+    const pc = i===0 ? '#C4881F' : '#C0524A';
     pin.innerHTML = `<svg viewBox="0 0 24 32">
-      <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 8 10.5 18 10.5 18s10.5-10 10.5-18c0-5.8-4.7-10.5-10.5-10.5z" fill="${pc}" stroke="#5C140F" stroke-width="2.4" stroke-linejoin="round"/>
-      <circle cx="12" cy="12" r="4" fill="#EFDFB8" stroke="#5C140F" stroke-width="1.6"/>
+      <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 8 10.5 18 10.5 18s10.5-10 10.5-18c0-5.8-4.7-10.5-10.5-10.5z" fill="${pc}" stroke="#FBF3E2" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="4" fill="#FBF3E2"/>
     </svg>`;
-    pin.onclick = ()=>openModal(p);
+    pin.onclick = ()=>showPin(i);
     pinsWrap.appendChild(pin);
   });
 
-  // path (stitched thread) between pins, skipped for daadi-aata
+  // stitched thread between pins, skipped where no single origin is claimed
   const svg = document.getElementById('map-paths');
   svg.innerHTML='';
   if(g.path && g.pins.length>1){
-    let d = `M ${g.pins[0].x} ${g.pins[0].y}`;
-    for(let i=1;i<g.pins.length;i++){ d += ` L ${g.pins[i].x} ${g.pins[i].y}`; }
+    const pts = pos.map(p=>`${p.x} ${p.y - 4}`);
     svg.setAttribute('viewBox','0 0 100 100');
     svg.setAttribute('preserveAspectRatio','none');
-    svg.innerHTML = `<path d="${d}" fill="none" stroke="#FCF5E8" stroke-width="0.6" stroke-dasharray="1.2 2" stroke-linecap="round" opacity="0.85"/>`;
+    svg.innerHTML = `<path d="M ${pts.join(' L ')}" fill="none" stroke="#C7A467" stroke-width="0.6" stroke-dasharray="1.2 2" stroke-linecap="round" opacity="0.9"/>`;
   } else {
     svg.removeAttribute('viewBox');
   }
+  document.getElementById('map-caption').textContent = g.path ? 'Dotted line traces its journey · tap a pin' : 'No single origin claimed · tap a pin';
 
-  document.getElementById('map-caption').textContent = g.path ? 'stitched line traces its journey' : 'scattered pins — no single origin claimed';
+  showPin(0);
+}
 
-  // instructions
-  const ul = document.getElementById('d-instructions');
-  ul.innerHTML = g.instructions.map(t=>`<li>${t}</li>`).join('');
+function showPin(i){
+  const g = currentGame, p = g.pins[i];
+  document.querySelectorAll('#map-pins .pin').forEach((el,j)=>el.classList.toggle('active', j===i));
+  const facts = screens[g.id].facts.map(f=>`<li>${f}</li>`).join('');
+  const box = document.getElementById('d-facts');
+  box.innerHTML = `
+    <p class="fact-place">${p.place}</p>
+    <h3>${p.name}</h3>
+    <p class="fact-story">${p.fact}</p>
+    <p class="fact-how">${p.how}</p>
+    <ul class="did-you-know"><li class="dyk-label">Did you know</li>${facts}</ul>`;
+  box.scrollTop = 0;
 }
 
 function setMode(m){
   currentMode = m;
   if(!currentGame.hasSoloMode) return;
-  document.getElementById('mode-solo').classList.toggle('active', m==='solo');
-  document.getElementById('mode-mascot').classList.toggle('active', m==='mascot');
+  const solo = m==='solo';
+  document.getElementById('mode-solo').classList.toggle('active', solo);
+  document.getElementById('mode-mascot').classList.toggle('active', !solo);
+  document.getElementById('mode-solo').setAttribute('aria-checked', solo);
+  document.getElementById('mode-mascot').setAttribute('aria-checked', !solo);
 }
 
-/* ---------------- modal ---------------- */
-function openModal(p){
-  document.getElementById('modal-place').textContent = p.place;
-  document.getElementById('modal-name').textContent = p.name;
-  document.getElementById('modal-fact').textContent = p.fact;
-  document.getElementById('modal-how').textContent = p.how;
+function setLevel(level){
+  currentLevel = level;
+  document.querySelectorAll('#d-difficulty .diff-btn').forEach(b=>{
+    b.setAttribute('aria-checked', b.dataset.level===level);
+  });
+  document.getElementById('d-diff-note').textContent = screens[currentGame.id].difficulty[level];
+}
+document.querySelectorAll('#d-difficulty .diff-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{ setLevel(b.dataset.level); saveLevel(currentGame.id, b.dataset.level); });
+});
+
+/* ---------------- Tutorial / Rules sheet ---------------- */
+let tutStep = 0;
+let lastFocus = null;
+
+function openSheet(kicker, title){
+  lastFocus = document.activeElement;
+  document.getElementById('modal').style.setProperty('--accent', currentGame.accent);
+  document.getElementById('modal-kicker').textContent = kicker;
+  document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-overlay').classList.add('active');
 }
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('active'); }
+function closeModal(){
+  const o = document.getElementById('modal-overlay');
+  if(!o.classList.contains('active')) return;
+  o.classList.remove('active');
+  if(lastFocus) lastFocus.focus();
+}
 document.getElementById('modal-overlay').addEventListener('click', e=>{
   if(e.target.id==='modal-overlay') closeModal();
 });
-
-/* ---------------- play placeholder ---------------- */
-function startPlay(){
-  const g = currentGame;
-  // Chaturangam has a real, fully-built app of its own — hand off to it
-  // instead of the structural placeholder every other game still uses.
-  if(g.id === 'chaturangam'){
-    window.location.href = 'chadarangam/dist/index.html';
-    return;
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('modal-overlay').classList.contains('active')) return;
+  if(e.key==='Escape') closeModal();
+  if(document.getElementById('tut-next')){
+    if(e.key==='ArrowRight') tutGo(1);
+    if(e.key==='ArrowLeft') tutGo(-1);
   }
-  const modeLabel = g.hasSoloMode ? (currentMode==='solo'?'Solo mode':'vs Kreedu') : 'vs Kreedu';
-  document.getElementById('play-title').textContent = `${g.name} — ${modeLabel}`;
-  document.getElementById('play-sub').textContent = 'Board and game logic mount here. This screen just confirms the navigation + mode selection works end to end.';
-  showView('view-play');
-  showToast(`Loaded: ${g.name} (${modeLabel})`);
+});
+
+function openTutorial(){
+  const sc = screens[currentGame.id];
+  // Chaturangam ships its own interactive lessons — hand off to them
+  if(sc.tutorialHref){ window.location.href = sc.tutorialHref; return; }
+  tutStep = 0;
+  openSheet(`${currentGame.name} · Tutorial`, '');
+  renderTutorial();
+  document.getElementById('tut-next').focus();
+}
+function renderTutorial(){
+  const steps = screens[currentGame.id].tutorial;
+  const st = steps[tutStep];
+  const last = tutStep === steps.length-1;
+  document.getElementById('modal-title').textContent = `Step ${tutStep+1} of ${steps.length}`;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="tut-step">
+      <div class="tut-num">${tutStep+1}</div>
+      <div><h4>${st.t}</h4><p>${st.d}</p></div>
+    </div>
+    ${st.tip ? `<div class="tut-tip"><img src="kreedu-mascot.png" alt=""><span><strong>Kreedu's tip:</strong> ${st.tip}</span></div>` : ''}`;
+  document.getElementById('modal-foot').innerHTML = `
+    <div class="tut-dots" aria-hidden="true">${steps.map((_,i)=>`<span class="${i===tutStep?'on':''}"></span>`).join('')}</div>
+    <div class="tut-nav">
+      <button class="pill-btn" type="button" onclick="tutGo(-1)" ${tutStep===0?'disabled':''}>Back</button>
+      <button class="pill-btn solid" id="tut-next" type="button" onclick="${last ? 'closeModal(); startPlay()' : 'tutGo(1)'}">${last ? 'Play Now' : 'Next'}</button>
+    </div>`;
+}
+function tutGo(d){
+  const n = screens[currentGame.id].tutorial.length;
+  const next = tutStep + d;
+  if(next<0 || next>=n) return;
+  tutStep = next;
+  renderTutorial();
+  document.getElementById('tut-next').focus();
 }
 
-function openWellbeing(){
-  // The Physical Wellbeing module is a full standalone React app (like
-  // Chaturangam) — hand off to its own built bundle instead of a placeholder.
-  window.location.href = 'wellbeing/dist/index.html';
+function openRules(){
+  const sc = screens[currentGame.id];
+  openSheet(`${currentGame.name} · Rules`, 'How to play');
+  document.getElementById('modal-body').innerHTML = sc.rules.map(r=>`
+    <div class="rules-section">
+      <h4>${r.h}</h4>
+      <ul>${r.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>`).join('');
+  document.getElementById('modal-foot').innerHTML = `
+    <p class="rules-note">${sc.rulesNote || 'Stuck? The Tutorial walks through it step by step.'}</p>
+    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">Play Now</button>`;
+  document.getElementById('modal').focus();
+}
+
+/* ---------------- play ---------------- */
+function startPlay(){
+  const g = currentGame;
+  // Chaturangam has a real, fully-built app of its own — hand off to it,
+  // straight into a game at the chosen difficulty.
+  if(g.id === 'chaturangam'){
+    window.location.href = `chadarangam/dist/index.html?start=play&difficulty=${currentLevel}`;
+    return;
+  }
+  const modeLabel = g.hasSoloMode && currentMode==='solo' ? 'Solo' : `vs Kreedu · ${LEVEL_LABEL[currentLevel]}`;
+  document.getElementById('play-title').textContent = `${g.name} — ${modeLabel}`;
+  document.getElementById('play-sub').textContent = 'Board and game logic mount here. This screen just confirms the navigation, mode and difficulty selection work end to end.';
+  showView('view-play');
+  showToast(`Loaded: ${g.name} (${modeLabel})`);
 }
 
 function showToast(msg){

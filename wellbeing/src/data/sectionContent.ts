@@ -7,7 +7,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     title: 'Yoga',
     nativeName: 'యోగా',
     tagline: 'Flexibility, breath and balance — the body practice most of the world already knows by its Indian name.',
-    color: 'var(--color-teal)',
+    color: 'var(--color-evergreen)',
     heroImage: getImage('surya-namaskar'),
     timeline: [
       { id: 'patanjali', era: 'c. 2nd century BCE – 4th century CE', title: 'Patanjali\'s Yoga Sutras', text: 'Systematised yoga into eight limbs, including asana (posture) and pranayama (breath) — dharana, dhyana and samadhi are the final three, carried further in Section C.', image: getImage('patanjali') },
@@ -39,7 +39,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     title: 'Vyayam',
     nativeName: 'వ్యాయామం',
     tagline: 'Desi strength training from the akhada — Dand and Baithak, built on the ardhashakti principle.',
-    color: 'var(--color-terracotta)',
+    color: 'var(--color-brick)',
     heroImage: getImage('akhada'),
     timeline: [
       { id: 'sushruta-samhita', era: 'Ancient', title: 'Sushruta Samhita', text: 'One of the foundational texts of Ayurveda describes ardhashakti — exercising to about half of one\'s full capacity — as the traditional guide to safe exertion.' },
@@ -72,7 +72,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     title: 'Dhyana',
     nativeName: 'ధ్యానం',
     tagline: 'Meditation across India\'s traditions — Buddhist, Vedic, Jain and Yogic — for a quieter mind.',
-    color: 'var(--color-blue)',
+    color: 'var(--color-navy)',
     heroImage: getImage('dhyana-mudra'),
     timeline: [
       { id: 'patanjali-dhyana', era: 'c. 2nd century BCE – 4th century CE', title: 'Patanjali\'s Yoga Sutras', text: 'Names dharana (concentration), dhyana (meditation) and samadhi (absorption) as the final three limbs of yoga, following directly from Section A\'s asana and pranayama.', image: getImage('patanjali') },

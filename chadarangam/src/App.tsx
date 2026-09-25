@@ -20,11 +20,23 @@ const DEFAULT_SETTINGS: GameSettings = {
   soundEnabled: true,
 };
 
+// The KREEDA hub's game screen deep-links here: ?start=play&difficulty=EASY
+// drops straight into a Chaturanga game vs Kreedu, ?start=tutorial opens the
+// interactive tutorial. Anything else lands on the normal home screen.
+const HUB_PARAMS = new URLSearchParams(window.location.search);
+const HUB_DIFFICULTY = HUB_PARAMS.get('difficulty')?.toUpperCase();
+const INITIAL_TAB: ViewTab =
+  HUB_PARAMS.get('start') === 'play' ? 'GAME' : HUB_PARAMS.get('start') === 'tutorial' ? 'TUTORIAL' : 'HOME';
+const INITIAL_SETTINGS: GameSettings =
+  HUB_DIFFICULTY === 'EASY' || HUB_DIFFICULTY === 'MEDIUM' || HUB_DIFFICULTY === 'HARD'
+    ? { ...DEFAULT_SETTINGS, difficulty: HUB_DIFFICULTY }
+    : DEFAULT_SETTINGS;
+
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<ViewTab>('HOME');
+  const [currentTab, setCurrentTab] = useState<ViewTab>(INITIAL_TAB);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGlobalHelp, setShowGlobalHelp] = useState(false);
-  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<GameSettings>(INITIAL_SETTINGS);
   const [homeVariant, setHomeVariant] = useState<Variant>('chaturanga');
 
   const handleToggleSound = () => {

@@ -101,8 +101,8 @@ export default function App() {
   const activeSession = state.plan?.days.find(d => d.dayIndex === activeDayIndex);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#EFDFB8] text-[#5C140F] font-manrope">
-      <Header currentTab={tab} hasPlan={!!state.plan} onNavigate={handleNavigate} />
+    <div className="min-h-screen flex flex-col bg-[#F1E8D2] text-[#2A241E] font-manrope">
+      {tab !== 'HOME' && <Header currentTab={tab} hasPlan={!!state.plan} onNavigate={handleNavigate} />}
 
       <main className="flex-1 w-full">
         {tab === 'HOME' && (
@@ -148,20 +148,22 @@ export default function App() {
         {tab === 'PROGRESS' && <ProgressView state={state} onBack={() => handleNavigate('HOME')} />}
       </main>
 
-      <footer className="mt-12 bg-[#FAF4E5] border-t-[3px] border-[#5C140F] py-6 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-xs text-[#5C140F]">
+      {tab !== 'HOME' && (
+      <footer className="mt-12 bg-[#FBF3E2] border-t border-[#C7A467]/60 py-6 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-xs text-[#1F3B2E]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#EFDFB8] border-2 border-[#5C140F] flex items-center justify-center">
-              <LotusIcon size={18} color="#D9587B" />
+            <div className="w-8 h-8 bg-[#F1E8D2] border border-[#C7A467]/70 rounded-xl flex items-center justify-center">
+              <LotusIcon size={18} color="#C0524A" />
             </div>
             <div>
               <p className="font-fraunces font-bold text-sm">PHYSICAL WELLBEING (శారీరిక)</p>
-              <p className="text-[11px] text-[#5C140F]/80">Yoga, Vyayam and Dhyana, tuned to your body with the ardhashakti principle.</p>
+              <p className="text-[11px] text-[#1F3B2E]/80">Yoga, Vyayam and Dhyana, tuned to your body with the ardhashakti principle.</p>
             </div>
           </div>
-          <div className="text-[10px] text-[#5C140F]/70 font-mono">100% Offline · Rule-Based Plan Engine · No Data Leaves Your Device</div>
+          <div className="text-[10px] text-[#1F3B2E]/70 font-mono">100% Offline · Rule-Based Plan Engine · No Data Leaves Your Device</div>
         </div>
       </footer>
+      )}
 
       {!state.disclaimerAcknowledged && (
         <Disclaimer onAcknowledge={() => setState(s => ({ ...s, disclaimerAcknowledged: true }))} />

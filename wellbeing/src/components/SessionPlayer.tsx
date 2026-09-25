@@ -75,14 +75,14 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
     return (
       <div className="max-w-md mx-auto px-4 py-10 text-center wb-fade-in">
         <KreeduMascot size={80} className="mx-auto mb-4" />
-        <h2 className="font-fraunces text-2xl font-extrabold text-[#5C140F] mb-2">Before you begin</h2>
-        <p className="text-sm text-[#6B4E3D] font-semibold mb-5">How are you feeling right now?</p>
+        <h2 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] mb-2">Before you begin</h2>
+        <p className="text-sm text-[#5C5142] font-semibold mb-5">How are you feeling right now?</p>
         <div className="flex justify-center gap-2 mb-8 flex-wrap">
           {MOODS.map(m => (
             <button
               key={m.key}
               onClick={() => setMoodBefore(m.key)}
-              className={`flex flex-col items-center gap-1 px-3 py-2.5 border-2 border-[#5C140F] cursor-pointer ${moodBefore === m.key ? 'bg-[#D8401F] text-white' : 'bg-[#F6ECD2] hover:bg-white'}`}
+              className={`flex flex-col items-center gap-1 px-3 py-2.5 border border-[#C7A467]/70 rounded-xl cursor-pointer ${moodBefore === m.key ? 'bg-[#1F3B2E] text-white' : 'bg-[#F6EFDE] hover:bg-white'}`}
             >
               <span className="text-xl">{m.emoji}</span>
               <span className="text-[10px] font-bold">{m.label}</span>
@@ -90,8 +90,8 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
           ))}
         </div>
         <div className="flex gap-2 justify-center">
-          <button onClick={onExit} className="px-4 py-2.5 text-xs font-bold text-[#5C140F] border-2 border-[#5C140F] bg-[#F6ECD2] cursor-pointer">Cancel</button>
-          <button onClick={() => setStarted(true)} className="px-6 py-2.5 text-xs font-bold uppercase text-white bg-[#D8401F] border-2 border-[#5C140F] cursor-pointer hover:bg-[#B83215]">
+          <button onClick={onExit} className="px-4 py-2.5 text-xs font-bold text-[#1F3B2E] border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] cursor-pointer">Cancel</button>
+          <button onClick={() => setStarted(true)} className="px-6 py-2.5 text-xs font-bold uppercase text-white bg-[#1F3B2E] border border-[#C7A467]/70 rounded-xl cursor-pointer hover:bg-[#2C5040]">
             Start Session
           </button>
         </div>
@@ -107,39 +107,39 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
   return (
     <div className="max-w-xl mx-auto px-4 py-6 wb-fade-in">
       <div className="flex items-center justify-between mb-3">
-        <button onClick={onExit} className="text-[#5C140F] cursor-pointer"><X className="w-5 h-5" /></button>
-        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#6B4E3D]">
+        <button onClick={onExit} className="text-[#1F3B2E] cursor-pointer"><X className="w-5 h-5" /></button>
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-[#5C5142]">
           {slotLabel(item.slot)} &middot; {index + 1} / {items.length}
         </span>
         <span />
       </div>
 
-      <div className="h-1.5 bg-[#E4D19E] border border-[#5C140F] mb-6">
-        <div className="h-full bg-[#D8401F] transition-all" style={{ width: `${((index) / items.length) * 100}%` }} />
+      <div className="h-1.5 bg-[#EADFC4] border border-[#C7A467] mb-6">
+        <div className="h-full bg-[#1F3B2E] transition-all" style={{ width: `${((index) / items.length) * 100}%` }} />
       </div>
 
-      <div className="bg-[#F6ECD2] border-[3px] border-[#5C140F] p-6 text-center mb-5">
-        <h2 className="font-fraunces text-2xl font-extrabold text-[#5C140F] mb-0.5">{practice.name}</h2>
-        <p className="text-sm text-[#6B4E3D] font-semibold mb-4">{practice.name_english}</p>
+      <div className="bg-[#F6EFDE] border border-[#C7A467]/70 rounded-2xl shadow-[0_8px_24px_rgba(42,30,20,0.10)] p-6 text-center mb-5">
+        <h2 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] mb-0.5">{practice.name}</h2>
+        <p className="text-sm text-[#5C5142] font-semibold mb-4">{practice.name_english}</p>
 
         {isTimerMode ? (
-          <div className="font-fraunces text-5xl font-black text-[#D8401F] mb-3 tabular-nums">{mm}:{ss}</div>
+          <div className="font-fraunces text-5xl font-bold text-[#1F3B2E] mb-3 tabular-nums">{mm}:{ss}</div>
         ) : (
           <div className="mb-3">
-            <div className="font-fraunces text-4xl font-black text-[#D8401F]">
+            <div className="font-fraunces text-4xl font-bold text-[#1F3B2E]">
               {item.reps != null ? `${item.reps} reps` : item.rounds != null ? `${item.rounds} rounds` : ''}
             </div>
-            <p className="text-[11px] text-[#6B4E3D] font-bold uppercase tracking-wide mt-1">Go at your own pace — ardhashakti, not maximum effort</p>
+            <p className="text-[11px] text-[#5C5142] font-bold uppercase tracking-wide mt-1">Go at your own pace — ardhashakti, not maximum effort</p>
           </div>
         )}
 
         {practice.demoGif && (
-          <div className="mb-4 bg-[#E4D19E] border-2 border-[#5C140F] p-2 inline-block">
+          <div className="mb-4 bg-[#EADFC4] border border-[#C7A467]/70 rounded-xl p-2 inline-block">
             <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="max-w-full max-h-64 mx-auto" />
           </div>
         )}
 
-        <ol className="text-left text-[13px] text-[#2B1B12] leading-relaxed list-decimal list-inside space-y-1 max-w-md mx-auto">
+        <ol className="text-left text-[13px] text-[#2A241E] leading-relaxed list-decimal list-inside space-y-1 max-w-md mx-auto">
           {practice.steps.map((s, i) => <li key={i}>{s}</li>)}
         </ol>
       </div>
@@ -147,21 +147,21 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
       <div className="flex items-center justify-center gap-2.5">
         {isTimerMode ? (
           <>
-            <button onClick={() => setPaused(p => !p)} className="w-11 h-11 flex items-center justify-center border-2 border-[#5C140F] bg-[#F6ECD2] hover:bg-white cursor-pointer text-[#5C140F]">
+            <button onClick={() => setPaused(p => !p)} className="w-11 h-11 flex items-center justify-center border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer text-[#1F3B2E]">
               {paused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
             </button>
-            <button onClick={goNext} className="inline-flex items-center gap-1.5 px-6 py-3 bg-[#5C140F] text-white border-2 border-[#5C140F] font-bold text-xs uppercase tracking-wider cursor-pointer">
+            <button onClick={goNext} className="inline-flex items-center gap-1.5 px-6 py-3 bg-[#1F3B2E] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer">
               Skip <SkipForward className="w-3.5 h-3.5" />
             </button>
           </>
         ) : (
           <>
-            <button onClick={goNext} className="px-5 py-3 text-xs font-bold text-[#5C140F] border-2 border-[#5C140F] bg-[#F6ECD2] hover:bg-white cursor-pointer uppercase tracking-wider">
+            <button onClick={goNext} className="px-5 py-3 text-xs font-bold text-[#1F3B2E] border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer uppercase tracking-wider">
               Skip
             </button>
             <button
               onClick={goNext}
-              className="inline-flex items-center gap-1.5 px-7 py-3 bg-[#5F8F3B] text-white border-2 border-[#5C140F] font-bold text-xs uppercase tracking-wider cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-7 py-3 bg-[#3F6B4F] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer"
             >
               <Check className="w-4 h-4" /> Mark Complete
             </button>

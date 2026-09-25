@@ -22,20 +22,20 @@ export const KreeduMascot: React.FC<KreeduMascotProps> = ({
     switch (mood) {
       case 'THINKING':
         return (
-          <span className="absolute -top-1 -right-1 bg-[#EFA90C] text-[#2B1B12] border-[1.5px] border-[#5C140F] text-[10px] font-extrabold px-1 rounded-full animate-bounce shadow-sm">
+          <span className="absolute -top-1 -right-1 bg-[#C4881F] text-[#2A241E] border-[1.5px] border-[#C7A467] text-[10px] font-semibold px-1 rounded-full animate-bounce shadow-sm">
             🤔
           </span>
         );
       case 'HAPPY':
       case 'CELEBRATE':
         return (
-          <span className="absolute -top-1 -right-1 bg-[#5F8F3B] text-white border-[1.5px] border-[#5C140F] text-[10px] font-extrabold px-1 rounded-full animate-pulse shadow-sm">
+          <span className="absolute -top-1 -right-1 bg-[#3F6B4F] text-white border-[1.5px] border-[#C7A467] text-[10px] font-semibold px-1 rounded-full animate-pulse shadow-sm">
             ✨
           </span>
         );
       case 'WORRIED':
         return (
-          <span className="absolute -top-1 -right-1 bg-[#D9587B] text-white border-[1.5px] border-[#5C140F] text-[10px] font-extrabold px-1 rounded-full shadow-sm">
+          <span className="absolute -top-1 -right-1 bg-[#C0524A] text-white border-[1.5px] border-[#C7A467] text-[10px] font-semibold px-1 rounded-full shadow-sm">
             😮
           </span>
         );
@@ -61,9 +61,9 @@ export const KreeduMascot: React.FC<KreeduMascotProps> = ({
   return (
     <div className={`inline-flex flex-col items-center select-none ${className}`}>
       {showDialogBubble && dialogText && (
-        <div className="mb-2 relative bg-[#F6ECD2] border-2 border-[#5C140F] px-3 py-1 text-xs font-semibold text-[#2B1B12] text-center max-w-55 shadow-sm">
+        <div className="mb-2 relative bg-[#F6EFDE] border border-[#C7A467]/70 rounded-xl px-3 py-1 text-xs font-semibold text-[#2A241E] text-center max-w-55 shadow-sm">
           {dialogText}
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#F6ECD2] border-r-2 border-b-2 border-[#5C140F] rotate-45" />
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#F6EFDE] border-r-2 border-b-2 border-[#C7A467] rotate-45" />
         </div>
       )}
 

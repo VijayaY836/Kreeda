@@ -148,6 +148,15 @@
     border-radius:clamp(6px, 1vw, 16px);
     border:clamp(1px, 0.16vw, 2.5px) solid var(--accent);
     box-shadow:0 clamp(2px,0.6vw,10px) clamp(6px,1.6vw,26px) rgba(42,30,20,0.22);
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+  .module-card.is-link{ cursor:pointer; }
+  .module-card:hover{
+    transform:translateY(clamp(-8px,-0.5vw,-3px));
+    box-shadow:0 clamp(4px,1vw,16px) clamp(10px,2.4vw,38px) rgba(42,30,20,0.28);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .module-card{ transition:none; }
   }
 
   .illustration{
@@ -260,7 +269,7 @@
       <div class="grid">
 
         <!-- Games -->
-        <article class="module-card" style="--accent:var(--navy)">
+        <article class="module-card is-link" style="--accent:var(--navy)" onclick="location.href='kreeda.html'">
           <div class="illustration">
             <img src="games.png" alt="">
           </div>
@@ -279,7 +288,7 @@
         </article>
 
         <!-- Physical Wellbeing -->
-        <article class="module-card" style="--accent:var(--gold-deep)">
+        <article class="module-card is-link" style="--accent:var(--gold-deep)" onclick="location.href='wellbeing/dist/index.html'">
           <div class="illustration">
             <img src="Physical-Wellbeing.png" alt="">
           </div>
