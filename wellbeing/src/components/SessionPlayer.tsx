@@ -5,6 +5,13 @@ import { playBell } from '../engine/audio';
 import { KreeduMascot } from './KreeduMascot';
 import { X, Pause, Play, SkipForward, Check } from 'lucide-react';
 
+// Product decisions still marked OPEN in §7.4. Keeping them here makes the
+// behavior deliberate and easy to change without rewriting the player.
+export const PLAYER_CONFIG = {
+  autoAdvance: false,
+  restSeconds: 0,
+} as const;
+
 const MOODS: { key: Mood; emoji: string; label: string }[] = [
   { key: 'great', emoji: '😄', label: 'Great' },
   { key: 'good', emoji: '🙂', label: 'Good' },
@@ -38,29 +45,31 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
 
   const item = items[index];
   const practice = item ? getPractice(item.practiceId) : undefined;
-  const isTimerMode = !!practice && practice.reps == null && practice.rounds == null;
+  const isRepBased = !!practice && (practice.reps != null || practice.rounds != null);
 
   useEffect(() => {
     if (!started || !item) return;
     setSecondsLeft(item.durationSec);
+    setPaused(false);
     playBell();
   }, [index, started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!started || paused || !isTimerMode) return;
+    if (!started || paused) return;
     if (secondsLeft <= 0) return;
     intervalRef.current = window.setInterval(() => {
       setSecondsLeft(s => {
         if (s <= 1) {
           playBell();
-          window.setTimeout(() => goNext(), 300);
+          if (PLAYER_CONFIG.autoAdvance) window.setTimeout(() => goNext(), 300);
+          else setPaused(true);
           return 0;
         }
         return s - 1;
       });
     }, 1000);
     return () => { if (intervalRef.current) window.clearInterval(intervalRef.current); };
-  }, [started, paused, isTimerMode, index]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [started, paused, index]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goNext = () => {
     if (intervalRef.current) window.clearInterval(intervalRef.current);
@@ -122,14 +131,13 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
         <h2 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] mb-0.5">{practice.name}</h2>
         <p className="text-sm text-[#5C5142] font-semibold mb-4">{practice.name_english}</p>
 
-        {isTimerMode ? (
-          <div className="font-fraunces text-5xl font-bold text-[#1F3B2E] mb-3 tabular-nums">{mm}:{ss}</div>
-        ) : (
+        <div className="font-fraunces text-5xl font-bold text-[#1F3B2E] mb-1 tabular-nums" aria-label={`${mm} minutes and ${ss} seconds remaining`}>{mm}:{ss}</div>
+        {isRepBased && (
           <div className="mb-3">
-            <div className="font-fraunces text-4xl font-bold text-[#1F3B2E]">
-              {item.reps != null ? `${item.reps} reps` : item.rounds != null ? `${item.rounds} rounds` : ''}
+            <div className="font-fraunces text-xl font-bold text-[#1F3B2E]">
+              {item.reps != null ? `${item.reps} reps` : `${item.rounds} rounds`}
             </div>
-            <p className="text-[11px] text-[#5C5142] font-bold uppercase tracking-wide mt-1">Go at your own pace — ardhashakti, not maximum effort</p>
+            <p className="text-[11px] text-[#5C5142] font-bold uppercase tracking-wide mt-1">The timer is a guide — move at your own pace</p>
           </div>
         )}
 
@@ -142,31 +150,37 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
         <ol className="text-left text-[13px] text-[#2A241E] leading-relaxed list-decimal list-inside space-y-1 max-w-md mx-auto">
           {practice.steps.map((s, i) => <li key={i}>{s}</li>)}
         </ol>
+
+        <div className="grid sm:grid-cols-2 gap-2 mt-5 text-left">
+          <div className="rounded-xl border border-[#C7A467]/60 bg-white/60 p-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#1F3B2E] mb-1">Details</h3>
+            <p className="text-xs text-[#5C5142] leading-relaxed">{practice.benefits[0]}</p>
+          </div>
+          <div className="rounded-xl border border-[#C7A467]/60 bg-white/60 p-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#A8402E] mb-1">Move safely</h3>
+            <p className="text-xs text-[#5C5142] leading-relaxed">{practice.cautions[0] ?? 'Stop if you feel pain or discomfort.'}</p>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center justify-center gap-2.5">
-        {isTimerMode ? (
-          <>
-            <button onClick={() => setPaused(p => !p)} className="w-11 h-11 flex items-center justify-center border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer text-[#1F3B2E]">
-              {paused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
-            </button>
-            <button onClick={goNext} className="inline-flex items-center gap-1.5 px-6 py-3 bg-[#1F3B2E] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer">
-              Skip <SkipForward className="w-3.5 h-3.5" />
-            </button>
-          </>
-        ) : (
-          <>
-            <button onClick={goNext} className="px-5 py-3 text-xs font-bold text-[#1F3B2E] border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer uppercase tracking-wider">
-              Skip
-            </button>
-            <button
-              onClick={goNext}
-              className="inline-flex items-center gap-1.5 px-7 py-3 bg-[#3F6B4F] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer"
-            >
-              <Check className="w-4 h-4" /> Mark Complete
-            </button>
-          </>
-        )}
+        <button
+          onClick={() => secondsLeft > 0 && setPaused(p => !p)}
+          disabled={secondsLeft === 0}
+          aria-label={paused ? 'Resume timer' : 'Pause timer'}
+          className="w-11 h-11 flex items-center justify-center border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer text-[#1F3B2E] disabled:opacity-40"
+        >
+          {paused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
+        </button>
+        <button onClick={goNext} className="px-5 py-3 text-xs font-bold text-[#1F3B2E] border border-[#C7A467]/70 rounded-xl bg-[#F6EFDE] hover:bg-white cursor-pointer uppercase tracking-wider">
+          Skip <SkipForward className="inline w-3.5 h-3.5 ml-1" />
+        </button>
+        <button
+          onClick={goNext}
+          className="inline-flex items-center gap-1.5 px-7 py-3 bg-[#3F6B4F] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer"
+        >
+          <Check className="w-4 h-4" /> {index + 1 === items.length ? 'Finish' : 'Complete'}
+        </button>
       </div>
     </div>
   );
