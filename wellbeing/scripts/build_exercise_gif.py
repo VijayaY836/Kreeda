@@ -21,16 +21,17 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     with Image.open(args.source) as sheet:
-        if sheet.width != sheet.height:
-            raise ValueError("source sheet must be square")
+        if abs(sheet.width - sheet.height) > max(sheet.width, sheet.height) * 0.05:
+            raise ValueError("source sheet must be approximately square")
 
-        half = sheet.width // 2
+        half_x = sheet.width // 2
+        half_y = sheet.height // 2
         gutter = args.gutter
         boxes = (
-            (0, 0, half - gutter, half - gutter),
-            (half + gutter, 0, sheet.width, half - gutter),
-            (0, half + gutter, half - gutter, sheet.height),
-            (half + gutter, half + gutter, sheet.width, sheet.height),
+            (0, 0, half_x - gutter, half_y - gutter),
+            (half_x + gutter, 0, sheet.width, half_y - gutter),
+            (0, half_y + gutter, half_x - gutter, sheet.height),
+            (half_x + gutter, half_y + gutter, sheet.width, sheet.height),
         )
         steps = [
             sheet.crop(box).resize((args.size, args.size), Image.Resampling.LANCZOS)
