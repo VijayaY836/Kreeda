@@ -131,9 +131,9 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
                   className="group text-left rounded-2xl border border-[#C7A467]/80 bg-[#F6EFDE]/95 overflow-hidden shadow-[0_8px_24px_rgba(42,30,20,0.1)] hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(42,30,20,0.14)] transition-all cursor-pointer"
                   style={{ borderTopColor: meta.accent, borderTopWidth: 4 }}
                 >
-                  <div className="h-36 bg-[#EADFC4] flex items-center justify-center overflow-hidden">
+                  <div className="h-44 bg-[#EADFC4] flex items-center justify-center overflow-hidden p-3">
                     {content.heroImage
-                      ? <img src={content.heroImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      ? <img src={content.heroImage} alt="" className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-300" />
                       : meta.icon}
                   </div>
                   <div className="p-4">

@@ -17,12 +17,12 @@ export const PracticeCard: React.FC<PracticeCardProps> = ({ practice, locked, on
       onClick={onClick}
       className="text-left bg-[#F6EFDE] border border-[#C7A467]/70 rounded-xl cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(42,30,20,0.18)] relative overflow-hidden flex flex-col"
     >
-      <div className="relative h-24 w-full bg-[#EADFC4] border-b-2 border-[#C7A467] overflow-hidden">
+      <div className="relative h-32 w-full bg-[#EADFC4] border-b-2 border-[#C7A467] overflow-hidden p-2">
         {practice.image ? (
           <img
             src={practice.image}
             alt=""
-            className={`w-full h-full object-cover ${locked ? 'grayscale opacity-50' : ''}`}
+            className={`w-full h-full object-contain ${locked ? 'grayscale opacity-50' : ''}`}
           />
         ) : (
           <div className="w-full h-full bg-kolam-dots flex items-center justify-center">

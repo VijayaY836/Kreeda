@@ -89,8 +89,8 @@ export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practi
         ) : (
           <>
             {practice.image && (
-              <div className="relative h-44 w-full border-b-[3px] border-[#C7A467] overflow-hidden">
-                <img src={practice.image} alt="" className="w-full h-full object-cover" />
+              <div className="relative h-64 w-full border-b-[3px] border-[#C7A467] overflow-hidden bg-[#EADFC4] p-3">
+                <img src={practice.image} alt="" className="w-full h-full object-contain" />
               </div>
             )}
             {content}
