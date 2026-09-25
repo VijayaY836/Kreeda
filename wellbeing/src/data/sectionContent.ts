@@ -96,8 +96,8 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     ],
     sources: [
       { title: 'Patanjali\'s Yoga Sutras — dharana, dhyana, samadhi', ref: 'TBD — verify translation source' },
-      { title: 'S.N. Goenka Vipassana tradition', ref: 'TBD — verify against published source' },
-      { title: 'Preksha Dhyana, Acharya Mahapragya', ref: 'TBD — verify against published source' },
+      { title: 'Vipassana Research Institute — What is Anapana? (S.N. Goenka tradition)', ref: 'vridhamma.org/What-is-Anapana' },
+      { title: 'Acharya Mahapragya — Preksha Dhyan', ref: 'archive.org/details/in.ernet.dli.2015.342671' },
     ],
   },
 };
