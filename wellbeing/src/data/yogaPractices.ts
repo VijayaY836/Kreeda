@@ -132,7 +132,7 @@ const suryaNamaskar: Practice[] = [
     cautions: ['Build up round count gradually; stop if breathless beyond comfort.'],
     contraindications: ['high_bp', 'heart_condition', 'back_disc', 'pregnancy', 'recent_surgery', 'knee'],
     variants: ['surya-namaskar-slow'],
-    sources: [{ title: 'History of Surya Namaskar under the Raja of Aundh', ref: 'TBD — verify against academic source before release' }],
+    sources: [{ title: 'Pratinidhi, Rajah of Aundh — The Ten-Point Way to Health: Surya Namaskars (ed. Louise Morgan, J. M. Dent, 1938)', ref: 'search.worldcat.org/title/557958891' }],
   },
 ];
 

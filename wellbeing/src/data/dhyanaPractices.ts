@@ -16,7 +16,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['The default entry point to meditation in this module; traditionally associated with a settled, focused mind.'],
     cautions: ['No claims are made about treating anxiety or any condition; stop and rest if uncomfortable.'],
     contraindications: [],
-    sources: [{ title: 'Vipassana tradition (S.N. Goenka lineage) — introductory Anapana', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Vipassana Research Institute — What is Anapana? (S.N. Goenka tradition)', ref: 'vridhamma.org/What-is-Anapana' }],
   },
   {
     id: 'walking-meditation', section: 'dhyana', category: 'meditation',
@@ -101,7 +101,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Systematized by Acharya Mahapragya; traditionally associated with deep relaxation and better sleep.'],
     cautions: ['Suitable as an evening, pre-sleep practice.'],
     contraindications: [],
-    sources: [{ title: 'Preksha Dhyana, systematized by Acharya Mahapragya', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Acharya Mahapragya — Preksha Dhyan', ref: 'archive.org/details/in.ernet.dli.2015.342671' }],
   },
   {
     id: 'sakshi-bhava', section: 'dhyana', category: 'meditation',
