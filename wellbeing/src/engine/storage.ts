@@ -9,6 +9,7 @@ export const DEFAULT_STATE: WellbeingState = {
   plan: null,
   progress: {},
   history: [],
+  moodLog: [],
   streak: 0,
   lastSessionDate: null,
   unlockedMilestones: [],

@@ -156,6 +156,13 @@ export interface UserProfile {
 export type FeedbackRating = 'too_easy' | 'about_right' | 'too_hard';
 export type Mood = 'great' | 'good' | 'okay' | 'low' | 'stressed';
 
+export interface MoodLogEntry {
+  id: string;
+  recordedAt: string;
+  mood: Mood;
+  note: string;
+}
+
 export interface PlanSlotItem {
   practiceId: string;
   slot: 'warmup' | 'main' | 'cooldown' | 'standalone';
@@ -199,6 +206,7 @@ export interface WellbeingState {
   plan: WeeklyPlan | null;
   progress: Record<string, PracticeProgress>;
   history: SessionLogEntry[];
+  moodLog: MoodLogEntry[];
   streak: number;
   lastSessionDate: string | null;
   unlockedMilestones: string[];
@@ -210,6 +218,7 @@ export type ViewTab =
   | 'PRACTICE_DETAIL'
   | 'PLAN_BUILDER'
   | 'PLAN_OVERVIEW'
+  | 'MOOD_LOG'
   | 'SESSION_PLAYER'
   | 'POST_SESSION'
   | 'PROGRESS';
