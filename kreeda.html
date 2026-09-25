@@ -8,8 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Sora:wght@400;500;600;700&family=Tiro+Telugu&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Fraunces:opsz,wght@9..144,400..700&family=Marcellus&family=Sora:wght@400;500;600;700&family=Tiro+Telugu&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+  <script src="assets/world-atlas.js"></script>
+  <script src="js/vaikunthapali-map.js"></script>
+  <script src="js/puli-meka-map.js"></script>
+  <script src="js/daadi-aata-map.js"></script>
+  <script src="js/ashta-chamma-map.js"></script>
+  <script src="js/chaturangam-map.js"></script>
+  <script src="js/vamana-guntalu-map.js"></script>
   <style>
     :root {
       color-scheme: light;
@@ -45,6 +55,14 @@
 
     .telugu {
       font-family: 'Tiro Telugu', serif;
+    }
+
+    .font-cartography {
+      font-family: 'Cinzel', 'Marcellus', Georgia, serif;
+    }
+
+    .font-antique {
+      font-family: 'Marcellus', Georgia, serif;
     }
 
     .view {
@@ -1727,6 +1745,60 @@
       // difficulty
       setLevel(loadLevel(g.id));
       if (g.hasSoloMode) setMode('mascot');
+
+      const mapFrame = document.getElementById('map-frame');
+      if (g.id === 'vaikunthapali') {
+        if (typeof window.initVaikunthapaliWorldMap === 'function') {
+          window.initVaikunthapaliWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+      if (g.id === 'puli-meka') {
+        if (typeof window.initPuliMekaWorldMap === 'function') {
+          window.initPuliMekaWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+      if (g.id === 'daadi-aata') {
+        if (typeof window.initDaadiAataWorldMap === 'function') {
+          window.initDaadiAataWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+      if (g.id === 'ashta-chamma') {
+        if (typeof window.initAshtaChammaWorldMap === 'function') {
+          window.initAshtaChammaWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+      if (g.id === 'chaturangam') {
+        if (typeof window.initChaturangamWorldMap === 'function') {
+          window.initChaturangamWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+      if (g.id === 'vamana-guntalu') {
+        if (typeof window.initVamanaGuntaluWorldMap === 'function') {
+          window.initVamanaGuntaluWorldMap(mapFrame);
+        }
+        showPin(0);
+        return;
+      }
+
+      // Restore standard map placeholder structure if switching from Vaikunthapali
+      if (!document.getElementById('map-paths')) {
+        mapFrame.innerHTML = `
+          <svg class="paths" id="map-paths"></svg>
+          <div class="map-title" id="map-title"></div>
+          <div id="map-pins"></div>
+          <div class="map-caption" id="map-caption"></div>
+        `;
+      }
 
       // map — the pin coordinates are a schematic, not real geography, so each
       // game's pins are stretched to fill the space under the map title
