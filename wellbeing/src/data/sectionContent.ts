@@ -61,9 +61,9 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
       { id: 'v-us', x: 22, y: 26, place: 'UNITED STATES', name: 'Club-Swinging Fitness', fact: 'Indian-club swinging spread further into American gymnasiums and physical-culture programmes in the early 20th century.', how: 'Spread through the same physical-culture movement that popularised Indian clubs in the West.', image: getImage('indian-clubs') },
     ],
     sources: [
-      { title: 'Sushruta Samhita — ardhashakti principle', ref: 'TBD — verify page reference before release' },
-      { title: 'Manasollasa (12th c.) — Chalukya court text', ref: 'TBD — verify against academic source' },
-      { title: 'Malla Purana — wrestling training text', ref: 'TBD — verify against academic source' },
+      { title: 'Sushruta Samhita, Cikitsāsthāna ch. 24 (Anāgatābādhapratiṣedha) — ardhashakti vyāyāma', ref: 'wisdomlib.org/hinduism/book/sushruta-samhita-volume-4-cikitsasthana' },
+      { title: 'Mānasollāsa of King Someśvara (12th c.), Mallavinoda section — ed. G. K. Shrigondekar, Gaekwad\'s Oriental Series, 3 vols. (1925–61)', ref: 'archive.org/details/in.ernet.dli.2015.344930' },
+      { title: 'Mallapurāṇa — ed. B. J. Sandesara & R. N. Mehta, Gaekwad\'s Oriental Series 144 (Oriental Institute, Baroda, 1964)', ref: 'archive.org/details/mallapurana_full_colour_scan' },
     ],
   },
 
@@ -95,7 +95,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
       { id: 'd-vietnam', x: 66, y: 52, place: 'VIETNAM', name: 'Thiền', fact: 'A parallel branch of the same Chan lineage took root in Vietnam as Thiền Buddhism.', how: 'Transmitted directly from Chinese Chan Buddhism.' },
     ],
     sources: [
-      { title: 'Patanjali\'s Yoga Sutras — dharana, dhyana, samadhi', ref: 'TBD — verify translation source' },
+      { title: 'Patañjali, Yoga Sūtras 3.1–3.3 — dhāraṇā, dhyāna, samādhi (with Bhoja\'s Rājamārtaṇḍa)', ref: 'wisdomlib.org/hinduism/book/yoga-sutras-with-bhojas-rajamartanda' },
       { title: 'Vipassana Research Institute — What is Anapana? (S.N. Goenka tradition)', ref: 'vridhamma.org/What-is-Anapana' },
       { title: 'Acharya Mahapragya — Preksha Dhyan', ref: 'archive.org/details/in.ernet.dli.2015.342671' },
     ],

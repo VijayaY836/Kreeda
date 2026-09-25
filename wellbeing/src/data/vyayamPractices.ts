@@ -1,6 +1,7 @@
 import { Practice } from '../types';
 
 const TBD: Practice['sources'][number] = { title: 'Akhada tradition — verify against academic source', ref: 'TBD' };
+const ALTER: Practice['sources'][number] = { title: 'Joseph S. Alter — The Wrestler\'s Body: Identity and Ideology in North India (University of California Press, 1992)', ref: 'publishing.cdlib.org/ucpressebooks/view?docId=ft6n39p104' };
 
 export const VYAYAM_PRACTICES: Practice[] = [
   // ---------------- Dand (progressions) ----------------
@@ -20,7 +21,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Move slowly through the arc; stop if the wrists or lower back complain.'],
     contraindications: ['shoulder', 'back_disc'],
     variants: ['dand-basic', 'dand-full'],
-    sources: [TBD],
+    sources: [ALTER],
   },
   {
     id: 'dand-basic', section: 'vyayam', category: 'dand',
@@ -38,7 +39,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Keep the arc controlled rather than fast; build reps gradually per the ardhashakti principle.'],
     contraindications: ['shoulder', 'back_disc', 'high_bp'],
     variants: ['dand-knee-supported', 'dand-full'],
-    sources: [TBD],
+    sources: [ALTER],
   },
   {
     id: 'dand-full', section: 'vyayam', category: 'dand',
@@ -55,7 +56,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Only progress here after full range Dand is comfortable at moderate reps.'],
     contraindications: ['shoulder', 'back_disc', 'high_bp', 'heart_condition'],
     variants: ['dand-basic'],
-    sources: [TBD],
+    sources: [ALTER],
   },
 
   // ---------------- Baithak (progressions) ----------------
@@ -75,7 +76,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Keep heels down and knees tracking over the toes; reduce depth if the knees are sensitive.'],
     contraindications: ['knee', 'high_bp'],
     variants: ['baithak-high-rep', 'baithak-slow-tempo'],
-    sources: [TBD],
+    sources: [ALTER],
   },
   {
     id: 'baithak-high-rep', section: 'vyayam', category: 'baithak',
@@ -92,7 +93,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Build up rep counts gradually across weeks, never in one jump.'],
     contraindications: ['knee', 'high_bp', 'heart_condition'],
     variants: ['baithak-basic', 'baithak-slow-tempo'],
-    sources: [TBD],
+    sources: [ALTER],
   },
   {
     id: 'baithak-slow-tempo', section: 'vyayam', category: 'baithak',
@@ -109,7 +110,7 @@ export const VYAYAM_PRACTICES: Practice[] = [
     cautions: ['Slower tempo increases strain on the knees — keep depth moderate if needed.'],
     contraindications: ['knee', 'high_bp'],
     variants: ['baithak-basic'],
-    sources: [TBD],
+    sources: [ALTER],
   },
 
   // ---------------- Sapate ----------------
