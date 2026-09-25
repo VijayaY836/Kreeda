@@ -9,26 +9,28 @@ import { HeritageCards } from './HeritageCards';
 import { FolkDivider } from './FolkArtMotifs';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 
-type Tab = 'history' | 'facts' | 'library' | 'heritage' | 'map';
+export type SectionTab = 'history' | 'facts' | 'library' | 'heritage' | 'map';
 
 interface SectionHomeProps {
   section: Section;
   totalSessionsCompleted: number;
+  initialTab?: SectionTab;
   onBack: () => void;
+  onStartPractice: (practice: Practice) => void;
 }
 
-export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessionsCompleted, onBack }) => {
-  const [tab, setTab] = useState<Tab>('history');
+export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessionsCompleted, initialTab, onBack, onStartPractice }) => {
+  const [tab, setTab] = useState<SectionTab>(initialTab ?? 'history');
   const [selected, setSelected] = useState<Practice | null>(null);
   const content = SECTION_CONTENT[section];
   const practices = useMemo(() => practicesBySection(section), [section]);
   const groups = LIBRARY_GROUPS[section];
 
-  const tabs: { key: Tab; label: string }[] = [
+  const tabs: { key: SectionTab; label: string }[] = [
     { key: 'history', label: 'History' },
     { key: 'facts', label: 'Fun Facts' },
     { key: 'library', label: 'Library' },
-    ...(section === 'vyayam' ? [{ key: 'heritage' as Tab, label: 'Heritage' }] : []),
+    ...(section === 'vyayam' ? [{ key: 'heritage' as SectionTab, label: 'Heritage' }] : []),
     { key: 'map', label: 'Spread Map' },
   ];
 
@@ -124,7 +126,13 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
 
       {tab === 'map' && <SpreadMapView content={content} />}
 
-      {selected && <PracticeDetailModal practice={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        <PracticeDetailModal
+          practice={selected}
+          onClose={() => setSelected(null)}
+          onStart={selected.unlock_after_sessions > totalSessionsCompleted ? undefined : () => onStartPractice(selected)}
+        />
+      )}
     </div>
   );
 };
