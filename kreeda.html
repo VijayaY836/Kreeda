@@ -1122,17 +1122,15 @@ function openRules(){
 /* ---------------- play ---------------- */
 function startPlay(){
   const g = currentGame;
-  // Chaturangam has a real, fully-built app of its own — hand off to it,
-  // straight into a game at the chosen difficulty.
-  if(g.id === 'chaturangam'){
-    window.location.href = `chadarangam/dist/index.html?start=play&difficulty=${currentLevel}`;
-    return;
-  }
-  const modeLabel = g.hasSoloMode && currentMode==='solo' ? 'Solo' : `vs Kreedu · ${LEVEL_LABEL[currentLevel]}`;
-  document.getElementById('play-title').textContent = `${g.name} — ${modeLabel}`;
-  document.getElementById('play-sub').textContent = 'Board and game logic mount here. This screen just confirms the navigation, mode and difficulty selection work end to end.';
-  showView('view-play');
-  showToast(`Loaded: ${g.name} (${modeLabel})`);
+  const destinations = {
+    vaikunthapali: `games/vaikunthapali/dist/index.html?start=play&mode=${currentMode}`,
+    'puli-meka': 'games/puli-meka/dist/index.html?start=play',
+    'ashta-chamma': 'games/ashta-chamma/dist/index.html?start=play',
+    'vamana-guntalu': 'games/vamana-guntalu/vamana-guntalu.html',
+    chaturangam: `chadarangam/dist/index.html?start=play&difficulty=${currentLevel}`,
+    'daadi-aata': 'games/daadi-aata/dist/index.html?start=play'
+  };
+  window.location.href = destinations[g.id];
 }
 
 function showToast(msg){
