@@ -37,8 +37,8 @@ def main() -> None:
             for box in boxes
         ]
 
-    # Start -> lift -> final pose -> controlled return -> start.
-    sequence = [steps[0], steps[1], steps[2], steps[1], steps[3]]
+    # Start -> transition -> final pose -> generated return stage -> start.
+    sequence = [steps[0], steps[1], steps[2], steps[3], steps[0]]
     palette_frames = [frame.convert("P", palette=Image.Palette.ADAPTIVE, colors=128) for frame in sequence]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     palette_frames[0].save(
