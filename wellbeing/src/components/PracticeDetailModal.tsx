@@ -1,6 +1,7 @@
 import React from 'react';
 import { Practice } from '../types';
 import { useEscapeToClose } from '../hooks/useEscapeToClose';
+import { StepViewer } from './StepViewer';
 import { X, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
 
 const CONTRA_LABELS: Record<string, string> = {
@@ -82,15 +83,15 @@ export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practi
         {hasGif ? (
           <>
             <div className="md:w-1/2 overflow-y-auto max-h-[88vh]">{content}</div>
-            <div className="md:w-1/2 bg-[#EADFC4] border-t-[3px] md:border-t-0 md:border-l-[3px] border-[#C7A467] flex items-center justify-center p-3 shrink-0">
-              <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="w-full h-auto max-h-[80vh] object-contain" />
+            <div className="md:w-1/2 bg-[#EADFC4] border-t-[3px] md:border-t-0 md:border-l-[3px] border-[#C7A467] flex items-center justify-center p-3 shrink-0 overflow-y-auto max-h-[88vh]">
+              <StepViewer practice={practice} imageClassName="w-full h-auto max-h-[64vh] object-contain" />
             </div>
           </>
         ) : (
           <>
-            {practice.image && (
-              <div className="relative h-64 w-full border-b-[3px] border-[#C7A467] overflow-hidden bg-[#EADFC4] p-3">
-                <img src={practice.image} alt="" className="w-full h-full object-contain" />
+            {(practice.image || practice.steps.length > 0) && (
+              <div className="relative w-full border-b-[3px] border-[#C7A467] bg-[#EADFC4] p-3">
+                <StepViewer practice={practice} imageClassName="w-full h-56 object-contain" />
               </div>
             )}
             {content}
