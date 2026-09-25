@@ -4,7 +4,7 @@ import { useEscapeToClose } from '../hooks/useEscapeToClose';
 import { StepViewer } from './StepViewer';
 import { X, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
 
-const CONTRA_LABELS: Record<string, string> = {
+export const CONTRA_LABELS: Record<string, string> = {
   high_bp: 'High blood pressure', heart_condition: 'Heart condition', back_disc: 'Back / disc issue',
   knee: 'Knee issue', shoulder: 'Shoulder issue', neck: 'Neck issue', hernia: 'Hernia',
   vertigo: 'Vertigo', pregnancy: 'Pregnancy', recent_surgery: 'Recent surgery', eye_condition: 'Eye condition',

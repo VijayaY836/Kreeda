@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { DaySession, Mood, PlanSlotItem } from '../types';
 import { getPractice } from '../data/practices';
 import { playBell } from '../engine/audio';
+import { CONTRA_LABELS } from './PracticeDetailModal';
 import { KreeduMascot } from './KreeduMascot';
 import { X, Pause, Play, SkipForward, Check } from 'lucide-react';
 
@@ -46,6 +47,10 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
   const item = items[index];
   const practice = item ? getPractice(item.practiceId) : undefined;
   const isRepBased = !!practice && (practice.reps != null || practice.rounds != null);
+  // The countdown runs only while there is time left and it isn't paused.
+  // Depending on this (not on secondsLeft itself) lets the interval start once
+  // the new item's duration has been loaded, without restarting on every tick.
+  const running = started && !paused && secondsLeft > 0;
 
   useEffect(() => {
     if (!started || !item) return;
@@ -55,8 +60,7 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
   }, [index, started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!started || paused) return;
-    if (secondsLeft <= 0) return;
+    if (!running) return;
     intervalRef.current = window.setInterval(() => {
       setSecondsLeft(s => {
         if (s <= 1) {
@@ -69,7 +73,7 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
       });
     }, 1000);
     return () => { if (intervalRef.current) window.clearInterval(intervalRef.current); };
-  }, [started, paused, index]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [running, index]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goNext = () => {
     if (intervalRef.current) window.clearInterval(intervalRef.current);
@@ -154,11 +158,24 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
         <div className="grid sm:grid-cols-2 gap-2 mt-5 text-left">
           <div className="rounded-xl border border-[#C7A467]/60 bg-white/60 p-3">
             <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#1F3B2E] mb-1">Details</h3>
-            <p className="text-xs text-[#5C5142] leading-relaxed">{practice.benefits[0]}</p>
+            <ul className="text-xs text-[#5C5142] leading-relaxed space-y-1">
+              {practice.benefits.map((b, i) => <li key={i}>{b}</li>)}
+            </ul>
           </div>
           <div className="rounded-xl border border-[#C7A467]/60 bg-white/60 p-3">
             <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#A8402E] mb-1">Move safely</h3>
-            <p className="text-xs text-[#5C5142] leading-relaxed">{practice.cautions[0] ?? 'Stop if you feel pain or discomfort.'}</p>
+            {practice.cautions.length > 0 ? (
+              <ul className="text-xs text-[#5C5142] leading-relaxed space-y-1">
+                {practice.cautions.map((c, i) => <li key={i}>{c}</li>)}
+              </ul>
+            ) : (
+              <p className="text-xs text-[#5C5142] leading-relaxed">Stop if you feel pain or discomfort.</p>
+            )}
+            {practice.contraindications.length > 0 && (
+              <p className="text-[11px] text-[#A8402E] font-semibold leading-relaxed mt-1.5">
+                Avoid with: {practice.contraindications.map(c => CONTRA_LABELS[c] ?? c).join(', ')}
+              </p>
+            )}
           </div>
         </div>
       </div>
