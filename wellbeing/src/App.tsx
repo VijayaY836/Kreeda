@@ -13,6 +13,7 @@ import { PlanOverview } from './components/PlanOverview';
 import { SessionPlayer } from './components/SessionPlayer';
 import { PostSessionCheck } from './components/PostSessionCheck';
 import { ProgressView } from './components/Progress';
+import { MoodLog } from './components/MoodLog';
 import { LotusIcon } from './components/FolkArtMotifs';
 
 export default function App() {
@@ -100,6 +101,17 @@ export default function App() {
 
   const activeSession = state.plan?.days.find(d => d.dayIndex === activeDayIndex);
 
+  const handleMoodSave = (mood: Mood, note: string) => {
+    const recordedAt = new Date().toISOString();
+    setState(s => ({
+      ...s,
+      moodLog: [
+        ...s.moodLog,
+        { id: `${recordedAt}-${Math.random().toString(36).slice(2, 8)}`, recordedAt, mood, note },
+      ],
+    }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F1E8D2] text-[#2A241E] font-manrope">
       {tab !== 'HOME' && <Header currentTab={tab} hasPlan={!!state.plan} onNavigate={handleNavigate} />}
@@ -146,6 +158,10 @@ export default function App() {
         {tab === 'POST_SESSION' && <PostSessionCheck onSubmit={handlePostSessionSubmit} />}
 
         {tab === 'PROGRESS' && <ProgressView state={state} onBack={() => handleNavigate('HOME')} />}
+
+        {tab === 'MOOD_LOG' && (
+          <MoodLog entries={state.moodLog} onBack={() => handleNavigate('HOME')} onSave={handleMoodSave} />
+        )}
       </main>
 
       {tab !== 'HOME' && (
