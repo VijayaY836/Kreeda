@@ -63,3 +63,19 @@ const DEMO_GIF_ALIASES: Record<string, string> = {
 export function getDemoGif(id: string): string | undefined {
   return GIF_REGISTRY[id] ?? GIF_REGISTRY[DEMO_GIF_ALIASES[id]];
 }
+
+// Per-step posture images live one level deeper, in
+// src/assets/<section>/steps/<practice-id>-<step number>.<ext> (1-based, e.g.
+// "steps/bhujangasana-2.png" pairs with the practice's second text step).
+// Kept out of REGISTRY so a step file can never replace a card thumbnail.
+const stepModules = import.meta.glob<string>('../assets/*/steps/*.{jpg,jpeg,png,webp,svg}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+const STEP_REGISTRY = toRegistry(stepModules);
+
+// Returns one entry per text step; undefined where no image exists for that step.
+export function getStepImages(id: string, stepCount: number): (string | undefined)[] {
+  return Array.from({ length: stepCount }, (_, i) => STEP_REGISTRY[`${id}-${i + 1}`]);
+}
