@@ -56,33 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </button>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 bg-[#F6ECD2] border-[2px] border-[#5C140F] p-1">
-          {navItems.map((item) => {
-            const isActive =
-              currentTab === item.tab ||
-              (item.tab === 'MODE_SELECT' && currentTab === 'GAME');
 
-            return (
-              <button
-                key={`nav-${item.tab}`}
-                onClick={() => onNavigate(item.tab)}
-                className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold transition-colors cursor-pointer ${
-                  isActive
-                    ? item.tab === 'MODE_SELECT'
-                      ? 'bg-[#D8401F] text-white border-[1.5px] border-[#5C140F]'
-                      : 'bg-[#5C140F] text-white'
-                    : item.tab === 'MODE_SELECT'
-                    ? 'bg-[#D8401F]/15 text-[#5C140F] hover:bg-[#D8401F]/30'
-                    : 'text-[#2B1B12] hover:bg-[#E4D19E]'
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
 
         {/* Right utility buttons */}
         <div className="flex items-center gap-2">

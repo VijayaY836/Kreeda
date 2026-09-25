@@ -196,37 +196,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({
 
           </div>
 
-          {/* Quick Return & Helper Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#F6ECD2] border-[2px] border-[#5C140F] p-4 text-xs font-bold text-[#5C140F]">
-            <button
-              type="button"
-              onClick={() => onNavigate('HOME')}
-              className="inline-flex items-center gap-1.5 hover:underline cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Home</span>
-            </button>
 
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => onNavigate('HOW_TO_PLAY')}
-                className="inline-flex items-center gap-1.5 hover:text-[#D8401F] cursor-pointer"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>Read Game Rules</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onNavigate('TUTORIAL')}
-                className="inline-flex items-center gap-1.5 hover:text-[#D8401F] cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4 text-[#EFA90C]" />
-                <span>Interactive Tutorial</span>
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
