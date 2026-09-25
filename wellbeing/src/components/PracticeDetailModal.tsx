@@ -2,7 +2,7 @@ import React from 'react';
 import { Practice } from '../types';
 import { useEscapeToClose } from '../hooks/useEscapeToClose';
 import { StepViewer } from './StepViewer';
-import { X, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle2, BookOpen, Play } from 'lucide-react';
 
 export const CONTRA_LABELS: Record<string, string> = {
   high_bp: 'High blood pressure', heart_condition: 'Heart condition', back_disc: 'Back / disc issue',
@@ -15,9 +15,10 @@ const LEVEL_LABELS: Record<string, string> = { beginner: 'Beginner', intermediat
 interface PracticeDetailModalProps {
   practice: Practice;
   onClose: () => void;
+  onStart?: () => void;
 }
 
-export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practice, onClose }) => {
+export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practice, onClose, onStart }) => {
   useEscapeToClose(onClose);
   const hasGif = !!practice.demoGif;
 
@@ -29,6 +30,15 @@ export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practi
       <h2 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] leading-tight">{practice.name}</h2>
       {practice.name_iast && <p className="font-telugu text-sm text-[#C0524A] font-bold mt-0.5">{practice.name_iast}</p>}
       <p className="text-sm text-[#5C5142] font-semibold mt-0.5 mb-4">{practice.name_english}</p>
+
+      {onStart && (
+        <button
+          onClick={onStart}
+          className="inline-flex items-center gap-1.5 mb-4 px-5 py-2.5 bg-[#1F3B2E] hover:bg-[#2C5040] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer"
+        >
+          <Play className="w-3.5 h-3.5 fill-current" /> Start Practice
+        </button>
+      )}
 
       <div className="flex flex-wrap gap-1.5 mb-4">
         {practice.component_tags.map(t => (
