@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserProfile, FocusTag, Contraindication, FitnessLevel, MeditationMinutes } from '../types';
+import { UserProfile, FocusTag, Contraindication, FitnessLevel, DailyMinutes } from '../types';
 import { FolkArtFrame } from './FolkArtFrame';
 import { ArrowLeft, ArrowRight, AlertTriangle, Check } from 'lucide-react';
 
@@ -35,9 +35,15 @@ const CONTRA_OPTIONS: { tag: Contraindication; label: string }[] = [
   { tag: 'eye_condition', label: 'Eye condition' },
 ];
 
-const YOGA_COUNT_OPTIONS = [3, 4, 5, 6, 8, 10];
-const VYAYAM_COUNT_OPTIONS = [2, 3, 4, 5, 6];
-const MEDITATION_OPTIONS: MeditationMinutes[] = [3, 5, 10, 20];
+const TIME_OPTIONS: DailyMinutes[] = [10, 20, 30, 45, 60];
+
+const SESSION_SIZE_BY_TIME: Record<DailyMinutes, Pick<UserProfile, 'yogaAsanaCount' | 'vyayamItemCount' | 'meditationMinutes'>> = {
+  10: { yogaAsanaCount: 3, vyayamItemCount: 2, meditationMinutes: 3 },
+  20: { yogaAsanaCount: 6, vyayamItemCount: 3, meditationMinutes: 5 },
+  30: { yogaAsanaCount: 8, vyayamItemCount: 4, meditationMinutes: 10 },
+  45: { yogaAsanaCount: 10, vyayamItemCount: 5, meditationMinutes: 10 },
+  60: { yogaAsanaCount: 10, vyayamItemCount: 6, meditationMinutes: 20 },
+};
 
 const DEFAULT_DRAFT: UserProfile = {
   focusAreas: [],
@@ -48,6 +54,7 @@ const DEFAULT_DRAFT: UserProfile = {
   yogaAsanaCount: 6,
   vyayamItemCount: 3,
   meditationMinutes: 5,
+  dailyMinutes: 20,
   daysPerWeek: 4,
   healthChecklist: [],
   acknowledgedDoctorNotice: false,
@@ -67,7 +74,7 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<UserProfile>(initialProfile ?? DEFAULT_DRAFT);
 
-  const steps = ['Focus', 'Body Data', 'Health Checklist', 'Session Size', 'Review'];
+  const steps = ['Concerns', 'Body Data', 'Health Checklist', 'Time', 'Review'];
   const hasHealthConcerns = draft.healthChecklist.length > 0;
 
   const canAdvance = () => {
@@ -227,52 +234,21 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
         {step === 3 && (
           <div className="space-y-5">
             <div>
-              <p className="text-xs font-bold text-[#1F3B2E] mb-1.5">Yoga asanas per session</p>
+              <p className="text-sm text-[#5C5142] font-semibold mb-3">How much time can you usually set aside each day?</p>
               <div className="flex gap-2 flex-wrap">
-                {YOGA_COUNT_OPTIONS.map(n => (
+                {TIME_OPTIONS.map(minutes => (
                   <button
-                    key={n}
-                    onClick={() => setDraft(d => ({ ...d, yogaAsanaCount: n }))}
+                    key={minutes}
+                    onClick={() => setDraft(d => ({ ...d, dailyMinutes: minutes, ...SESSION_SIZE_BY_TIME[minutes] }))}
                     className={`px-4 py-2 text-xs font-bold border border-[#C7A467]/70 rounded-xl cursor-pointer ${
-                      draft.yogaAsanaCount === n ? 'bg-[#1F3B2E] text-white' : 'bg-white text-[#1F3B2E] hover:bg-[#F6EFDE]'
+                      draft.dailyMinutes === minutes ? 'bg-[#1F3B2E] text-white' : 'bg-white text-[#1F3B2E] hover:bg-[#F6EFDE]'
                     }`}
                   >
-                    {n}
+                    {minutes} min
                   </button>
                 ))}
               </div>
-            </div>
-            <div>
-              <p className="text-xs font-bold text-[#1F3B2E] mb-1.5">Vyayam items per session</p>
-              <div className="flex gap-2 flex-wrap">
-                {VYAYAM_COUNT_OPTIONS.map(n => (
-                  <button
-                    key={n}
-                    onClick={() => setDraft(d => ({ ...d, vyayamItemCount: n }))}
-                    className={`px-4 py-2 text-xs font-bold border border-[#C7A467]/70 rounded-xl cursor-pointer ${
-                      draft.vyayamItemCount === n ? 'bg-[#1F3B2E] text-white' : 'bg-white text-[#1F3B2E] hover:bg-[#F6EFDE]'
-                    }`}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-bold text-[#1F3B2E] mb-1.5">Meditation duration</p>
-              <div className="flex gap-2 flex-wrap">
-                {MEDITATION_OPTIONS.map(m => (
-                  <button
-                    key={m}
-                    onClick={() => setDraft(d => ({ ...d, meditationMinutes: m }))}
-                    className={`px-4 py-2 text-xs font-bold border border-[#C7A467]/70 rounded-xl cursor-pointer ${
-                      draft.meditationMinutes === m ? 'bg-[#1F3B2E] text-white' : 'bg-white text-[#1F3B2E] hover:bg-[#F6EFDE]'
-                    }`}
-                  >
-                    {m} min
-                  </button>
-                ))}
-              </div>
+              <p className="text-[11px] text-[#5C5142] mt-2">Your available time sets the number of movements and meditation duration automatically.</p>
             </div>
             <div>
               <p className="text-xs font-bold text-[#1F3B2E] mb-1.5">Days per week: {draft.daysPerWeek}</p>
@@ -293,9 +269,7 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
             <ReviewRow label="Age / Height / Weight" value={`${draft.age ?? '—'} / ${draft.heightCm ?? '—'} cm / ${draft.weightKg ?? '—'} kg`} />
             <ReviewRow label="Fitness level" value={draft.fitnessLevel} />
             <ReviewRow label="Health checklist" value={draft.healthChecklist.length ? draft.healthChecklist.join(', ') : 'None'} />
-            <ReviewRow label="Yoga asanas / session" value={String(draft.yogaAsanaCount)} />
-            <ReviewRow label="Vyayam items / session" value={String(draft.vyayamItemCount)} />
-            <ReviewRow label="Meditation duration" value={`${draft.meditationMinutes} minutes`} />
+            <ReviewRow label="Time available per day" value={`${draft.dailyMinutes} minutes`} />
             <ReviewRow label="Days per week" value={String(draft.daysPerWeek)} />
             <p className="text-[11px] text-[#5C5142] pt-2 border-t border-dashed border-[#C7A467]">
               This plan is generated locally by a rule-based engine — no data leaves your device.
