@@ -196,8 +196,9 @@
     tooltipContainer.style.position = 'absolute';
     tooltipContainer.style.zIndex = '30';
     tooltipContainer.style.pointerEvents = 'none';
-    tooltipContainer.style.transition = 'all 160ms ease-out';
-    tooltipContainer.style.display = 'none';
+    tooltipContainer.style.transition = 'opacity 160ms ease-out, visibility 160ms ease-out';
+    tooltipContainer.style.opacity = '0';
+    tooltipContainer.style.visibility = 'hidden';
     shell.appendChild(tooltipContainer);
 
     function updateTransform() {
@@ -205,7 +206,7 @@
         'transform',
         `translate(${MAP_WIDTH / 2 + pan.x}, ${MAP_HEIGHT / 2 + pan.y}) scale(${zoom}) translate(${-MAP_WIDTH / 2}, ${-MAP_HEIGHT / 2})`
       );
-      renderPins();
+      updatePinVisuals();
       renderTooltip();
     }
 
@@ -218,6 +219,7 @@
         const pinScale = (isHovered ? 1.25 : 1) / Math.pow(zoom, 0.5);
 
         const gPin = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gPin.setAttribute('data-loc-name', loc.name);
         gPin.setAttribute('transform', `translate(${loc.x}, ${loc.y}) scale(${pinScale})`);
         gPin.style.cursor = 'pointer';
         gPin.style.transition = 'transform 150ms ease-out';
@@ -236,10 +238,8 @@
             <circle cx="0" cy="-19" r="13.5" fill="#f59e0b" fill-opacity="0.22" stroke="#f59e0b" stroke-width="0.75" stroke-opacity="0.45" />
           ` : ''}
           <g filter="url(#pinShadow)">
-            ${isHovered ? `
-              <circle cx="0" cy="-19" r="12.5" fill="none" stroke="#220e04" stroke-width="1.5" stroke-dasharray="2.5 1.5" />
-            ` : ''}
-            <path d="M 0,0 C -3,-3 -10,-12 -10,-19 A 10,10 0 1,1 10,-19 C 10,-12 3,-3 0,0 Z"
+            <circle class="pin-hover-ring" cx="0" cy="-19" r="12.5" fill="none" stroke="#220e04" stroke-width="1.5" stroke-dasharray="2.5 1.5" opacity="${isHovered ? '1' : '0'}" />
+            <path class="pin-main-path" d="M 0,0 C -3,-3 -10,-12 -10,-19 A 10,10 0 1,1 10,-19 C 10,-12 3,-3 0,0 Z"
                   fill="${pinFill}" stroke="${isHovered ? '#140601' : '#33180a'}" stroke-width="${isHovered ? '2.0' : isPrimary ? '1.8' : '1.5'}" stroke-linejoin="round" />
             ${isPrimary ? `
               <circle cx="0" cy="-19" r="6.5" fill="none" stroke="#fef08a" stroke-width="1.2" />
@@ -251,44 +251,78 @@
 
         gPin.addEventListener('mouseenter', () => {
           hoveredLocation = loc;
-          renderPins();
+          updatePinVisuals();
           renderTooltip();
         });
 
         gPin.addEventListener('mouseleave', () => {
-          hoveredLocation = null;
-          renderPins();
-          renderTooltip();
+          if (hoveredLocation === loc) {
+            hoveredLocation = null;
+            updatePinVisuals();
+            renderTooltip();
+          }
         });
 
         gPin.addEventListener('focus', () => {
           hoveredLocation = loc;
-          renderPins();
+          updatePinVisuals();
           renderTooltip();
         });
 
         gPin.addEventListener('blur', () => {
-          hoveredLocation = null;
-          renderPins();
-          renderTooltip();
+          if (hoveredLocation === loc) {
+            hoveredLocation = null;
+            updatePinVisuals();
+            renderTooltip();
+          }
         });
 
         pinsGroup.appendChild(gPin);
       });
     }
 
+    function updatePinVisuals() {
+      Array.from(pinsGroup.children).forEach(gPin => {
+        const name = gPin.getAttribute('data-loc-name');
+        const isHovered = hoveredLocation?.name === name;
+        const loc = projectedLocations.find(l => l.name === name);
+        if (!loc) return;
+        const pinScale = (isHovered ? 1.25 : 1) / Math.pow(zoom, 0.5);
+        gPin.setAttribute('transform', `translate(${loc.x}, ${loc.y}) scale(${pinScale})`);
+        const hoverRing = gPin.querySelector('.pin-hover-ring');
+        if (hoverRing) hoverRing.setAttribute('opacity', isHovered ? '1' : '0');
+        const mainPath = gPin.querySelector('.pin-main-path');
+        if (mainPath) {
+          mainPath.setAttribute('stroke', isHovered ? '#140601' : '#33180a');
+          mainPath.setAttribute('stroke-width', isHovered ? '2.0' : (loc.isPrimary ? '1.8' : '1.5'));
+        }
+      });
+    }
+
+    shell.addEventListener('mouseleave', () => {
+      if (hoveredLocation) {
+        hoveredLocation = null;
+        updatePinVisuals();
+        renderTooltip();
+      }
+    });
+
     function renderTooltip() {
-      // Strict hover rule: If no location is currently hovered, immediately hide tooltip
       if (!hoveredLocation) {
-        tooltipContainer.style.display = 'none';
+        tooltipContainer.style.opacity = '0';
+        tooltipContainer.style.visibility = 'hidden';
         return;
       }
 
       const projectedLoc = projectedLocations.find(l => l.name === hoveredLocation.name);
       if (!projectedLoc) {
-        tooltipContainer.style.display = 'none';
+        tooltipContainer.style.opacity = '0';
+        tooltipContainer.style.visibility = 'hidden';
         return;
       }
+
+      const shellWidth = shell.clientWidth || MAP_WIDTH;
+      const shellHeight = shell.clientHeight || MAP_HEIGHT;
 
       const px = projectedLoc.x;
       const py = projectedLoc.y;
@@ -296,35 +330,17 @@
       const transformedX = (px - MAP_WIDTH / 2) * zoom + MAP_WIDTH / 2 + pan.x;
       const transformedY = (py - MAP_HEIGHT / 2) * zoom + MAP_HEIGHT / 2 + pan.y;
 
-      const leftPercent = (transformedX / MAP_WIDTH) * 100;
-      const topPercent = (transformedY / MAP_HEIGHT) * 100;
-
-      const translateX = transformedX > MAP_WIDTH * 0.75
-        ? '-90%'
-        : transformedX < MAP_WIDTH * 0.25
-        ? '-10%'
-        : '-50%';
-
-      const translateY = transformedY < MAP_HEIGHT * 0.28
-        ? '14px'
-        : 'calc(-100% - 24px)';
-
-      const notchTop = transformedY < MAP_HEIGHT * 0.28;
-      const notchLeft = transformedX > MAP_WIDTH * 0.75
-        ? '85%'
-        : transformedX < MAP_WIDTH * 0.25
-        ? '15%'
-        : '50%';
+      const pinX = (transformedX / MAP_WIDTH) * shellWidth;
+      const pinY = (transformedY / MAP_HEIGHT) * shellHeight;
 
       const isPrimary = Boolean(hoveredLocation.isPrimary);
 
-      tooltipContainer.style.display = 'block';
-      tooltipContainer.style.left = `${leftPercent}%`;
-      tooltipContainer.style.top = `${topPercent}%`;
-      tooltipContainer.style.transform = `translate(${translateX}, ${translateY})`;
+      tooltipContainer.style.left = '0px';
+      tooltipContainer.style.top = '0px';
+      tooltipContainer.style.transform = 'none';
 
       tooltipContainer.innerHTML = `
-        <div style="width: 280px; max-width: 85vw; background-color: #faf2de; border: 1.5px solid #4a2e18; border-radius: 12px; padding: 14px; box-shadow: 0 8px 24px rgba(20,10,4,0.35); position: relative; text-align: left; color: #2d180b;">
+        <div style="width: 280px; max-width: 85vw; background-color: #faf2de; border: 1.5px solid #4a2e18; border-radius: 12px; padding: 14px; box-shadow: 0 8px 24px rgba(20,10,4,0.35); position: relative; text-align: left; color: #2d180b; pointer-events: none;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; border-bottom: 1px solid rgba(74, 46, 24, 0.25); padding-bottom: 6px;">
             <h4 class="font-serif font-bold text-sm tracking-wide text-[#33180a] uppercase leading-tight" style="margin: 0;">
               ${hoveredLocation.name}
@@ -346,9 +362,40 @@
             ${hoveredLocation.description}
           </p>
 
-          <div style="position: absolute; width: 10px; height: 10px; background-color: #faf2de; transform: rotate(45deg); ${notchTop ? '-top: 6px; border-top: 1.5px solid #4a2e18; border-left: 1.5px solid #4a2e18;' : '-bottom: 6px; border-bottom: 1.5px solid #4a2e18; border-right: 1.5px solid #4a2e18;'} left: ${notchLeft}; margin-left: -5px;"></div>
+          <div class="vg-tooltip-notch" style="position: absolute; width: 10px; height: 10px; background-color: #faf2de; transform: rotate(45deg); pointer-events: none;"></div>
         </div>
       `;
+
+      const cardWidth = tooltipContainer.offsetWidth;
+      const cardHeight = tooltipContainer.offsetHeight;
+
+      const margin = 8;
+      const pinOffset = 16;
+
+      let isBelow = false;
+      let top = pinY - cardHeight - pinOffset;
+      if (top < margin) {
+        top = pinY + pinOffset;
+        isBelow = true;
+      }
+      top = Math.max(margin, Math.min(top, shellHeight - cardHeight - margin));
+
+      let left = pinX - cardWidth / 2;
+      left = Math.max(margin, Math.min(left, shellWidth - cardWidth - margin));
+
+      tooltipContainer.style.left = `${left}px`;
+      tooltipContainer.style.top = `${top}px`;
+      tooltipContainer.style.visibility = 'visible';
+      tooltipContainer.style.opacity = '1';
+
+      const notchEl = tooltipContainer.querySelector('.vg-tooltip-notch');
+      if (notchEl) {
+        const notchLeftPx = Math.max(16, Math.min(cardWidth - 16, pinX - left));
+        const notchStyle = isBelow
+          ? '-top: 6px; border-top: 1.5px solid #4a2e18; border-left: 1.5px solid #4a2e18;'
+          : '-bottom: 6px; border-bottom: 1.5px solid #4a2e18; border-right: 1.5px solid #4a2e18;';
+        notchEl.style.cssText = `position: absolute; width: 10px; height: 10px; background-color: #faf2de; transform: rotate(45deg); ${notchStyle} left: ${notchLeftPx}px; margin-left: -5px; pointer-events: none;`;
+      }
     }
 
     // Event Handlers for Wheel Zoom, Double Click, Drag, Pinch
@@ -437,6 +484,7 @@
     shell.addEventListener('pointercancel', handlePointerEnd);
     shell.addEventListener('pointerleave', handlePointerEnd);
 
+    renderPins();
     updateTransform();
   };
 })();
