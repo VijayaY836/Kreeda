@@ -277,6 +277,14 @@
       height: auto;
     }
 
+    .plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
     .card-body {
       padding: clamp(4px, 0.8cqw, 16px) clamp(4px, 1cqw, 18px) clamp(5px, 0.9cqw, 16px);
       text-align: center;
@@ -1484,7 +1492,7 @@
     const games = [
       {
         id: 'vaikunthapali', name: 'Vaikunthapali', native: 'వైకుంఠపాళి · also Gyan Chauper, Moksha Patam',
-        icon: 'ladder', accent: 'var(--navy)',
+        icon: 'ladder', image: 'games/vaikunthapali-card.png', accent: 'var(--navy)',
         hasSoloMode: true,
         mapSub: 'Traced its own path out of India — tap to follow it.',
         path: true,
@@ -1496,7 +1504,7 @@
       },
       {
         id: 'puli-meka', name: 'Puli Meka Aata', native: 'పులి మేక ఆట · Aadu Puli Aatam, Bagh-Chal',
-        icon: 'tiger', accent: 'var(--brick)',
+        icon: 'tiger', image: 'games/puli-meka.png', accent: 'var(--brick)',
         hasSoloMode: false,
         mapSub: 'A hunt that crossed the Himalayas.',
         path: true,
@@ -1507,7 +1515,7 @@
       },
       {
         id: 'ashta-chamma', name: 'Ashta Chamma', native: 'అష్ట చెమ్మ · Chowka Bara, Daayam, Vimanam',
-        icon: 'dice', accent: 'var(--gold-deep)',
+        icon: 'dice', image: 'games/ashta-chamma.jpg', accent: 'var(--gold-deep)',
         hasSoloMode: false,
         mapSub: 'One game, a dozen regional names — before it ever left India.',
         path: true,
@@ -1520,7 +1528,7 @@
       },
       {
         id: 'vamana-guntalu', name: 'Vaamana Guntalu', native: 'వామన గుంటలు · Pallanguzhi',
-        icon: 'seeds', accent: 'var(--evergreen)',
+        icon: 'seeds', image: 'games/vaamana-guntalu.jpg', accent: 'var(--evergreen)',
         hasSoloMode: false,
         mapSub: 'Seeds that sailed the Indian Ocean.',
         path: true,
@@ -1533,7 +1541,7 @@
       },
       {
         id: 'chaturangam', name: 'Chaturangam', native: 'చతురంగం · Chadarangam, Shatranj',
-        icon: 'chess', accent: 'var(--plum)',
+        icon: 'chess', image: 'games/chaturangam.jpg', accent: 'var(--plum)',
         hasSoloMode: false,
         mapSub: 'Four divisions of an army, reborn on every continent.',
         path: true,
@@ -1546,7 +1554,7 @@
       },
       {
         id: 'daadi-aata', name: 'Daadi Aata', native: 'దాడి ఆట · Navakankari, Nine Men\'s Morris',
-        icon: 'mill', accent: 'var(--rose)',
+        icon: 'mill', image: 'games/daadi-aata.jpg', accent: 'var(--rose)',
         hasSoloMode: false,
         mapSub: 'No single birthplace — just pins where it has quietly lived for millennia.',
         path: false,
@@ -1677,7 +1685,7 @@
       card.className = 'game-card';
       card.style.setProperty('--accent', g.accent);
       card.innerHTML = `
-    <div class="plate">${icons[g.icon]}</div>
+    <div class="plate">${g.image ? `<img src="${g.image}" alt="${g.name}">` : icons[g.icon]}</div>
     <div class="card-body">
       <p class="card-eyebrow">${g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu'}</p>
       <h2>${g.name}</h2>
