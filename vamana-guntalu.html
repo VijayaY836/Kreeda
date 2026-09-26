@@ -20,6 +20,10 @@
     --ink-soft:#6B4E3D;
     --radius:14px;
     --bw:3px;
+    --sea:#0E5C58;
+    --land:#E4D19E;
+    --land-hl:#EFC988;
+    --border:#8A6A46;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -71,29 +75,60 @@
   .map-frame{
     position:relative; width:100%; aspect-ratio:2.15/1;
     border-radius:10px; overflow:hidden;
-    background:var(--teal);
+    background:var(--sea);
     border:var(--bw) solid var(--maroon);
     touch-action:none; cursor:grab;
   }
   .map-frame.dragging{cursor:grabbing;}
   #world{display:block; width:100%; height:100%;}
-  #world .land{fill:var(--paper-deep); stroke:#8A6A46; stroke-width:.8; vector-effect:non-scaling-stroke; paint-order:stroke; stroke-linejoin:round;}
-  #world .land.hl{fill:#F0DCA6; stroke:var(--maroon); stroke-width:1.1; paint-order:stroke; stroke-linejoin:round;}
-  #world .grat{stroke:rgba(239,223,184,.28); stroke-width:1; vector-effect:non-scaling-stroke; fill:none;}
-  #world .route{fill:none; stroke:var(--marigold); stroke-width:2.2; stroke-dasharray:7 9;
-    stroke-linecap:round; vector-effect:non-scaling-stroke; opacity:.85;}
-  #world .route.faint{stroke:#F3C77A; opacity:.5;}
+  #world .land{fill:var(--land); stroke:var(--border); stroke-width:.9; vector-effect:non-scaling-stroke;}
+  #world .land.hl{fill:var(--land-hl); stroke:var(--maroon); stroke-width:1.2;}
+  #world .grat{stroke:rgba(92,20,15,.12); stroke-width:1; vector-effect:non-scaling-stroke; fill:none;}
+  #world .route{fill:none; stroke:var(--terracotta); stroke-width:2.2; stroke-dasharray:7 9;
+    stroke-linecap:round; vector-effect:non-scaling-stroke; opacity:.9;}
+  #world .route.faint{stroke:#B8734A; opacity:.6;}
   #world .pin{cursor:pointer;}
-  #world .pin .ring{fill:none; stroke:var(--maroon); stroke-width:2;}
-  #world .pin .body{stroke:var(--maroon); stroke-width:2.2;}
-  #world .pin .core{fill:var(--paper);}
-  #world .pin:hover .body{stroke-width:3.4;}
-  #world .pin.dim{opacity:.18;}
+  #world .pin .drop{stroke:var(--maroon); stroke-width:2.4; stroke-linejoin:round;}
+  #world .pin .core{fill:var(--paper); stroke:var(--maroon); stroke-width:1.6;}
+  #world .pin:hover .drop{stroke-width:3.4;}
+  #world .pin.sel .core{fill:var(--maroon);}
+  #world .pin.dim{opacity:.16;}
   #world .plabel{
     font-family:'Manrope',sans-serif; font-size:11px; font-weight:800;
     fill:var(--ink); paint-order:stroke; stroke:var(--paper); stroke-width:3.5; stroke-linejoin:round;
     pointer-events:none;
   }
+  .pin-pop{
+    position:absolute; z-index:12; width:262px; max-width:calc(100% - 24px);
+    background:var(--paper); border:2.5px solid var(--maroon); border-radius:12px;
+    padding:13px 15px 14px; display:none;
+    box-shadow:0 6px 0 rgba(92,20,15,.22);
+  }
+  .pin-pop.on{display:block;}
+  .pin-pop .x{
+    position:absolute; top:7px; right:9px; background:none; border:none; cursor:pointer;
+    font-size:17px; font-weight:800; color:var(--maroon); line-height:1; padding:2px 4px;
+  }
+  .pin-pop .place{font-size:10.5px; letter-spacing:.5px; text-transform:uppercase; color:var(--terracotta); font-weight:800; padding-right:18px;}
+  .pin-pop h4{font-family:'Fraunces',serif; margin:4px 0 1px; font-size:16.5px; font-weight:800; color:var(--maroon); line-height:1.2;}
+  .pin-pop .when{font-size:11px; font-weight:800; color:var(--ink-soft); margin-bottom:7px;}
+  .pin-pop p{margin:0; font-size:12.8px; line-height:1.55;}
+  .pin-pop .how{
+    display:none; margin-top:9px; padding-top:8px; border-top:2px dashed var(--maroon);
+    font-size:12px; line-height:1.55; color:var(--ink-soft); font-weight:600;
+  }
+  .pin-pop.full .how{display:block;}
+  .pin-pop .more{
+    margin-top:8px; background:none; border:none; padding:0; cursor:pointer;
+    font-family:'Manrope',sans-serif; font-size:11.5px; font-weight:800;
+    color:var(--maroon); text-decoration:underline;
+  }
+  .pin-pop .tail{
+    position:absolute; left:50%; bottom:-9px; width:14px; height:14px; margin-left:-7px;
+    background:var(--paper); border-right:2.5px solid var(--maroon); border-bottom:2.5px solid var(--maroon);
+    transform:rotate(45deg);
+  }
+  .pin-pop.below .tail{bottom:auto; top:-9px; transform:rotate(225deg);}
   .zoombox{position:absolute; top:12px; right:12px; display:flex; flex-direction:column; gap:6px;}
   .zbtn{
     width:38px; height:38px; border-radius:9px; cursor:pointer;
@@ -222,21 +257,6 @@
   .modal p{font-size:14.5px; line-height:1.6; margin:0 0 16px;}
   .busy{opacity:.85; pointer-events:none;}
 
-  .pin-modal-overlay{
-    position:fixed; inset:0; background:rgba(43,27,18,0.55); display:none; align-items:center; justify-content:center;
-    z-index:55; padding:20px;
-  }
-  .pin-modal-overlay.active{display:flex;}
-  .pin-modal{
-    background:var(--paper); border-radius:var(--radius); max-width:400px; width:100%; padding:26px; position:relative;
-    border:var(--bw) solid var(--maroon);
-  }
-  .pin-modal .close{position:absolute; top:14px; right:16px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--maroon); font-weight:800;}
-  .pin-modal .place{font-size:12px; letter-spacing:.6px; text-transform:uppercase; color:var(--terracotta); font-weight:800; padding-right:24px;}
-  .pin-modal h3{font-family:'Fraunces',serif; margin:6px 0 2px; font-size:22px; font-weight:800; color:var(--maroon);}
-  .pin-modal .when{font-size:12px; font-weight:800; color:var(--ink-soft); margin-bottom:10px;}
-  .pin-modal p{font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 10px;}
-  .pin-modal .how{font-size:13px; color:var(--ink-soft); border-top:2px dashed var(--maroon); padding-top:10px; margin-top:10px; font-weight:600;}
 
   .guide-overlay{
     position:fixed; inset:0; background:rgba(43,27,18,0.55);
@@ -304,27 +324,10 @@
     </div>
   </div>
 
-  <div class="panel">
-    <div class="status">
-      <div class="mascot"><img src="kreedu-mascot.png" alt="Kreedu"></div>
-      <div class="speech" id="speech">Your row is the bottom seven pits. Sow a pit to start — I'll play the top row.</div>
-    </div>
-    <div class="scores">
-      <div class="bowl kreedu">
-        <div class="who">Kreedu collected</div>
-        <div class="n" id="store-1">0</div>
-      </div>
-      <div class="bowl you">
-        <div class="who">You collected</div>
-        <div class="n" id="store-0">0</div>
-      </div>
-    </div>
-  </div>
-
   <!-- ============ WORLD MAP ============ -->
   <div class="panel">
     <h2>Where the fourteen pits have travelled</h2>
-    <p class="sub">Vaamana Guntalu is one branch of <strong>mancala</strong> — a family of sowing-and-capture games found on four continents, with at least 800 recorded names. Drag to pan, scroll or pinch to zoom, tap any pin for its story.</p>
+    <p class="sub">Vaamana Guntalu is one branch of <strong>mancala</strong> — a family of sowing-and-capture games found on four continents, with at least 800 recorded names. Drag to pan, scroll or pinch to zoom, hover a pin for a quick fact, tap it for the full story.</p>
 
     <div class="map-shell">
       <div class="map-frame" id="map-frame">
@@ -447,7 +450,7 @@
 <path data-n="North Korea" d="M1725.78 264.47L1726.56 265.45L1724.44 265.11L1722.04 266.99L1720.38 268.89L1720.58 272.87L1717.72 274.1L1716.72 275.08L1714.64 276.72L1710.94 277.63L1708.52 279.13L1708.34 281.53L1707.7 282.15L1709.92 283.05L1713.06 285.48L1712.26 286.83L1709.9 287.2L1705.96 287.47L1703.8 289.97L1701.32 289.77L1700.98 290.28L1698.28 289.23L1697.6 290.27L1695.98 290.73L1695.78 289.68L1694.34 289.17L1692.84 288.29L1694.36 285.84L1695.68 285.19L1695.18 284.18L1696.6 281.18L1696.24 280.27L1692.98 279.66L1690.36 278.18L1694.9 274.61L1701.02 271.62L1704.84 267.68L1707.46 269.42L1712.28 269.63L1711.4 266.7L1719.98 264.31L1722.2 261.2L1725.78 264.47Z"/>
 <path data-n="Norway" d="M1084.13 57.36L1086.23 55.47L1094.39 55.28L1101.39 57.21L1119.69 61.35L1105.71 63.54L1102.61 67.63L1097.75 68.68L1095.11 73.28L1088.41 73.5L1076.45 70.11L1081.49 68.13L1073.17 66.53L1062.35 61.84L1058.03 57.49L1073.17 55.49L1076.21 57.44L1084.13 57.36ZM1172.79 113.57L1163.33 115.8L1158.85 116.3L1161.19 112.41L1154.07 110.2L1145.45 112.08L1142.71 116.15L1137.41 118.62L1131.45 117.27L1124.21 117.54L1118.03 114.61L1114.69 116.08L1111.25 116.3L1110.43 119.96L1099.97 119.07L1098.49 122.16L1093.15 122.14L1089.49 126.1L1083.93 132.26L1075.31 140.07L1077.33 141.97L1075.39 144.17L1069.89 144.08L1066.29 149.29L1066.63 156.66L1070.17 159.48L1068.33 166.01L1063.71 169.82L1061.27 173.02L1057.53 169.61L1046.57 176.04L1039.15 177.34L1031.47 174.51L1029.49 168.54L1027.73 155.72L1032.85 152.14L1047.51 147.47L1058.49 141.75L1068.65 134L1082.01 123.27L1091.31 119.1L1106.57 112.13L1118.77 109.69L1127.91 109.98L1136.37 105.39L1146.49 105.63L1156.47 104.52L1173.85 108.59L1166.69 110.08L1172.79 113.57ZM1152.27 55.24L1144.03 58.23L1127.91 58.89L1111.53 57.97L1110.53 56.43L1102.57 56.33L1096.49 53.78L1113.65 52.23L1121.71 53.57L1127.33 51.9L1141.37 53.29L1152.27 55.24ZM1137.35 67.48L1124.95 69.75L1115.15 68.46L1118.97 67.03L1115.63 65.25L1127.13 64.13L1129.33 66.22L1137.35 67.48Z"/>
 <path data-n="Oman" d="M1306.71 373.84L1306.85 371.61L1308.47 369.3L1308.49 367.04L1311.01 365.94L1310.01 365.17L1310.47 361.55L1313.31 361.53L1315.81 365.33L1318.91 367.34L1322.97 368.07L1326.27 369.08L1328.77 372.27L1330.27 374.11L1332.27 374.81L1332.25 376.05L1330.23 379.36L1329.35 380.93L1327.01 382.7L1324.93 386.5L1322.41 386.21L1321.25 387.54L1320.37 390.36L1321.05 394.07L1320.53 394.75L1317.97 394.73L1314.49 396.81L1313.95 399.52L1312.69 400.69L1309.23 400.64L1307.05 402.04L1307.07 404.28L1304.39 405.83L1301.33 405.31L1297.61 407.18L1295.05 407.5L1293.23 403.61L1288.89 394.45L1305.55 388.89L1309.25 377.78L1306.71 373.84ZM1312.55 357.14L1311.51 355.25L1313.11 353.36L1313.81 353.83L1313.29 356.13L1312.55 357.14Z"/>
-<path data-n="Pakistan" d="M1413.61 317.97L1418.09 320.72L1413.37 323.93L1413.45 327.89L1408.05 333.47L1404.57 339.1L1398.77 344.93L1392.31 344.51L1386.19 350.33L1389.83 352.82L1390.45 357.1L1393.57 359.92L1394.69 364.69L1382.45 364.67L1378.75 368.38L1374.69 366.97L1373.03 362.98L1368.73 358.75L1358.49 359.8L1349.47 359.9L1341.65 360.68L1343.75 354.22L1351.75 351.35L1351.29 348.79L1348.63 347.89L1348.49 343L1343.17 340.56L1340.93 337.2L1338.19 334.29L1347.49 337.12L1353.05 336.29L1356.37 336.99L1357.49 335.78L1361.37 336.27L1368.59 333.96L1368.79 329.23L1371.87 326.09L1376.01 326.1L1376.63 324.53L1380.87 323.81L1382.93 324.33L1385.09 322.77L1384.79 319.43L1387.15 316.08L1390.69 314.67L1388.49 311L1393.79 311.17L1395.31 309.17L1395.07 307.04L1397.85 304.7L1397.21 301.94L1395.89 299.59L1399.15 297.16L1405.11 296L1411.49 295.36L1414.31 294.33L1417.55 293.7L1408.00 307.00L1409.71 309.35L1411.69 314.21L1413.61 317.97Z"/>
+<path data-n="Pakistan" d="M1432.43 302.81L1427.07 307.48L1420.87 308.31L1412.45 306.95L1409.71 309.35L1411.69 314.21L1413.61 317.97L1418.09 320.72L1413.37 323.93L1413.45 327.89L1408.05 333.47L1404.57 339.1L1398.77 344.93L1392.31 344.51L1386.19 350.33L1389.83 352.82L1390.45 357.1L1393.57 359.92L1394.69 364.69L1382.45 364.67L1378.75 368.38L1374.69 366.97L1373.03 362.98L1368.73 358.75L1358.49 359.8L1349.47 359.9L1341.65 360.68L1343.75 354.22L1351.75 351.35L1351.29 348.79L1348.63 347.89L1348.49 343L1343.17 340.56L1340.93 337.2L1338.19 334.29L1347.49 337.12L1353.05 336.29L1356.37 336.99L1357.49 335.78L1361.37 336.27L1368.59 333.96L1368.79 329.23L1371.87 326.09L1376.01 326.1L1376.63 324.53L1380.87 323.81L1382.93 324.33L1385.09 322.77L1384.79 319.43L1387.15 316.08L1390.69 314.67L1388.49 311L1393.79 311.17L1395.31 309.17L1395.07 307.04L1397.85 304.7L1397.21 301.94L1395.89 299.59L1399.15 297.16L1405.11 296L1411.49 295.36L1414.31 294.33L1417.55 293.7L1421.65 296.3L1423.29 300.57L1432.43 302.81Z"/>
 <path data-n="Palestine" d="M1196.65 325.06L1194.03 325.81L1194.27 324.35L1195.69 323.59L1194.31 322.96L1195.47 319.26L1197.47 320.03L1197.47 323.43L1196.65 325.06Z"/>
 <path data-n="Panama" d="M570.27 451.83L569.59 452.64L570.87 455.92L569.83 457.57L568.05 457.17L567.33 459.86L565.47 458.27L564.29 455.27L565.65 453.78L564.25 453.4L563.21 451.56L560.45 450.02L558.01 450.38L556.89 452.3L554.65 453.71L553.43 453.89L552.89 455.05L555.53 458.07L554.03 458.78L553.23 459.6L550.63 459.88L549.67 456.56L548.95 457.51L547.11 457.18L545.99 454.95L543.71 454.58L542.27 453.93L539.89 453.94L539.73 455.14L539.09 454.31L539.37 453.21L539.83 452.08L539.63 451.07L540.45 450.41L539.29 449.59L539.27 447.35L541.41 446.85L543.41 448.84L543.29 450.03L545.51 450.27L546.03 449.82L547.57 451.19L550.29 450.79L552.67 449.38L556.03 448.26L557.93 446.61L560.99 446.93L560.79 447.47L563.89 447.67L566.37 448.63L568.17 450.29L570.27 451.83Z"/>
 <path data-n="Papua New Guinea" d="M1783.34 514.45L1792.98 518.28L1803.24 521.45L1807.08 524.29L1810.16 527.09L1811.02 530.37L1820.26 533.8L1821.62 536.74L1816.5 537.35L1817.74 541.04L1822.7 544.69L1826.3 550.59L1829.48 550.4L1829.26 552.86L1833.56 553.8L1831.88 554.85L1837.78 557.19L1837.18 558.79L1833.5 559.18L1832.12 557.74L1827.36 557.12L1821.74 556.28L1817.42 552.74L1814.26 549.68L1811.38 544.82L1804.14 542.39L1799.44 543.98L1796.04 545.81L1796.74 549.91L1792.38 551.82L1789.28 550.89L1783.52 550.65L1783.44 532.55L1783.34 514.45ZM1848 520.34L1850.12 522.11L1850.78 525L1849.04 526.48L1848 523.2L1846.7 521.05L1844.18 519.24L1841.02 516.87L1837.02 515.23L1838.56 513.89L1841.56 515.45L1843.44 516.67L1845.78 518L1848 520.34ZM1840.56 532.45L1837.52 533.8L1834.68 535.1L1831.72 535.09L1827.16 533.48L1824 531.93L1824.46 530.21L1829.44 531.02L1832.48 530.59L1833.32 527.92L1834.12 527.78L1834.66 530.74L1837.82 530.31L1839.38 528.41L1842.48 526.43L1841.88 523.16L1845.2 523.05L1846.32 523.97L1846.22 527.04L1844.36 530.43L1841.44 530.89L1840.56 532.45ZM1859.78 529.66L1861.46 530.92L1864.16 534.45L1866.78 536.33L1866 537.89L1864.44 538.45L1862.04 536.31L1859.6 532.79L1858.42 528.55L1859.18 528.02L1859.78 529.66Z"/>
@@ -504,7 +507,7 @@
 <path data-n="Yemen" d="M1288.89 394.45L1293.23 403.61L1295.05 407.5L1291.03 408.98L1289.95 411.46L1289.83 413.35L1284.29 415.69L1275.41 418.28L1270.43 422.2L1267.99 422.52L1266.33 422.19L1263.07 424.49L1259.53 425.56L1254.87 425.84L1253.47 426.16L1252.25 427.63L1250.79 428.03L1249.93 429.45L1247.19 429.32L1245.41 430.08L1241.57 429.79L1240.13 426.55L1240.29 423.51L1239.37 421.88L1238.29 417.77L1236.69 415.48L1237.81 415.21L1237.23 412.67L1237.91 411.6L1237.67 409.18L1240.09 407.4L1239.53 405.06L1241.01 402.34L1243.29 403.77L1244.79 403.28L1251.21 403.14L1252.21 403.7L1257.59 404.26L1259.71 403.98L1261.11 405.83L1263.71 404.9L1267.69 399.07L1272.87 396.57L1288.89 394.45Z"/>
 <path data-n="Zambia" d="M1170.77 546.34L1173.09 547.75L1175.31 548.68L1178.85 549.62L1181.99 551.28L1184.61 553.76L1186.03 558.47L1185.09 559.98L1183.97 564.48L1185.03 569.09L1183.29 571.02L1181.59 576.18L1184.53 577.62L1167.67 582.2L1168.19 586.16L1163.99 586.92L1160.81 589.13L1160.15 591.06L1158.15 591.49L1153.33 596.06L1150.25 599.66L1148.37 599.78L1146.57 599.14L1140.35 598.53L1139.35 598.12L1139.31 597.66L1137.13 596.41L1133.53 596.09L1128.97 597.35L1125.35 593.88L1121.59 589.34L1121.85 571.66L1133.43 571.72L1132.95 569.81L1133.77 567.73L1132.79 565.12L1133.43 562.43L1132.85 560.7L1134.77 560.84L1135.07 562.57L1137.69 562.43L1141.21 562.95L1143.07 565.47L1147.51 566.25L1150.91 564.49L1152.15 567.41L1156.41 568.18L1158.47 570.55L1160.75 573.6L1164.99 573.65L1164.53 567.66L1163.01 568.67L1159.13 566.5L1157.63 565.52L1158.31 559.94L1159.29 553.37L1158.05 550.91L1159.63 547.37L1161.13 546.7L1168.59 545.77L1170.77 546.34Z"/>
 <path data-n="Zimbabwe" d="M1173.29 623.62L1170.33 623.06L1168.45 623.73L1165.77 622.79L1163.51 622.73L1159.97 620.22L1155.67 619.37L1154.03 615.84L1154.03 613.89L1151.65 613.29L1145.35 607.18L1143.61 603.97L1142.49 602.98L1140.35 598.53L1146.57 599.14L1148.37 599.78L1150.25 599.66L1153.33 596.06L1158.15 591.49L1160.15 591.06L1160.81 589.13L1163.99 586.92L1168.19 586.16L1168.55 588.23L1173.19 588.11L1175.75 589.29L1176.95 590.66L1179.59 591.07L1182.49 592.85L1182.49 599.89L1181.41 603.73L1181.17 607.89L1182.07 609.53L1181.45 612.81L1180.61 613.3L1179.13 617.31L1173.29 623.62Z"/>
-<path data-n="eSwatini" d="M1178.17 648.52L1177.05 650.99L1173.79 651.58L1170.47 648.58L1170.43 646.66L1171.95 644.57L1172.47 642.95L1174.07 642.56L1176.87 643.57L1177.69 646.06L1178.17 648.52Z"/><path data-n="Pakistan Occupied Kashmir" class="land" d="M1417.55 293.7L1414.31 294.33L1411.49 295.36L1405.11 296L1408 307L1409.71 309.35L1411.69 314.21L1413.61 317.97L1418.09 320.72L1413.37 323.93L1413.45 327.89L1408.05 333.47L1404.57 339.1L1398.77 344.93L1392.31 344.51L1386.19 350.33L1389.83 352.82L1390.45 357.1L1393.57 359.92L1394.69 364.69L1382.45 364.67Z"/></g>
+<path data-n="eSwatini" d="M1178.17 648.52L1177.05 650.99L1173.79 651.58L1170.47 648.58L1170.43 646.66L1171.95 644.57L1172.47 642.95L1174.07 642.56L1176.87 643.57L1177.69 646.06L1178.17 648.52Z"/></g>
           <g id="small"><path data-n="Antigua and Barb." d="M657.13 405.35L656.95 405.57L656.33 405.48L656.21 405.2L656.19 405.01L656.57 404.61L657.01 404.79L657.19 404.97L657.31 405.01L657.31 405.17L657.25 405.29L657.13 405.35ZM656.97 402.37L656.89 402.51L656.43 402.24L656.29 401.75L656.31 401.64L656.37 401.58L656.55 401.68L656.79 401.72L656.95 401.88L656.97 402.37Z"/>
 <path data-n="Barbados" d="M669.49 427.33L669.33 427.43L668.83 427.21L668.65 426.94L668.63 426.09L668.93 426.01L669.51 426.69L669.85 426.93L669.49 427.33Z"/>
 <path data-n="Cabo Verde" d="M860.17 405.86L859.63 405.96L859.39 405.91L859.33 405.47L859.21 405.18L859.23 405.05L860.49 404.48L860.91 404.57L861.23 405.03L861.01 405.28L860.17 405.86ZM869.75 416.62L869.41 417.13L868.69 417.09L868.31 416.88L867.87 416.24L867.87 415.74L868.03 415.32L868.01 414.94L868.07 414.85L868.29 414.9L868.33 415.15L869.01 415.77L869.25 415.9L869.75 416.62ZM861.73 406.57L861.29 406.7L861.01 406.69L860.59 406.48L860.73 406.27L861.17 406.04L861.47 405.99L861.71 406.41L861.73 406.57ZM872.69 409.79L873.15 409.9L873.31 409.86L873.61 409.88L873.93 410.17L873.99 410.49L873.83 410.87L873.23 411.19L872.87 411.15L872.45 410.86L872.69 410.28L872.69 409.79ZM864.95 417.47L864.53 417.68L864.23 417.58L863.93 417.36L863.79 417.04L863.91 416.77L864.49 416.46L864.83 416.56L865.03 417.05L864.95 417.47ZM866.19 407.65L866.41 407.81L866.49 407.93L866.15 408L865.31 407.79L865.09 407.91L864.87 408.37L864.45 407.68L864.49 407.42L864.57 407.34L865.17 407.53L866.19 407.65ZM872.85 407.45L872.67 407.74L872.45 407.31L872.33 407.22L872.27 406.62L872.59 406.44L872.75 406.43L872.75 407.04L872.85 407.45ZM871.21 415.91L871.05 415.93L870.83 415.67L870.87 415.33L870.85 415.24L871.05 414.86L871.45 414.9L871.57 415.17L871.57 415.74L871.21 415.91Z"/>
@@ -527,12 +530,17 @@
           <button class="zbtn small" onclick="resetView()" aria-label="Reset map">RESET</button>
         </div>
         <div class="map-caption">Dashed lines = likely routes of spread, not documented voyages</div>
-      </div>
 
-      <div class="maptools">
-        <select class="jump" id="jump" onchange="jumpTo(this.value)">
-          <option value="">Jump to a place…</option>
-        </select>
+        <div class="pin-pop" id="pin-pop">
+          <button class="x" onclick="closePop()" aria-label="Close">&times;</button>
+          <div class="place" id="pop-place"></div>
+          <h4 id="pop-name"></h4>
+          <div class="when" id="pop-when"></div>
+          <p id="pop-text"></p>
+          <div class="how" id="pop-how"></div>
+          <button class="more" id="pop-more" onclick="toggleMore()">More →</button>
+          <span class="tail"></span>
+        </div>
       </div>
 
       <div class="legend" id="legend"></div>
@@ -546,6 +554,23 @@
     <div id="history"></div>
     <div class="caveat">
       <b>An honest caveat.</b> Nobody knows where mancala began, and the specialists disagree. The oldest candidate boards are simply rows of holes cut into rock or floor — nearly impossible to date, and easy to confuse with grain-measuring pits, tally marks or ritual cupmarks. What is solid: the game is ancient, it is densely rooted across Africa and the Indian Ocean rim, and it moved with traders, sailors, migrants and enslaved people rather than with armies. Claims that Pallanguzhi descends from East African boards, and claims that South India is the source, are both arguments from resemblance — neither is settled.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="status">
+      <div class="mascot"><img src="kreedu-mascot.png" alt="Kreedu"></div>
+      <div class="speech" id="speech">Your row is the bottom seven pits. Sow a pit to start — I'll play the top row.</div>
+    </div>
+    <div class="scores">
+      <div class="bowl kreedu">
+        <div class="who">Kreedu collected</div>
+        <div class="n" id="store-1">0</div>
+      </div>
+      <div class="bowl you">
+        <div class="who">You collected</div>
+        <div class="n" id="store-0">0</div>
+      </div>
     </div>
   </div>
 
@@ -581,17 +606,6 @@
     <h3 id="end-title">Round over</h3>
     <p id="end-body"></p>
     <button class="btn primary" style="width:100%" onclick="newGame(); closeEnd();">Play again</button>
-  </div>
-</div>
-
-<div class="pin-modal-overlay" id="pin-modal-overlay">
-  <div class="pin-modal">
-    <button class="close" onclick="closePinModal()">&times;</button>
-    <div class="place" id="pin-place">PLACE</div>
-    <h3 id="pin-name">Game name here</h3>
-    <div class="when" id="pin-when"></div>
-    <p id="pin-fact">Fun fact here.</p>
-    <div class="how" id="pin-how">How it travelled here.</div>
   </div>
 </div>
 
@@ -823,7 +837,7 @@ document.getElementById('end-modal').addEventListener('click', e=>{ if(e.target.
 function openGuide(){ document.getElementById('guide-overlay').classList.add('active'); }
 function closeGuide(){ document.getElementById('guide-overlay').classList.remove('active'); }
 document.getElementById('guide-overlay').addEventListener('click', e=>{ if(e.target.id==='guide-overlay') closeGuide(); });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeGuide(); closePinModal(); } });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeGuide(); closePop(); } });
 
 /* ================= WORLD MAP ================= */
 /* Equirectangular projection into a 2000 x 1000 user-unit grid:
@@ -840,7 +854,7 @@ const LAYERS = {
   africa:   { label:'Africa',               color:'#D8401F' },
   westasia: { label:'West & Central Asia',  color:'#3E6E9E' },
   south:    { label:'South Asia',           color:'#EFA90C' },
-  sea:      { label:'Southeast Asia & Pacific', color:'#0E5C58' },
+  sea:      { label:'Southeast Asia & Pacific', color:'#1C9E93' },
   atlantic: { label:'Diaspora & revival',    color:'#5F8F3B' }
 };
 
@@ -982,7 +996,7 @@ const PINS = [
 ];
 
 /* countries with a named tradition or find mentioned above */
-const HL = new Set(['India','Pakistan Occupied Kashmir','Sri Lanka','Malaysia','Indonesia','Philippines','Brunei','Singapore','Thailand',
+const HL = new Set(['India','Sri Lanka','Malaysia','Indonesia','Philippines','Brunei','Singapore','Thailand',
   'Maldives','Ghana','Nigeria','Uganda','Tanzania','Kenya','Ethiopia','Eritrea','Egypt','Jordan','Israel',
   'Turkey','Kazakhstan','Kyrgyzstan','Bosnia and Herz.','United States of America','Trinidad and Tobago',
   'Suriname','Guyana','Mozambique','Cabo Verde','Antigua and Barb.','Barbados','N. Mariana Is.','Somalia','Sudan']);
@@ -1023,6 +1037,10 @@ function markHighlights(){
 
 function drawGraticule(){
   let d = '';
+  for(let lat=-40; lat<=60; lat+=20){
+    const a = proj(-180, lat), b = proj(180, lat);
+    d += `M${a[0]} ${a[1]}L${b[0]} ${b[1]}`;
+  }
   for(let lon=-160; lon<=160; lon+=20){
     const a = proj(lon, 80), b = proj(lon, -60);
     d += `M${a[0]} ${a[1]}L${b[0]} ${b[1]}`;
@@ -1051,61 +1069,68 @@ function drawRoutes(){
 }
 
 function drawPins(){
-  const pin = 'M0 -8 C-6 -3 -6 3 0 9.5 C6 3 6 -3 0 -8Z';
-  const pinHome = 'M0 -10 C-7.5 -4 -7.5 3.5 0 12 C7.5 3.5 7.5 -4 0 -10Z';
+  const NS = 'http://www.w3.org/2000/svg';
   PINS.forEach((pn, i)=>{
     const [x,y] = proj(pn.lon, pn.lat);
-    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('class','pin');
-    g.dataset.i = i; pn._x = x; pn._y = y; pn._el = g;
+    pn._x = x; pn._y = y;
     const home = pn.name.indexOf('Vaamana') === 0;
+    pn._scale = home ? 1.3 : 1;
     const col = LAYERS[pn.layer].color;
-    const hit = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    hit.setAttribute('r', home ? '20' : '16');
-    hit.setAttribute('fill', 'transparent');
-    g.appendChild(hit);
-    if(home){
-      const r0 = document.createElementNS('http://www.w3.org/2000/svg','path');
-      r0.setAttribute('class','ring'); r0.setAttribute('d', pinHome); g.appendChild(r0);
-    }
-    const c = document.createElementNS('http://www.w3.org/2000/svg','path');
-    c.setAttribute('class','body'); c.setAttribute('d', home ? pinHome : pin);
-    c.setAttribute('fill', col); g.appendChild(c);
-    const k = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    k.setAttribute('class','core'); k.setAttribute('r', home ? '3.6' : '2.8'); g.appendChild(k);
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('class','plabel'); t.setAttribute('x','14'); t.setAttribute('y','4.5');
+
+    const g = document.createElementNS(NS,'g');
+    g.setAttribute('class','pin');
+    g.dataset.i = i;
+
+    /* original KREEDA teardrop marker, drawn in a 24x32 box with its tip at (12,30) */
+    const inner = document.createElementNS(NS,'g');
+    inner.setAttribute('transform','translate(-12,-30)');
+    const drop = document.createElementNS(NS,'path');
+    drop.setAttribute('class','drop');
+    drop.setAttribute('d','M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 8 10.5 18 10.5 18s10.5-10 10.5-18c0-5.8-4.7-10.5-10.5-10.5z');
+    drop.setAttribute('fill', col);
+    inner.appendChild(drop);
+    const core = document.createElementNS(NS,'circle');
+    core.setAttribute('class','core');
+    core.setAttribute('cx','12'); core.setAttribute('cy','12'); core.setAttribute('r','4');
+    inner.appendChild(core);
+    g.appendChild(inner);
+
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('class','plabel');
+    t.setAttribute('x','15'); t.setAttribute('y','-14');
     t.textContent = pn.name.split(' · ')[0];
     g.appendChild(t);
+
     g.addEventListener('click', ev=>{ ev.stopPropagation(); openPin(i); });
     gPins.appendChild(g);
+    pn._el = g;
   });
 }
 
 function applyView(){
+  if(!(view.w > 0) || !(view.h > 0)) return;   // never write an invalid viewBox
   svg.setAttribute('viewBox', `${view.x} ${view.y} ${view.w} ${view.h}`);
-  const px = frame.clientWidth || 1;
+  const px = frame.clientWidth || frame.getBoundingClientRect().width || 1;
   const s = view.w / px;                       // user units per screen pixel
   const showLabels = zoom >= 2.6;
   PINS.forEach(pn=>{
     if(!pn._el) return;
-    pn._el.setAttribute('transform', `translate(${pn._x} ${pn._y}) scale(${s})`);
+    pn._el.setAttribute('transform', `translate(${pn._x} ${pn._y}) scale(${s * pn._scale})`);
     const t = pn._el.querySelector('text');
     if(t) t.style.display = showLabels ? '' : 'none';
     pn._el.classList.toggle('dim', !activeLayers.has(pn.layer));
     pn._el.style.pointerEvents = activeLayers.has(pn.layer) ? '' : 'none';
   });
+  if(popIndex != null) placePop(popIndex);
 }
 
 function fitBase(){
   const r = frame.getBoundingClientRect();
   const w = r.width || 640;
   const h = r.height || 320;
-  if(w <= 4 || h <= 4) return false;
   const a = w / h;
   const bw = Math.min(MAPW, MAPH * a);
   base = { w:bw, h:bw/a };
-  return true;
 }
 function clampView(){
   view.w = base.w / zoom;
@@ -1121,7 +1146,7 @@ function centerOn(lon, lat, z){
   view.x = x - view.w/2; view.y = y - view.h/2;
   clampView(); applyView();
 }
-function resetView(){ closePinModal(); fitBase(); centerOn(78.96, 20.59, 1.8); }
+function resetView(){ closePop(); fitBase(); centerOn(78.96, 20.59, 1.8); }
 function zoomStep(f){
   const cx = view.x + view.w/2, cy = view.y + view.h/2;
   zoom = Math.max(1, Math.min(MAXZOOM, zoom * f));
@@ -1152,11 +1177,10 @@ frame.addEventListener('wheel', e=>{
 const ptrs = new Map();
 let dragStart = null, pinchStart = null;
 frame.addEventListener('pointerdown', e=>{
-  if(e.target.closest && e.target.closest('.zbtn')) return;
   frame.setPointerCapture(e.pointerId);
   ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
   if(ptrs.size === 1){
-    dragStart = { cx:e.clientX, cy:e.clientY, vx:view.x, vy:view.y, moved:false, target:e.target };
+    dragStart = { cx:e.clientX, cy:e.clientY, vx:view.x, vy:view.y, moved:false };
     frame.classList.add('dragging');
   } else if(ptrs.size === 2){
     const [a,b] = [...ptrs.values()];
@@ -1190,15 +1214,9 @@ frame.addEventListener('pointermove', e=>{
   }
 });
 function endPtr(e){
-  const tap = dragStart && !dragStart.moved && ptrs.size === 1;
-  const tapTarget = dragStart && dragStart.target;
   ptrs.delete(e.pointerId);
   if(ptrs.size < 2) pinchStart = null;
   if(ptrs.size === 0){ dragStart = null; frame.classList.remove('dragging'); }
-  if(tap && tapTarget && tapTarget.closest){
-    const pin = tapTarget.closest('.pin');
-    if(pin && pin.dataset.i != null) openPin(+pin.dataset.i);
-  }
 }
 frame.addEventListener('pointerup', endPtr);
 frame.addEventListener('pointercancel', endPtr);
@@ -1212,7 +1230,7 @@ frame.addEventListener('dblclick', e=>{
 });
 function refit(){ fitBase(); clampView(); applyView(); }
 if(typeof ResizeObserver !== 'undefined'){
-  const ro = new ResizeObserver(refit);
+  const ro = new ResizeObserver(()=>{ fitBase(); clampView(); applyView(); });
   ro.observe(frame);
 }
 window.addEventListener('resize', refit);
@@ -1243,45 +1261,71 @@ function syncChips(){
     c.classList.toggle('off', !activeLayers.has(c.dataset.k));
   });
 }
-function buildJump(){
-  const sel = document.getElementById('jump');
-  Object.entries(LAYERS).forEach(([key,L])=>{
-    const og = document.createElement('optgroup');
-    og.label = L.label;
-    PINS.forEach((p,i)=>{
-      if(p.layer !== key) return;
-      const o = document.createElement('option');
-      o.value = i; o.textContent = p.place;
-      og.appendChild(o);
-    });
-    sel.appendChild(og);
-  });
-}
-function jumpTo(v){
-  if(v === '') return;
-  flyTo(+v);
-  document.getElementById('jump').value = '';
-}
 function flyTo(i){
   const p = PINS[i];
+  closePop();
   centerOn(p.lon, p.lat, 5);
   frame.scrollIntoView({ behavior:'smooth', block:'center' });
-  openPin(i);
+  setTimeout(()=> openPin(i), 60);
+}
+let popIndex = null;
+const pop = document.getElementById('pin-pop');
+
+function firstSentence(t){
+  const m = t.match(/^[\s\S]*?[.!?](?=\s|$)/);
+  return m ? m[0] : t;
 }
 function openPin(i){
   const p = PINS[i];
-  document.getElementById('pin-place').textContent = p.place;
-  document.getElementById('pin-name').textContent  = p.name;
-  document.getElementById('pin-when').textContent  = p.when;
-  document.getElementById('pin-fact').textContent  = p.text;
-  document.getElementById('pin-how').textContent   = p.how;
-  document.getElementById('pin-modal-overlay').classList.add('active');
+  popIndex = i;
+  document.getElementById('pop-place').textContent = p.place;
+  document.getElementById('pop-name').textContent  = p.name;
+  document.getElementById('pop-when').textContent  = p.when;
+  document.getElementById('pop-text').textContent  = firstSentence(p.text);
+  document.getElementById('pop-how').textContent   = p.how;
+  const more = document.getElementById('pop-more');
+  more.textContent = 'More →';
+  more.style.display = (firstSentence(p.text) === p.text && !p.how) ? 'none' : '';
+  pop.classList.remove('full');
+  pop.classList.add('on');
+  PINS.forEach(q=> q._el && q._el.classList.remove('sel'));
+  if(p._el) p._el.classList.add('sel');
+  placePop(i);
 }
-function closePinModal(){ document.getElementById('pin-modal-overlay').classList.remove('active'); }
-document.getElementById('pin-modal-overlay').addEventListener('click', e=>{
-  if(e.target.id === 'pin-modal-overlay') closePinModal();
-});
-
+function toggleMore(){
+  if(popIndex == null) return;
+  const p = PINS[popIndex];
+  const full = pop.classList.toggle('full');
+  document.getElementById('pop-text').textContent = full ? p.text : firstSentence(p.text);
+  document.getElementById('pop-more').textContent = full ? '← Less' : 'More →';
+  placePop(popIndex);
+}
+function placePop(i){
+  const p = PINS[i];
+  const r = frame.getBoundingClientRect();
+  if(!(r.width > 4)) return;
+  const sx = (p._x - view.x) / view.w * r.width;
+  const sy = (p._y - view.y) / view.h * r.height;
+  const pw = pop.offsetWidth || 262, ph = pop.offsetHeight || 130;
+  const pinH = 32 * p._scale;                     // marker height in screen px
+  let top = sy - ph - 14, below = false;
+  if(top < 6){ top = sy + pinH * 0.18 + 14; below = true; }
+  let left = sx - pw/2;
+  left = Math.max(8, Math.min(r.width - pw - 8, left));
+  pop.classList.toggle('below', below);
+  pop.style.left = left + 'px';
+  pop.style.top  = top + 'px';
+  const tail = pop.querySelector('.tail');
+  tail.style.left = Math.max(12, Math.min(pw - 12, sx - left)) + 'px';
+  tail.style.marginLeft = '-7px';
+}
+function closePop(){
+  if(typeof pop === 'undefined' || !pop) return;
+  popIndex = null;
+  pop.classList.remove('on');
+  PINS.forEach(q=> q._el && q._el.classList.remove('sel'));
+}
+frame.addEventListener('pointerdown', ()=> closePop());
 function buildHistory(){
   const wrap = document.getElementById('history');
   Object.entries(LAYERS).forEach(([key,L], idx)=>{
@@ -1313,12 +1357,13 @@ drawGraticule();
 drawRoutes();
 drawPins();
 buildLegend();
-buildJump();
 buildHistory();
 fitBase();
 resetView();
-newGame();
+
 /* sizing hooks last: everything they touch is declared by now */
+window.addEventListener('resize', refit);
+if(window.ResizeObserver){ new ResizeObserver(refit).observe(frame); }
 window.addEventListener('load', ()=>{ if(zoom === 1) resetView(); else refit(); });
 /* keep retrying until the frame reports a real size (late layout / webfonts) */
 (function settle(tries){
@@ -1326,6 +1371,8 @@ window.addEventListener('load', ()=>{ if(zoom === 1) resetView(); else refit(); 
   if(!fitBase()){ requestAnimationFrame(()=> settle(tries+1)); return; }
   if(zoom === 1) resetView(); else refit();
 })(0);
+
+newGame();
 </script>
 </body>
 </html>
