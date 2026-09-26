@@ -8,7 +8,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     nativeName: 'యోగా',
     tagline: 'Flexibility, breath and balance — the body practice most of the world already knows by its Indian name.',
     color: 'var(--color-evergreen)',
-    heroImage: getImage('surya-namaskar'),
+    heroImage: getImage('tadasana'),
     timeline: [
       { id: 'patanjali', era: 'c. 2nd century BCE – 4th century CE', title: 'Patanjali\'s Yoga Sutras', text: 'Systematised yoga into eight limbs, including asana (posture) and pranayama (breath) — dharana, dhyana and samadhi are the final three, carried further in Section C.', image: getImage('patanjali') },
       { id: 'hatha-pradipika', era: '15th century', title: 'Hatha Yoga Pradipika', text: 'A foundational Hatha Yoga text describing asanas, breath control and cleansing practices in detail.' },
@@ -40,7 +40,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     nativeName: 'వ్యాయామం',
     tagline: 'Desi strength training from the akhada — Dand and Baithak, built on the ardhashakti principle.',
     color: 'var(--color-brick)',
-    heroImage: getImage('akhada'),
+    heroImage: getImage('dand-basic'),
     timeline: [
       { id: 'sushruta-samhita', era: 'Ancient', title: 'Sushruta Samhita', text: 'One of the foundational texts of Ayurveda describes ardhashakti — exercising to about half of one\'s full capacity — as the traditional guide to safe exertion.' },
       { id: 'manasollasa', era: '12th century', title: 'Manasollasa', text: 'A royal encyclopaedia of the Chalukya court describing physical training and wrestling practices of the era.' },
@@ -61,9 +61,9 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
       { id: 'v-us', x: 22, y: 26, place: 'UNITED STATES', name: 'Club-Swinging Fitness', fact: 'Indian-club swinging spread further into American gymnasiums and physical-culture programmes in the early 20th century.', how: 'Spread through the same physical-culture movement that popularised Indian clubs in the West.', image: getImage('indian-clubs') },
     ],
     sources: [
-      { title: 'Sushruta Samhita — ardhashakti principle', ref: 'TBD — verify page reference before release' },
-      { title: 'Manasollasa (12th c.) — Chalukya court text', ref: 'TBD — verify against academic source' },
-      { title: 'Malla Purana — wrestling training text', ref: 'TBD — verify against academic source' },
+      { title: 'Sushruta Samhita, Cikitsāsthāna ch. 24 (Anāgatābādhapratiṣedha) — ardhashakti vyāyāma', ref: 'wisdomlib.org/hinduism/book/sushruta-samhita-volume-4-cikitsasthana' },
+      { title: 'Mānasollāsa of King Someśvara (12th c.), Mallavinoda section — ed. G. K. Shrigondekar, Gaekwad\'s Oriental Series, 3 vols. (1925–61)', ref: 'archive.org/details/in.ernet.dli.2015.344930' },
+      { title: 'Mallapurāṇa — ed. B. J. Sandesara & R. N. Mehta, Gaekwad\'s Oriental Series 144 (Oriental Institute, Baroda, 1964)', ref: 'archive.org/details/mallapurana_full_colour_scan' },
     ],
   },
 
@@ -73,7 +73,7 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     nativeName: 'ధ్యానం',
     tagline: 'Meditation across India\'s traditions — Buddhist, Vedic, Jain and Yogic — for a quieter mind.',
     color: 'var(--color-navy)',
-    heroImage: getImage('dhyana-mudra'),
+    heroImage: getImage('dhyana-hero'),
     timeline: [
       { id: 'patanjali-dhyana', era: 'c. 2nd century BCE – 4th century CE', title: 'Patanjali\'s Yoga Sutras', text: 'Names dharana (concentration), dhyana (meditation) and samadhi (absorption) as the final three limbs of yoga, following directly from Section A\'s asana and pranayama.', image: getImage('patanjali') },
       { id: 'beatles-rishikesh', era: '1968', title: 'The Beatles in Rishikesh', text: 'The Beatles\' stay at Maharishi Mahesh Yogi\'s ashram brought global pop-culture attention to Indian meditation.', image: getImage('rishikesh-beatles-ashram') },
@@ -95,9 +95,9 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
       { id: 'd-vietnam', x: 66, y: 52, place: 'VIETNAM', name: 'Thiền', fact: 'A parallel branch of the same Chan lineage took root in Vietnam as Thiền Buddhism.', how: 'Transmitted directly from Chinese Chan Buddhism.' },
     ],
     sources: [
-      { title: 'Patanjali\'s Yoga Sutras — dharana, dhyana, samadhi', ref: 'TBD — verify translation source' },
-      { title: 'S.N. Goenka Vipassana tradition', ref: 'TBD — verify against published source' },
-      { title: 'Preksha Dhyana, Acharya Mahapragya', ref: 'TBD — verify against published source' },
+      { title: 'Patañjali, Yoga Sūtras 3.1–3.3 — dhāraṇā, dhyāna, samādhi (with Bhoja\'s Rājamārtaṇḍa)', ref: 'wisdomlib.org/hinduism/book/yoga-sutras-with-bhojas-rajamartanda' },
+      { title: 'Vipassana Research Institute — What is Anapana? (S.N. Goenka tradition)', ref: 'vridhamma.org/What-is-Anapana' },
+      { title: 'Acharya Mahapragya — Preksha Dhyan', ref: 'archive.org/details/in.ernet.dli.2015.342671' },
     ],
   },
 };

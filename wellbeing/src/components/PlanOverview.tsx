@@ -29,7 +29,7 @@ export const PlanOverview: React.FC<PlanOverviewProps> = ({ plan, onBack, onStar
 
       <h1 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] mb-1">Your Weekly Plan</h1>
       <p className="text-sm text-[#5C5142] font-semibold mb-6">
-        {plan.profile.yogaAsanaCount} asanas &middot; {plan.profile.vyayamItemCount} vyayam items &middot; {plan.profile.meditationMinutes} min meditation &middot; {plan.profile.daysPerWeek} days/week &middot; {plan.profile.fitnessLevel} level
+        Up to {plan.profile.dailyMinutes} min/day &middot; {plan.profile.daysPerWeek} days/week &middot; {plan.profile.fitnessLevel} level
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">

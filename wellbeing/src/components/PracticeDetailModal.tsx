@@ -1,9 +1,10 @@
 import React from 'react';
 import { Practice } from '../types';
 import { useEscapeToClose } from '../hooks/useEscapeToClose';
-import { X, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
+import { StepViewer } from './StepViewer';
+import { X, AlertTriangle, CheckCircle2, BookOpen, Play } from 'lucide-react';
 
-const CONTRA_LABELS: Record<string, string> = {
+export const CONTRA_LABELS: Record<string, string> = {
   high_bp: 'High blood pressure', heart_condition: 'Heart condition', back_disc: 'Back / disc issue',
   knee: 'Knee issue', shoulder: 'Shoulder issue', neck: 'Neck issue', hernia: 'Hernia',
   vertigo: 'Vertigo', pregnancy: 'Pregnancy', recent_surgery: 'Recent surgery', eye_condition: 'Eye condition',
@@ -14,9 +15,10 @@ const LEVEL_LABELS: Record<string, string> = { beginner: 'Beginner', intermediat
 interface PracticeDetailModalProps {
   practice: Practice;
   onClose: () => void;
+  onStart?: () => void;
 }
 
-export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practice, onClose }) => {
+export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practice, onClose, onStart }) => {
   useEscapeToClose(onClose);
   const hasGif = !!practice.demoGif;
 
@@ -28,6 +30,15 @@ export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practi
       <h2 className="font-fraunces text-2xl font-semibold text-[#1F3B2E] leading-tight">{practice.name}</h2>
       {practice.name_iast && <p className="font-telugu text-sm text-[#C0524A] font-bold mt-0.5">{practice.name_iast}</p>}
       <p className="text-sm text-[#5C5142] font-semibold mt-0.5 mb-4">{practice.name_english}</p>
+
+      {onStart && (
+        <button
+          onClick={onStart}
+          className="inline-flex items-center gap-1.5 mb-4 px-5 py-2.5 bg-[#1F3B2E] hover:bg-[#2C5040] text-white border border-[#C7A467]/70 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer"
+        >
+          <Play className="w-3.5 h-3.5 fill-current" /> Start Practice
+        </button>
+      )}
 
       <div className="flex flex-wrap gap-1.5 mb-4">
         {practice.component_tags.map(t => (
@@ -82,15 +93,15 @@ export const PracticeDetailModal: React.FC<PracticeDetailModalProps> = ({ practi
         {hasGif ? (
           <>
             <div className="md:w-1/2 overflow-y-auto max-h-[88vh]">{content}</div>
-            <div className="md:w-1/2 bg-[#EADFC4] border-t-[3px] md:border-t-0 md:border-l-[3px] border-[#C7A467] flex items-center justify-center p-3 shrink-0">
-              <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="w-full h-auto max-h-[80vh] object-contain" />
+            <div className="md:w-1/2 bg-[#EADFC4] border-t-[3px] md:border-t-0 md:border-l-[3px] border-[#C7A467] flex items-center justify-center p-3 shrink-0 overflow-y-auto max-h-[88vh]">
+              <StepViewer practice={practice} imageClassName="w-full h-auto max-h-[64vh] object-contain" />
             </div>
           </>
         ) : (
           <>
-            {practice.image && (
-              <div className="relative h-44 w-full border-b-[3px] border-[#C7A467] overflow-hidden">
-                <img src={practice.image} alt="" className="w-full h-full object-cover" />
+            {(practice.image || practice.steps.length > 0) && (
+              <div className="relative w-full border-b-[3px] border-[#C7A467] bg-[#EADFC4] p-3">
+                <StepViewer practice={practice} imageClassName="w-full h-56 object-contain" />
               </div>
             )}
             {content}

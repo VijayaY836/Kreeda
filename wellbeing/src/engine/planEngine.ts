@@ -119,7 +119,7 @@ export function applyFeedback(progress: PracticeProgress, rating: FeedbackRating
 
 // ---------------- duration estimation, for the session player's timer ----------------
 
-function estimatePracticeSeconds(practice: Practice, intensity: { durationSec: number | null; reps: number | null; rounds: number | null }): number {
+export function estimatePracticeSeconds(practice: Practice, intensity: { durationSec: number | null; reps: number | null; rounds: number | null }): number {
   if (intensity.durationSec != null) return intensity.durationSec;
   if (practice.category === 'surya_namaskar' && intensity.rounds != null) return intensity.rounds * 50;
   if (practice.category === 'pranayama' && intensity.rounds != null) return intensity.rounds * 9;

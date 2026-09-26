@@ -44,9 +44,13 @@ before the hub's "Physical Wellbeing" card works.
   alternating Yoga/Vyayam days, minimum 2 Vyayam days, standalone evening
   Dhyana for stress/sleep/focus goals, at least one rest day at 7 days/week).
 - `src/engine/storage.ts` — local persistence and streak calculation.
-- `src/components/PlanBuilder.tsx` — the 5-step stepper (Focus → Body Data →
-  Health Checklist → Time → Review), enforcing the mandatory doctor-consult
+- `src/components/PlanBuilder.tsx` — the 5-step stepper (Concerns → Body Data →
+  Health Checklist → Time → Review), deriving session size from the user's
+  daily time availability and enforcing the mandatory doctor-consult
   acknowledgment before a plan can be generated (spec §8.2).
+- `src/components/MoodLog.tsx` — a standalone private mood journal. Mood
+  entries are persisted locally and deliberately do not regenerate or alter
+  the exercise plan.
 - `src/components/SessionPlayer.tsx` — step-by-step session flow with a
   silent countdown timer (Web Audio bell tone, no bundled audio files) for
   held/timed practices and a self-paced "Mark Complete" flow for rep/round
@@ -76,4 +80,7 @@ before the hub's "Physical Wellbeing" card works.
   real pass against books/academic sources before shipping.
 - Guided Dhyana audio is a generated bell tone, not the pre-recorded
   3/5/10/20-minute tracks spec'd in §5.4.
-- Illustrations/animations per practice are not included (spec §12).
+- Animation coverage is partial. Bhujangasana and Basic Baithak have generated
+  source sheets and web-sized GIFs, while Sarvangasana and Setu Bandhasana have
+  existing GIFs. Remaining practices still need animation assets and every
+  generated movement sequence requires instructor review before release.

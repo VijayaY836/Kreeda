@@ -138,6 +138,7 @@ export interface HeritageCard {
 
 export type FitnessLevel = Level;
 export type MeditationMinutes = 3 | 5 | 10 | 20;
+export type DailyMinutes = 10 | 20 | 30 | 45 | 60;
 
 export interface UserProfile {
   focusAreas: FocusTag[];
@@ -148,6 +149,7 @@ export interface UserProfile {
   yogaAsanaCount: number; // asanas included per yoga-emphasis session
   vyayamItemCount: number; // dand/baithak/sapate items per vyayam-emphasis session
   meditationMinutes: MeditationMinutes; // spec §5.4 session formats
+  dailyMinutes: DailyMinutes;
   daysPerWeek: number; // 3-7
   healthChecklist: Contraindication[];
   acknowledgedDoctorNotice: boolean;
@@ -155,6 +157,13 @@ export interface UserProfile {
 
 export type FeedbackRating = 'too_easy' | 'about_right' | 'too_hard';
 export type Mood = 'great' | 'good' | 'okay' | 'low' | 'stressed';
+
+export interface MoodLogEntry {
+  id: string;
+  recordedAt: string;
+  mood: Mood;
+  note: string;
+}
 
 export interface PlanSlotItem {
   practiceId: string;
@@ -199,6 +208,7 @@ export interface WellbeingState {
   plan: WeeklyPlan | null;
   progress: Record<string, PracticeProgress>;
   history: SessionLogEntry[];
+  moodLog: MoodLogEntry[];
   streak: number;
   lastSessionDate: string | null;
   unlockedMilestones: string[];
@@ -210,6 +220,7 @@ export type ViewTab =
   | 'PRACTICE_DETAIL'
   | 'PLAN_BUILDER'
   | 'PLAN_OVERVIEW'
+  | 'MOOD_LOG'
   | 'SESSION_PLAYER'
   | 'POST_SESSION'
   | 'PROGRESS';

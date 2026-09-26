@@ -12,8 +12,8 @@ export const HeritageCards: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {HERITAGE_CARDS.map(card => (
           <div key={card.id} className="bg-[#F6EFDE] border border-[#C7A467]/70 rounded-xl flex overflow-hidden">
-            <div className="w-28 shrink-0 bg-[#EADFC4] border-r-2 border-[#C7A467]">
-              {card.image && <img src={card.image} alt="" className="w-full h-full object-cover" />}
+            <div className="w-32 shrink-0 bg-[#EADFC4] border-r-2 border-[#C7A467] p-2">
+              {card.image && <img src={card.image} alt="" className="w-full h-full object-contain" />}
             </div>
             <div className="p-4 min-w-0">
               <h4 className="font-fraunces text-base font-bold text-[#1F3B2E]">{card.name}</h4>

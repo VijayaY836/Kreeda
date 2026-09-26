@@ -1,4 +1,3 @@
 node_modules
-# dist/ is committed on purpose: the hub links straight to dist/index.html,
-# so a fresh clone must work without running npm run build.
+dist
 *.local

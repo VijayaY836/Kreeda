@@ -16,7 +16,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['The default entry point to meditation in this module; traditionally associated with a settled, focused mind.'],
     cautions: ['No claims are made about treating anxiety or any condition; stop and rest if uncomfortable.'],
     contraindications: [],
-    sources: [{ title: 'Vipassana tradition (S.N. Goenka lineage) — introductory Anapana', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Vipassana Research Institute — What is Anapana? (S.N. Goenka tradition)', ref: 'vridhamma.org/What-is-Anapana' }],
   },
   {
     id: 'walking-meditation', section: 'dhyana', category: 'meditation',
@@ -33,7 +33,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Offered for users who find sitting still difficult; traditionally associated with grounded, present awareness.'],
     cautions: ['Choose a flat, obstacle-free path.'],
     contraindications: [],
-    sources: [{ title: 'Buddhist walking meditation tradition', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Caṅkama Sutta (AN 5.29) — Walking, tr. Bhikkhu Bodhi', ref: 'suttacentral.net/an5.29/en/bodhi' }],
   },
   {
     id: 'japa', section: 'dhyana', category: 'meditation',
@@ -50,7 +50,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Traditionally associated with a settled, one-pointed mind.'],
     cautions: ['A neutral humming or counting variant is offered for users who prefer it.'],
     contraindications: [],
-    sources: [{ title: 'Vedic japa tradition', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Patañjali, Yoga Sūtras 1.27–1.28 (praṇava and its japa)', ref: 'wisdomlib.org/hinduism/book/yoga-sutras-with-bhojas-rajamartanda/d/doc1217023.html' }],
   },
   {
     id: 'trataka', section: 'dhyana', category: 'meditation',
@@ -67,7 +67,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Traditionally associated with concentration and steadiness of mind.'],
     cautions: ['A wall-dot variant (no flame) is offered; those with eye conditions should use short rounds or skip.'],
     contraindications: ['eye_condition'],
-    sources: [{ title: 'Hatha Yoga tradition — Trataka as a concentration practice', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Haṭha Yoga Pradīpikā 2.31–2.32 (Trāṭaka), tr. Pancham Sinh', ref: 'sacred-texts.com/hin/hyp/hyp04.htm' }],
   },
   {
     id: 'maitri', section: 'dhyana', category: 'meditation',
@@ -84,7 +84,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Traditionally associated with warmth toward oneself and others, and easing negative mood.'],
     cautions: ['Move through the stages at your own pace; skipping a stage is fine.'],
     contraindications: [],
-    sources: [{ title: 'Buddhist Metta/Maitri tradition', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Karaṇīya Mettā Sutta (Snp 1.8), tr. Bhikkhu Sujato', ref: 'suttacentral.net/snp1.8/en/sujato' }],
   },
   {
     id: 'preksha-dhyana', section: 'dhyana', category: 'meditation',
@@ -101,7 +101,7 @@ export const DHYANA_PRACTICES: Practice[] = [
     benefits: ['Systematized by Acharya Mahapragya; traditionally associated with deep relaxation and better sleep.'],
     cautions: ['Suitable as an evening, pre-sleep practice.'],
     contraindications: [],
-    sources: [{ title: 'Preksha Dhyana, systematized by Acharya Mahapragya', ref: 'TBD — verify against published source' }],
+    sources: [{ title: 'Acharya Mahapragya — Preksha Dhyan', ref: 'archive.org/details/in.ernet.dli.2015.342671' }],
   },
   {
     id: 'sakshi-bhava', section: 'dhyana', category: 'meditation',

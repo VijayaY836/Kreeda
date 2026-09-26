@@ -9,6 +9,7 @@ export const DEFAULT_STATE: WellbeingState = {
   plan: null,
   progress: {},
   history: [],
+  moodLog: [],
   streak: 0,
   lastSessionDate: null,
   unlockedMilestones: [],
@@ -19,7 +20,11 @@ export function loadState(): WellbeingState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_STATE };
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_STATE, ...parsed };
+    const profile = parsed.profile ? { dailyMinutes: 20, ...parsed.profile } : null;
+    const plan = parsed.plan
+      ? { ...parsed.plan, profile: { dailyMinutes: 20, ...parsed.plan.profile } }
+      : null;
+    return { ...DEFAULT_STATE, ...parsed, profile, plan };
   } catch {
     return { ...DEFAULT_STATE };
   }
