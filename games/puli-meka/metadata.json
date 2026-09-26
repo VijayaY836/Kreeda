@@ -1,0 +1,6 @@
+{
+  "name": "Puli Meka - Ancient Tiger & Goat Strategy Game",
+  "description": "A standalone, beautifully illustrated web application for the ancient predator-prey strategy board game Puli Meka (పులి మేక ఆట), featuring cultural history, interactive tutorials, and smart offline AI opponent Kreedu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

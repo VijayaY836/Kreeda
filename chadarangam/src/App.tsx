@@ -26,7 +26,9 @@ const DEFAULT_SETTINGS: GameSettings = {
 const HUB_PARAMS = new URLSearchParams(window.location.search);
 const HUB_DIFFICULTY = HUB_PARAMS.get('difficulty')?.toUpperCase();
 const INITIAL_TAB: ViewTab =
-  HUB_PARAMS.get('start') === 'play' ? 'GAME' : HUB_PARAMS.get('start') === 'tutorial' ? 'TUTORIAL' : 'HOME';
+  HUB_PARAMS.get('start') === 'play' ? 'GAME'
+    : HUB_PARAMS.get('start') === 'setup' ? 'MODE_SELECT'
+      : HUB_PARAMS.get('start') === 'tutorial' ? 'TUTORIAL' : 'HOME';
 const INITIAL_SETTINGS: GameSettings =
   HUB_DIFFICULTY === 'EASY' || HUB_DIFFICULTY === 'MEDIUM' || HUB_DIFFICULTY === 'HARD'
     ? { ...DEFAULT_SETTINGS, difficulty: HUB_DIFFICULTY }
