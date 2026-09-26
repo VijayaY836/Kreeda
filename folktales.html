@@ -127,16 +127,18 @@
   .hero.view.active{
     position:relative;
     display:block;
-    width:fit-content;
+    width:100vw;
+    height:100vh;
     margin:0 auto;
     line-height:0;
+    overflow:hidden;
   }
   .hero .bg{
     display:block;
-    max-width:100vw;
-    max-height:100vh;
-    width:auto;
-    height:auto;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
   }
   .hero-content{
     position:absolute;
@@ -163,6 +165,7 @@
     color:var(--evergreen);
     margin:0;
   }
+  #view-categories .masthead{ color:#040404; }
 
   .narrator{
     position:absolute;
@@ -558,7 +561,7 @@
 
 <!-- ============ CATEGORIES VIEW ============ -->
 <div class="view hero" id="view-categories">
-  <img class="bg" src="bg.png" alt="">
+  <img class="bg" src="folk tales1.png" alt="">
 
   <div class="hero-content">
 

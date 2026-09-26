@@ -89,16 +89,16 @@
   .hero.view.active{
     position:relative;
     display:block;
-    width:fit-content;
-    margin:0 auto;
+    width:100vw;
+    min-height:100vh;
     line-height:0;
   }
   .hero .bg{
     display:block;
-    max-width:100vw;
-    max-height:100vh;
-    width:auto;
-    height:auto;
+    width:100%;
+    height:100vh;
+    object-fit:cover;
+    object-position:center;
   }
   .hero-content{
     position:absolute;
@@ -562,7 +562,7 @@
 
 <!-- ============ GAMES VIEW ============ -->
 <div class="view hero active" id="view-home">
-  <img class="bg" src="bg.png" alt="">
+  <img class="bg" src="games1.png" alt="">
 
   <div class="hero-content">
 

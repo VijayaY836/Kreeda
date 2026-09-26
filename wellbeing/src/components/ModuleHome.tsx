@@ -13,7 +13,7 @@ interface ModuleHomeProps {
 // Shared illustrated frame from the KREEDA hub. Resolved at runtime relative to
 // dist/index.html (like Header's hub links) rather than imported, so the hub and
 // this module always show the same file and it isn't inlined twice.
-const HUB_BG = '../../bg.png';
+const HUB_BG = '../../physical-wellbeing1.png';
 
 const SECTION_META: Record<Section, { icon: React.ReactNode; accent: string; letter: string }> = {
   yoga: { icon: <SunMedallionIcon size={40} color="#1F3B2E" />, accent: 'var(--color-evergreen)', letter: 'A' },
