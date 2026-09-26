@@ -1,0 +1,153 @@
+import { Practice } from '../types';
+
+const TBD: Practice['sources'][number] = { title: 'Akhada tradition — verify against academic source', ref: 'TBD' };
+const ALTER: Practice['sources'][number] = { title: 'Joseph S. Alter — The Wrestler\'s Body: Identity and Ideology in North India (University of California Press, 1992)', ref: 'publishing.cdlib.org/ucpressebooks/view?docId=ft6n39p104' };
+
+export const VYAYAM_PRACTICES: Practice[] = [
+  // ---------------- Dand (progressions) ----------------
+  {
+    id: 'dand-knee-supported', section: 'vyayam', category: 'dand',
+    name: 'Dand (Knee-Supported)', name_english: 'Knee-Supported Hindu Push-up',
+    posture_group: 'prone', level: 'beginner', unlock_after_sessions: 0,
+    focus_tags: ['strength', 'stamina'], component_tags: ['strength'],
+    reps: { min: 5, default: 8, max: 20 },
+    steps: [
+      'Start on hands and knees, hands slightly ahead of the shoulders.',
+      'Dip the chest forward and down in a scooping arc, close to the floor.',
+      'Sweep the chest through and press up, arching the back and looking up at the top — like a slow-motion cobra.',
+      'Reverse the arc back to the start position for one rep.',
+    ],
+    benefits: ['Traditionally associated with building upper-body and core strength gradually.'],
+    cautions: ['Move slowly through the arc; stop if the wrists or lower back complain.'],
+    contraindications: ['shoulder', 'back_disc'],
+    variants: ['dand-basic', 'dand-full'],
+    sources: [ALTER],
+  },
+  {
+    id: 'dand-basic', section: 'vyayam', category: 'dand',
+    name: 'Dand (Basic)', name_english: 'Hindu Push-up',
+    posture_group: 'prone', level: 'beginner', unlock_after_sessions: 8,
+    focus_tags: ['strength', 'stamina'], component_tags: ['strength', 'endurance'],
+    reps: { min: 5, default: 10, max: 40 },
+    steps: [
+      'Start in a downward-dog-like position, hips high, hands and feet on the floor.',
+      'Dip the chest forward in a low sweeping arc between the hands.',
+      'Sweep through low to the ground and press up into an upward arch, chest open.',
+      'Push back to the hips-high start to complete one rep.',
+    ],
+    benefits: ['The classic akhada strength exercise, traditionally paired with Baithak; associated with full-body strength and stamina.'],
+    cautions: ['Keep the arc controlled rather than fast; build reps gradually per the ardhashakti principle.'],
+    contraindications: ['shoulder', 'back_disc', 'high_bp'],
+    variants: ['dand-knee-supported', 'dand-full'],
+    sources: [ALTER],
+  },
+  {
+    id: 'dand-full', section: 'vyayam', category: 'dand',
+    name: 'Dand (Full)', name_english: 'Full Hindu Push-up Set',
+    posture_group: 'prone', level: 'advanced', unlock_after_sessions: 30,
+    focus_tags: ['strength', 'stamina'], component_tags: ['strength', 'endurance'],
+    reps: { min: 15, default: 25, max: 100 },
+    steps: [
+      'Perform the full Dand arc as in the basic variant, without pausing between reps.',
+      'Keep an even, continuous rhythm across a high-rep set.',
+      'Maintain full range of motion — deep dip, full arch — even as fatigue builds.',
+    ],
+    benefits: ['High-rep dand sets are the traditional akhada measure of stamina; wrestlers historically trained in the hundreds per day.'],
+    cautions: ['Only progress here after full range Dand is comfortable at moderate reps.'],
+    contraindications: ['shoulder', 'back_disc', 'high_bp', 'heart_condition'],
+    variants: ['dand-basic'],
+    sources: [ALTER],
+  },
+
+  // ---------------- Baithak (progressions) ----------------
+  {
+    id: 'baithak-basic', section: 'vyayam', category: 'baithak',
+    name: 'Baithak (Basic)', name_english: 'Hindu Squat',
+    posture_group: 'standing', level: 'beginner', unlock_after_sessions: 0,
+    focus_tags: ['strength', 'stamina'], component_tags: ['strength', 'endurance'],
+    reps: { min: 10, default: 15, max: 50 },
+    steps: [
+      'Stand with feet just wider than the hips, heels on the floor.',
+      'Squat down fully, swinging the arms straight back behind you as you descend.',
+      'At the bottom, swing the arms forward and rise back to standing in one fluid motion.',
+      'Keep a steady, rhythmic pace.',
+    ],
+    benefits: ['A staple of akhada training alongside Dand; traditionally associated with leg strength and stamina.'],
+    cautions: ['Keep heels down and knees tracking over the toes; reduce depth if the knees are sensitive.'],
+    contraindications: ['knee', 'high_bp'],
+    variants: ['baithak-high-rep', 'baithak-slow-tempo'],
+    sources: [ALTER],
+  },
+  {
+    id: 'baithak-high-rep', section: 'vyayam', category: 'baithak',
+    name: 'Baithak (High Rep)', name_english: 'High-Rep Hindu Squat Set',
+    posture_group: 'standing', level: 'intermediate', unlock_after_sessions: 12,
+    focus_tags: ['stamina', 'strength'], component_tags: ['endurance', 'cardio'],
+    reps: { min: 30, default: 50, max: 150 },
+    steps: [
+      'Perform the Baithak in continuous sets without pausing at the top.',
+      'Keep the arm swing rhythmic to help maintain pace across a long set.',
+      'Breathe steadily throughout; the Great Gama is said to have trained in the thousands per day.',
+    ],
+    benefits: ['Traditionally used to build the deep muscular endurance akhada wrestlers were known for.'],
+    cautions: ['Build up rep counts gradually across weeks, never in one jump.'],
+    contraindications: ['knee', 'high_bp', 'heart_condition'],
+    variants: ['baithak-basic', 'baithak-slow-tempo'],
+    sources: [ALTER],
+  },
+  {
+    id: 'baithak-slow-tempo', section: 'vyayam', category: 'baithak',
+    name: 'Baithak (Slow Tempo)', name_english: 'Slow-Tempo Hindu Squat',
+    posture_group: 'standing', level: 'intermediate', unlock_after_sessions: 12,
+    focus_tags: ['strength'], component_tags: ['strength'],
+    reps: { min: 8, default: 12, max: 25 },
+    steps: [
+      'Perform the Baithak descent over a slow count (4-6 seconds).',
+      'Pause briefly at the bottom of the squat.',
+      'Rise slowly with control over an equal count.',
+    ],
+    benefits: ['Traditionally used as a strength-focused variation once basic stamina is established.'],
+    cautions: ['Slower tempo increases strain on the knees — keep depth moderate if needed.'],
+    contraindications: ['knee', 'high_bp'],
+    variants: ['baithak-basic'],
+    sources: [ALTER],
+  },
+
+  // ---------------- Sapate ----------------
+  {
+    id: 'sapate', section: 'vyayam', category: 'sapate',
+    name: 'Sapate', name_english: 'Jumping Lunge Set',
+    posture_group: 'standing', level: 'intermediate', unlock_after_sessions: 15,
+    focus_tags: ['strength', 'stamina'], component_tags: ['strength', 'cardio'],
+    reps: { min: 6, default: 12, max: 40 },
+    steps: [
+      'Start in a low lunge, one leg forward, one back.',
+      'Jump and switch the legs mid-air, landing softly in the opposite lunge.',
+      'Keep landings light and controlled, absorbing through the bent front knee.',
+      'Continue alternating for the set.',
+    ],
+    benefits: ['A traditional akhada conditioning drill for explosive leg strength and cardiovascular stamina.'],
+    cautions: ['Higher-impact than Dand-Baithak — only introduced once the basics are comfortable.'],
+    contraindications: ['knee', 'high_bp', 'heart_condition', 'back_disc', 'pregnancy'],
+    sources: [TBD],
+  },
+
+  // ---------------- Joint mobility (Sukshma Vyayama style, alternate warm-up) ----------------
+  {
+    id: 'vyayam-mobility-drills', section: 'vyayam', category: 'mobility',
+    name: 'Sukshma Vyayama Drills', name_english: 'Joint Mobility Warm-up',
+    posture_group: 'standing', level: 'beginner', unlock_after_sessions: 0,
+    focus_tags: ['flexibility', 'stamina'], component_tags: ['flexibility', 'cardio'],
+    duration_sec: { min: 60, default: 120, max: 240 },
+    steps: [
+      'Ankle circles and calf raises, both directions.',
+      'Hip circles and gentle standing knee lifts.',
+      'Arm swings — forward, backward, and across the chest.',
+      'Light jogging on the spot or side-steps to raise the heart rate.',
+    ],
+    benefits: ['Traditional akhada-style joint-loosening drills used before Dand-Baithak sets.'],
+    cautions: ['Keep movements light and rhythmic — this is a warm-up, not the main effort.'],
+    contraindications: [],
+    sources: [TBD],
+  },
+];
