@@ -48,16 +48,16 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
     <div className="hub-hero min-h-screen">
       <img className="hub-bg" src={HUB_BG} alt="" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
-        <header className="flex items-center justify-between gap-3 mb-6">
+      <div className="hub-content relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
+        <header className="relative flex items-center justify-between gap-3 mb-6">
           <a href="../../kreeda-home.html" className="hub-pill hub-home-link" aria-label="Back to KREEDA home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
             Home
           </a>
 
-          <h1 className="font-fraunces text-2xl sm:text-4xl font-semibold tracking-[0.08em] text-[#1F3B2E]">EXERCISES</h1>
+          <h1 className="absolute left-1/2 -translate-x-1/2 font-fraunces text-2xl sm:text-4xl font-semibold tracking-[0.08em] text-[#1F3B2E]">EXERCISES</h1>
 
-          <div className="flex items-center gap-2">
+          <div className="hub-controls">
             <button
               type="button"
               onClick={() => onNavigate(plan ? 'PLAN_OVERVIEW' : 'PLAN_BUILDER')}
@@ -71,8 +71,8 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
           </div>
         </header>
 
-        <section className="rounded-3xl border border-[#C7A467]/80 bg-[#FBF3E2]/95 shadow-[0_18px_45px_rgba(42,30,20,0.12)] overflow-hidden mb-6">
-          <div className="px-5 sm:px-8 py-5 text-center border-b border-[#C7A467]/50 bg-[#EADFC4]/70">
+        <section className="mt-8 rounded-3xl border border-[#C7A467]/80 bg-[#FBF3E2]/95 shadow-[0_18px_45px_rgba(42,30,20,0.12)] overflow-hidden mb-6">
+          <div className="px-5 sm:px-8 pt-8 pb-5 text-center border-b border-[#C7A467]/50 bg-[#EADFC4]/70">
             <p className="font-fraunces text-lg sm:text-xl italic text-[#1F3B2E]">“Move with steadiness; breathe with ease.”</p>
             <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#5C5142] mt-1">KREEDA daily reminder</p>
           </div>
