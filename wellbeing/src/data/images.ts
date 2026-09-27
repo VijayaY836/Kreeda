@@ -69,26 +69,39 @@ export function getDemoGif(id: string): string | undefined {
   return ANIMATION_REGISTRY[id] ?? ANIMATION_REGISTRY[DEMO_GIF_ALIASES[id]];
 }
 
-// Per-step posture images live either in flat legacy form
-// src/assets/<section>/steps/<practice-id>-<step number>.<ext>
-// or in nested practice folders such as
-// src/assets/<section>/steps/<Practice Name>/Step_1.png.
+// Per-step posture images live in two different asset roots:
+// - Vyayam assets are served from the public folder at /assets/steps/...
+// - Yoga assets live under src/assets/yoga/steps/... and must be Vite-imported
+//   so the module system resolves them correctly.
 // Kept out of REGISTRY so a step file can never replace a card thumbnail.
-const stepModules = import.meta.glob<string>('../assets/*/steps/**/*.{jpg,jpeg,png,webp,svg}', {
+const yogaStepModules = import.meta.glob<string>('../assets/yoga/steps/**/*.{jpg,jpeg,png,webp,svg}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
+const legacyStepModules = import.meta.glob<string>('../assets/*/steps/**/*.{jpg,jpeg,png,webp,svg}', {
   eager: true,
   query: '?url',
   import: 'default',
 });
 
 const STEP_ALIASES: Record<string, string[]> = {
-  'surya-namaskar-slow': ['surya-namaskar'],
-  'surya-namaskar-paced': ['surya-namaskar'],
+  'surya-namaskar-slow': ['surya-namaskar', 'surya namaskar slow', 'Surya Namaskar(Slow)'],
+  'surya-namaskar-paced': ['surya-namaskar', 'surya namaskar paced'],
   'dand-knee-supported': ['dand'],
   'dand-basic': ['dand'],
   'dand-full': ['dand'],
   'baithak-basic': ['baithak'],
   'baithak-high-rep': ['baithak'],
   'baithak-slow-tempo': ['baithak'],
+  'loosening-neck': ['griva shakti vikasaka', 'Griva Shakti Vikasaka'],
+  'loosening-shoulder': ['skandha chakra', 'Skandha Chakra'],
+  'loosening-trunk': ['kati chakrasana', 'Kati Chakrasana'],
+  'loosening-knee': ['janu shakti vikasaka', 'Janu Shakti Vikasaka'],
+  'padahastasana': ['Padahastasana'],
+  'tadasana': ['Tadasana'],
+  'vrikshasana': ['Vrikshasana'],
 };
 
 function normalizeStepKey(value: string): string {
@@ -126,27 +139,34 @@ function derivePracticeNameFromStepPath(rawPath: string): string | null {
   return withoutStepNumber || null;
 }
 
-const STEP_LOOKUP: Record<string, Record<number, string>> = {};
+function buildStepLookup(modules: Record<string, string>): Record<string, Record<number, string>> {
+  const lookup: Record<string, Record<number, string>> = {};
 
-for (const rawPath in stepModules) {
-  const fileName = rawPath.split('/').pop() ?? '';
-  const stepNumber = parseStepNumber(fileName.replace(/\.[^.]+$/, ''));
-  if (stepNumber === null) continue;
+  for (const rawPath in modules) {
+    const fileName = rawPath.split('/').pop() ?? '';
+    const stepNumber = parseStepNumber(fileName.replace(/\.[^.]+$/, ''));
+    if (stepNumber === null) continue;
 
-  const practiceName = derivePracticeNameFromStepPath(rawPath);
-  if (!practiceName) continue;
+    const practiceName = derivePracticeNameFromStepPath(rawPath);
+    if (!practiceName) continue;
 
-  const keys = new Set<string>([
-    normalizeStepKey(practiceName),
-    normalizeStepKey(practiceName.replace(/[-_\s]+/g, ' ')),
-  ]);
+    const keys = new Set<string>([
+      normalizeStepKey(practiceName),
+      normalizeStepKey(practiceName.replace(/[-_\s]+/g, ' ')),
+    ]);
 
-  for (const key of keys) {
-    if (!key) continue;
-    if (!STEP_LOOKUP[key]) STEP_LOOKUP[key] = {};
-    STEP_LOOKUP[key][stepNumber] = stepModules[rawPath];
+    for (const key of keys) {
+      if (!key) continue;
+      if (!lookup[key]) lookup[key] = {};
+      lookup[key][stepNumber] = modules[rawPath];
+    }
   }
+
+  return lookup;
 }
+
+const YOGA_STEP_LOOKUP = buildStepLookup(yogaStepModules);
+const LEGACY_STEP_LOOKUP = buildStepLookup(legacyStepModules);
 
 const PUBLIC_STEP_FOLDERS = new Set<string>([
   'baithak-basic',
@@ -160,10 +180,24 @@ const PUBLIC_STEP_FOLDERS = new Set<string>([
   'vyayam-mobility-drills',
 ].map(normalizeStepKey));
 
-// Returns one entry per text step. For the actual public step folders in this app,
-// the path is `/assets/steps/<practice-name>/step_n.png` with the numbered file.
-// Legacy `/src/assets/...` step files remain as a fallback only when there is no
-// public folder match.
+const PUBLIC_STEP_ALIASES: Record<string, string[]> = {
+  dandkneesupported: ['dand-basic'],
+  dandbasic: ['dand-basic'],
+  dandfull: ['dand-full'],
+  baithakbasic: ['baithak-basic'],
+  baithakhighrep: ['baithak-high-rep'],
+  baithakslowtempo: ['baithak-basic'],
+  sapate: ['sapate'],
+  vayammobilitydrills: ['vyayam-mobility-drills'],
+  vyayammobilitydrills: ['vyayam-mobility-drills'],
+  sarvangasana: ['sarvangasana'],
+  setubandhasana: ['setubandhasana'],
+  bhujangasana: ['bhujangasana'],
+};
+
+// Returns one entry per text step. Public Vyayam steps are served from
+// /assets/steps/<practice-folder>/step_n.png, while the Yoga steps are resolved via
+// Vite module imports from src/assets/yoga/steps/...
 export function getStepImages(id: string, stepCount: number): (string | undefined)[] {
   const candidateNames = Array.from(new Set<string>([
     id,
@@ -172,24 +206,30 @@ export function getStepImages(id: string, stepCount: number): (string | undefine
     id.replace(/[-_\s]+/g, ''),
   ].filter(Boolean)));
 
-  const publicFolderNames = candidateNames.filter(name => {
-    const normalizedName = normalizeStepKey(name);
-    return PUBLIC_STEP_FOLDERS.has(normalizedName);
-  });
+  const publicFolderMatch = Array.from(new Set(
+    candidateNames.flatMap(name => {
+      const normalized = normalizeStepKey(name);
+      return PUBLIC_STEP_ALIASES[normalized] ?? (PUBLIC_STEP_FOLDERS.has(normalized) ? [name] : []);
+    }),
+  )).find(folder => PUBLIC_STEP_FOLDERS.has(normalizeStepKey(folder)));
 
-  const matchedPublicFolder = publicFolderNames[0];
+  if (publicFolderMatch) {
+    return Array.from({ length: stepCount }, (_, i) => {
+      const stepNumber = i + 1;
+      return `/assets/steps/${publicFolderMatch}/step_${stepNumber}.png`;
+    });
+  }
 
   return Array.from({ length: stepCount }, (_, i) => {
     const stepNumber = i + 1;
 
-    if (matchedPublicFolder) {
-      return `/assets/steps/${matchedPublicFolder}/step_${stepNumber}.png`;
-    }
-
     for (const practiceName of candidateNames) {
       const normalized = normalizeStepKey(practiceName);
-      const match = STEP_LOOKUP[normalized]?.[stepNumber];
-      if (match) return match;
+      const yogaMatch = YOGA_STEP_LOOKUP[normalized]?.[stepNumber];
+      if (yogaMatch) return yogaMatch;
+
+      const legacyMatch = LEGACY_STEP_LOOKUP[normalized]?.[stepNumber];
+      if (legacyMatch) return legacyMatch;
     }
 
     return undefined;

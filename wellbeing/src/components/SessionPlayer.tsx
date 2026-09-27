@@ -3,6 +3,7 @@ import { DaySession, Mood, PlanSlotItem } from '../types';
 import { getPractice } from '../data/practices';
 import { playBell } from '../engine/audio';
 import { CONTRA_LABELS } from './PracticeDetailModal';
+import { StepViewer } from './StepViewer';
 import { KreeduMascot } from './KreeduMascot';
 import { X, Pause, Play, SkipForward, Check } from 'lucide-react';
 
@@ -145,15 +146,11 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
           </div>
         )}
 
-        {practice.demoGif && (
-          <div className="mb-4 bg-[#EADFC4] border border-[#C7A467]/70 rounded-xl p-2 inline-block">
-            <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="max-w-full max-h-64 mx-auto" />
+        {practice.steps.length > 0 && (
+          <div className="mb-4">
+            <StepViewer practice={practice} imageClassName="w-full h-auto max-h-52 object-contain" />
           </div>
         )}
-
-        <ol className="text-left text-[13px] text-[#2A241E] leading-relaxed list-decimal list-inside space-y-1 max-w-md mx-auto">
-          {practice.steps.map((s, i) => <li key={i}>{s}</li>)}
-        </ol>
 
         <div className="grid sm:grid-cols-2 gap-2 mt-5 text-left">
           <div className="rounded-xl border border-[#C7A467]/60 bg-white/60 p-3">
