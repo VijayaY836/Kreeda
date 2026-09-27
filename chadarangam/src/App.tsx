@@ -49,16 +49,16 @@ const INITIAL_SETTINGS: GameSettings = {
 
 // ?embed=pieces / ?embed=play render just the tutorial, or match setup
 // followed by the match itself, for the hub's cards (kreeda.html frames this
-// page). Setup and tutorial post their height so the card fits them; the match
-// instead fills the card and scrolls inside the frame, so its own pop-ups
-// (promotion, game over, settings) stay centred in view. Escape asks the card
-// to close, except mid-match.
+// page). The tutorial posts its height so the card fits it; setup and the
+// match instead fill the full-size card (scrolling inside the frame if they
+// must), so the match's own pop-ups (promotion, game over, settings) stay
+// centred in view. Escape asks the card to close, except mid-match.
 const EMBED = HUB_PARAMS.get('embed');
 
 type StartSettings = Pick<GameSettings, 'variant' | 'gameMode' | 'difficulty' | 'humanSide' | 'boardStyle'>;
 const postToHub = (msg: object) => window.parent.postMessage({ source: 'kreeda-embed', ...msg }, '*');
 
-function EmbeddedView({ fill = false, children }: { fill?: boolean; children: React.ReactNode }) {
+function EmbeddedView({ fill = false, closeOnEscape = !fill, children }: { fill?: boolean; closeOnEscape?: boolean; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     document.body.classList.remove('min-h-screen');
@@ -68,10 +68,14 @@ function EmbeddedView({ fill = false, children }: { fill?: boolean; children: Re
     if (fill) return;
     const observer = new ResizeObserver(() => postToHub({ height: ref.current!.offsetHeight }));
     observer.observe(ref.current!);
+    return () => observer.disconnect();
+  }, [fill]);
+  useEffect(() => {
+    if (!closeOnEscape) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') postToHub({ close: true }); };
     window.addEventListener('keydown', onKey);
-    return () => { observer.disconnect(); window.removeEventListener('keydown', onKey); };
-  }, [fill]);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [closeOnEscape]);
   return <div ref={ref} className="text-[#5C140F] font-manrope">{children}</div>;
 }
 
@@ -95,10 +99,11 @@ function EmbeddedPlay() {
   };
 
   return (
-    <EmbeddedView fill={playing}>
+    <EmbeddedView fill closeOnEscape={!playing}>
       {playing ? (
         <GameView
           key={matchKey}
+          embedded
           settings={settings}
           soundEnabled={soundEnabled}
           onToggleSound={() => setSoundEnabled(!sounds.toggleMute())}

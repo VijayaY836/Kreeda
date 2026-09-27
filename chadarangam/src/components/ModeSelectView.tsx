@@ -51,12 +51,15 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
   const accentDark = variant === 'chaturanga' ? '#B83215' : '#094340';
   const board = useMemo(() => previewBoard(variant), [variant]);
 
+  // Inside the hub's card everything has to fit on one screen, so sections sit closer.
+  const section = embedded ? 'mb-4' : 'mb-6';
+
   const begin = () => {
     onStartGame({ variant, gameMode, difficulty, humanSide, boardStyle: effectiveBoardStyle });
   };
 
   return (
-    <div className={embedded ? 'py-1' : 'max-w-6xl mx-auto py-8 sm:py-12 px-4'}>
+    <div className={embedded ? 'min-h-screen flex items-center justify-center px-3 sm:px-5 py-4' : 'max-w-6xl mx-auto py-8 sm:py-12 px-4'}>
       {!embedded && (
         <div className="text-center mb-8">
           <h1 className="font-fraunces font-extrabold text-3xl sm:text-4xl text-[#5C140F] mb-1">Set Up Your Match</h1>
@@ -64,7 +67,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
         </div>
       )}
 
-      <div className={embedded ? 'grid grid-cols-1 md:grid-cols-12 gap-5 items-start' : 'grid grid-cols-1 lg:grid-cols-12 gap-6 items-start'}>
+      <div className={embedded ? 'w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-6 items-center' : 'grid grid-cols-1 lg:grid-cols-12 gap-6 items-start'}>
         {/* Settings console */}
         <div className={`${embedded ? 'md:col-span-7 p-4 sm:p-5' : 'lg:col-span-7 p-5 sm:p-8'} relative bg-[#F6ECD2] border-[3px] border-[#5C140F]`}>
           <KolamCorner position="top-left" size={22} className="absolute top-1.5 left-1.5 opacity-60" />
@@ -73,7 +76,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
           <KolamCorner position="bottom-right" size={22} className="absolute bottom-1.5 right-1.5 opacity-60" />
 
           {/* 1. Variant */}
-          <div className="mb-6">
+          <div className={section}>
             <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Game</span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(['chaturanga', 'chess'] as Variant[]).map((v) => {
@@ -97,7 +100,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
           </div>
 
           {/* 2. Opponent */}
-          <div className="mb-6">
+          <div className={section}>
             <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Opponent</span>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -117,7 +120,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
 
           {/* 3. Difficulty + Side (AI only) */}
           {gameMode === 'PVC' && (
-            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className={`${section} grid grid-cols-1 sm:grid-cols-2 gap-6`}>
               <div>
                 <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Kreedu's Strength</span>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -158,7 +161,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
 
           {/* 4. Board style (Chaturangam only) */}
           {variant === 'chaturanga' && (
-            <div className="mb-6">
+            <div className={section}>
               <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Board Style</span>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -192,7 +195,12 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
         </div>
 
         {/* Live board preview — as in the legacy setup screen */}
-        <div className={embedded ? 'md:col-span-5 w-full max-w-sm mx-auto' : 'lg:col-span-5 lg:sticky lg:top-20'}>
+        <div
+          // in the card on a phone the preview would push setup past one screen, so it's left out there
+          className={embedded ? 'hidden md:block md:col-span-5 w-full mx-auto' : 'lg:col-span-5 lg:sticky lg:top-20'}
+          // the preview's frame, title and caption add ~110px around the board
+          style={embedded ? { maxWidth: 'min(26rem, calc(100vh - 110px))' } : undefined}
+        >
           <div className="bg-[#F6ECD2] border-[3px] border-[#5C140F] p-4">
             <div className="flex items-center justify-between mb-3">
               <span className="font-fraunces font-bold text-sm text-[#5C140F]">{info.title} Preview</span>

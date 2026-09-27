@@ -3,7 +3,7 @@ import { GameSettings, KreeduMood, MoveRecord, PieceLetter, Side, ViewTab } from
 import {
   Pos, setStart, ttClear, legalMoves, makeMove, unmakeMove, bestMove,
   inCheck, kingOf, insufficientMaterial, repetitionCount, bareKing,
-  mFrom, mTo, mPromo, mFlag, FLAG_EP, LET, LEVEL_NAMES, P,
+  mFrom, mTo, mPromo, mFlag, FLAG_EP, LET, LEVEL_NAMES, P, NAME_OF_SQ,
 } from '../utils/chessEngine';
 import { moveNotation } from '../utils/notation';
 import { PIECE_INFO, PIECE_WORTH, VARIANT_INFO } from '../utils/pieceArt';
@@ -23,9 +23,16 @@ interface GameViewProps {
   onNavigate: (tab: ViewTab) => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
+  // Inside the KREEDA hub's full-size card: the board fills the card's height
+  // and everything else moves to a side column, so the match fits one screen.
+  embedded?: boolean;
 }
 
 const DIFF_LEVEL: Record<GameSettings['difficulty'], number> = { EASY: 1, MEDIUM: 2, HARD: 3 };
+
+// Kreedu waits at least this long (from the player's move) before answering,
+// so the player's own piece finishes sliding and Kreedu's reply is easy to follow.
+const AI_MIN_THINK_MS = 1400;
 
 const CHATTER: Record<string, string[]> = {
   chaturanga: [
@@ -44,14 +51,15 @@ const CHATTER: Record<string, string[]> = {
 
 const letterOf = (piece: number): PieceLetter => LET[Math.abs(piece)] as PieceLetter;
 
-export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundEnabled, onToggleSound }) => {
+export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundEnabled, onToggleSound, embedded = false }) => {
   const { variant, gameMode, difficulty, humanSide, boardStyle } = settings;
   const info = VARIANT_INFO[variant];
 
   const [board, setBoard] = useState<number[]>(() => Array.from(Pos.b));
   const [selected, setSelected] = useState<number | null>(null);
   const [targets, setTargets] = useState<number[]>([]); // legal moves from selected square
-  const [lastMove, setLastMove] = useState<{ from: number; to: number } | null>(null);
+  const [lastMove, setLastMove] = useState<{ from: number; to: number; id: number; captured?: number } | null>(null);
+  const moveIdRef = useRef(0); // bumps on every move so the board replays its slide
   const [moveLog, setMoveLog] = useState<MoveRecord[]>([]);
   const [capByIvory, setCapByIvory] = useState<PieceLetter[]>([]); // pieces Ivory has captured
   const [capByEbony, setCapByEbony] = useState<PieceLetter[]>([]);
@@ -154,13 +162,19 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
     setThinking(true);
     setKreeduMood('THINKING');
     setKreeduLine('Kreedu is reading the board…');
+    const started = performance.now();
     aiTimerRef.current = setTimeout(() => {
-      aiTimerRef.current = null;
       const m = bestMove(DIFF_LEVEL[difficulty]);
-      if (!m) { setThinking(false); return; }
-      applyMove(m);
-      setThinking(false);
-    }, 40);
+      if (!m) { aiTimerRef.current = null; setThinking(false); return; }
+      // The search can be near-instant; hold the reply until the minimum
+      // think time has passed. Same ref, so resetGame() still cancels it.
+      const wait = Math.max(0, AI_MIN_THINK_MS - (performance.now() - started));
+      aiTimerRef.current = setTimeout(() => {
+        aiTimerRef.current = null;
+        applyMove(m);
+        setThinking(false);
+      }, wait);
+    }, 60);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [difficulty]);
 
@@ -190,10 +204,19 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
       else setCapByEbony(prev => [...prev, capLetter!]);
     }
 
+    const movedLetter = letterOf(Pos.b[from]);
     makeMove(m);
     syncBoard();
     setMoveLog(prev => [{ id: Math.random().toString(36).slice(2, 9), moveNumber: prev.length + 1, side: mover as Side, san, capturedLetter: capLetter }, ...prev]);
-    setLastMove({ from, to });
+    // en passant takes a pawn from beside the destination, so there's nothing to fade out on it
+    setLastMove({ from, to, id: ++moveIdRef.current, captured: capPiece && flag !== FLAG_EP ? capPiece : undefined });
+
+    // Spell out what just moved, e.g. "Kreedu moved Ashva b8 → c6, taking your Padati."
+    const pieceName = (l: PieceLetter) => PIECE_INFO[variant][l]?.n ?? l;
+    const moverName = gameMode === 'PVC' ? (mover === humanSide ? 'You' : 'Kreedu') : (mover > 0 ? info.sides.w : info.sides.b);
+    const takenOwner = gameMode === 'PVC' ? (mover === humanSide ? '' : 'your ') : '';
+    const movedText = `${moverName} moved ${pieceName(movedLetter)} ${NAME_OF_SQ(from)} → ${NAME_OF_SQ(to)}`
+      + (capLetter ? `, taking ${takenOwner}${pieceName(capLetter)}` : '');
     setSelected(null); setTargets([]);
 
     if (capPiece) sounds.playCapture(); else sounds.playMove();
@@ -201,24 +224,25 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
 
     if (checkEnd(mover)) return;
 
-    if (inCheck(Pos.side)) {
+    const checked = inCheck(Pos.side);
+    if (checked) {
       sounds.playCheck();
-      const name = Pos.side > 0 ? info.sides.w : info.sides.b;
-      setKreeduLine(`${name} is in check — that must be answered this turn.`);
       setKreeduMood(gameMode === 'PVC' && Pos.side === humanSide ? 'WORRIED' : 'IDLE');
     } else {
       setKreeduMood('IDLE');
-      if (gameMode === 'PVP') {
-        const name = Pos.side > 0 ? info.sides.w : info.sides.b;
-        setKreeduLine(`${name} to move.`);
-      }
     }
+    const toMove = Pos.side > 0 ? info.sides.w : info.sides.b;
+    const checkText = checked ? ` ${toMove} is in check — that must be answered this turn.` : '';
 
     if (gameMode === 'PVC' && Pos.side !== humanSide) {
       scheduleAI();
     } else if (gameMode === 'PVC') {
+      // Kreedu just moved: say exactly what, sometimes with a bit of table talk
       const pool = CHATTER[variant];
-      setKreeduLine(Math.random() < 0.35 ? pool[Math.floor(Math.random() * pool.length)] : 'Your move.');
+      const chatter = !checked && Math.random() < 0.3 ? ` ${pool[Math.floor(Math.random() * pool.length)]}` : '';
+      setKreeduLine(`${movedText}.${checkText}${chatter}`);
+    } else {
+      setKreeduLine(`${movedText}.${checkText || ` ${toMove} to move.`}`);
     }
   };
 
@@ -292,10 +316,10 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
   const capWorth = (list: PieceLetter[]) => list.reduce((s, t) => s + (PIECE_WORTH[t] ?? 0), 0);
   const diff = capWorth(capByIvory) - capWorth(capByEbony);
 
-  return (
-    <div className="max-w-7xl mx-auto py-3 sm:py-6 px-3 sm:px-6">
-      {/* Utility bar */}
-      <div className="mb-4 bg-[#FAF4E5] border-[3px] border-[#5C140F] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3">
+  const utilityBar = (
+    <div className={`${embedded ? 'p-2.5' : 'mb-4 p-3 sm:p-4'} bg-[#FAF4E5] border-[3px] border-[#5C140F] flex flex-wrap items-center justify-between gap-3`}>
+      {/* in the card, the card's own title names the game and the opponent panel shows the level */}
+      {!embedded && (
         <div className="flex items-center gap-2">
           <span className="font-fraunces font-bold text-sm text-[#5C140F]">{info.title}</span>
           <span className="font-telugu text-sm text-[#D9587B]">{variant === 'chaturanga' ? 'చతురంగం' : ''}</span>
@@ -303,163 +327,236 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
             {gameMode === 'PVC' ? `vs Kreedu · ${LEVEL_NAMES[DIFF_LEVEL[difficulty]]}` : '2 Players'}
           </span>
         </div>
+      )}
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          <button onClick={() => onNavigate('MODE_SELECT')} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-xs font-bold text-[#5C140F] cursor-pointer">
-            <Users className="w-3.5 h-3.5 text-[#D8401F]" />
-            <span>Change Setup</span>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <button onClick={() => onNavigate('MODE_SELECT')} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-xs font-bold text-[#5C140F] cursor-pointer">
+          <Users className="w-3.5 h-3.5 text-[#D8401F]" />
+          <span>Change Setup</span>
+        </button>
+        <button onClick={resetGame} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
+          <RotateCcw className="w-3.5 h-3.5" />
+          <span>Restart</span>
+        </button>
+        <button onClick={undoMove} disabled={!moveLog.length || thinking} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+          <Undo2 className="w-3.5 h-3.5" />
+          <span>Undo</span>
+        </button>
+        {gameMode === 'PVP' && (
+          <button onClick={() => setFlipped(f => !f)} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
+            <FlipVertical2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Flip</span>
           </button>
-          <button onClick={resetGame} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Restart</span>
-          </button>
-          <button onClick={undoMove} disabled={!moveLog.length || thinking} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-            <Undo2 className="w-3.5 h-3.5" />
-            <span>Undo</span>
-          </button>
-          {gameMode === 'PVP' && (
-            <button onClick={() => setFlipped(f => !f)} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#E4D19E] hover:bg-[#F6ECD2] border-[1.5px] border-[#5C140F] text-xs font-bold text-[#2B1B12] cursor-pointer">
-              <FlipVertical2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Flip</span>
-            </button>
-          )}
-          <button onClick={() => setHints(h => !h)} className={`flex items-center gap-1 px-2.5 py-1.5 border-[1.5px] border-[#5C140F] text-xs font-bold cursor-pointer ${hints ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12]'}`}>
-            <Lightbulb className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Hints</span>
-          </button>
-          <button onClick={onToggleSound} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
-            {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 opacity-50" />}
-          </button>
-          <button onClick={() => setShowHelp(true)} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
-            <HelpCircle className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={() => setShowSettings(true)} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
-            <Settings className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={resign} disabled={over} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#D9587B]/20 hover:bg-[#D9587B]/35 border-[1.5px] border-[#5C140F] text-xs font-bold text-[#5C140F] cursor-pointer disabled:opacity-40">
-            <Flag className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Resign</span>
-          </button>
+        )}
+        <button onClick={() => setHints(h => !h)} className={`flex items-center gap-1 px-2.5 py-1.5 border-[1.5px] border-[#5C140F] text-xs font-bold cursor-pointer ${hints ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12]'}`}>
+          <Lightbulb className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Hints</span>
+        </button>
+        <button onClick={onToggleSound} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
+          {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 opacity-50" />}
+        </button>
+        <button onClick={() => setShowHelp(true)} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
+          <HelpCircle className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={() => setShowSettings(true)} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">
+          <Settings className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={resign} disabled={over} className="flex items-center gap-1 px-2.5 py-1.5 bg-[#D9587B]/20 hover:bg-[#D9587B]/35 border-[1.5px] border-[#5C140F] text-xs font-bold text-[#5C140F] cursor-pointer disabled:opacity-40">
+          <Flag className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Resign</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const statusBanner = (
+    <div className={`${embedded ? 'flex-nowrap p-3' : 'mb-4 flex-wrap p-3 sm:p-4'} flex items-center justify-between gap-3 border-[3px] border-[#5C140F] ${checkedSq >= 0 ? 'bg-[#D9587B]/20' : 'bg-[#F6ECD2]'}`}>
+      <div className="flex items-center gap-3 min-w-0">
+        <div className={`w-5 h-5 rounded-full border-2 border-[#5C140F] shrink-0 ${Pos.side > 0 ? 'bg-[#F6ECD2]' : 'bg-[#5C140F]'}`} />
+        <div>
+          <span className="font-fraunces font-bold text-base sm:text-lg text-[#5C140F]">{turnLabel}</span>
+          <p className="text-xs text-[#6B4E3D] font-medium">{kreeduLine}</p>
         </div>
       </div>
+      <div className="text-xs font-bold text-[#5C140F] shrink-0">Move {Pos.full}</div>
+    </div>
+  );
 
-      {/* Status banner */}
-      <div className={`mb-4 flex flex-wrap items-center justify-between gap-3 border-[3px] border-[#5C140F] p-3 sm:p-4 ${checkedSq >= 0 ? 'bg-[#D9587B]/20' : 'bg-[#F6ECD2]'}`}>
-        <div className="flex items-center gap-3">
-          <div className={`w-5 h-5 rounded-full border-2 border-[#5C140F] shrink-0 ${Pos.side > 0 ? 'bg-[#F6ECD2]' : 'bg-[#5C140F]'}`} />
-          <div>
-            <span className="font-fraunces font-bold text-base sm:text-lg text-[#5C140F]">{turnLabel}</span>
-            <p className="text-xs text-[#6B4E3D] font-medium">{kreeduLine}</p>
+  const boardEl = (
+    <GameBoard
+      variant={variant}
+      board={board}
+      boardStyle={boardStyle}
+      selected={selected}
+      targetSquares={targetSquares}
+      captureSquares={captureSquares}
+      lastMove={lastMove}
+      checkedSq={checkedSq}
+      flipped={flipped}
+      hints={hints}
+      disabled={over || thinking || !!pendingPromo || (gameMode === 'PVC' && Pos.side !== humanSide)}
+      onSquareClick={handleSquareClick}
+      letterOf={letterOf}
+      fluid={embedded}
+    />
+  );
+
+  const capturesStrip = (
+    <div className={embedded ? 'grid grid-cols-2 gap-3' : 'w-full max-w-140 mt-4 grid grid-cols-2 gap-3'}>
+      <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.w} has captured</span>
+          {diff > 0 && <span className="text-[10px] font-bold text-[#D8401F]">+{diff}</span>}
+        </div>
+        <div className="flex flex-wrap gap-1 min-h-5">
+          {capByIvory.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
+          {capByIvory.map((t, idx) => (
+            <PieceIcon key={idx} variant={variant} letter={t} ivory={false} className="w-4 h-4" />
+          ))}
+        </div>
+      </div>
+      <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.b} has captured</span>
+          {diff < 0 && <span className="text-[10px] font-bold text-[#5C140F]">+{-diff}</span>}
+        </div>
+        <div className="flex flex-wrap gap-1 min-h-5">
+          {capByEbony.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
+          {capByEbony.map((t, idx) => (
+            <PieceIcon key={idx} variant={variant} letter={t} ivory className="w-4 h-4" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const opponentPanel = embedded ? (
+    // One row: Kreedu's line already shows in the status banner above.
+    <FolkArtFrame bg="bg-[#F6ECD2]" hasCorners={false} className="p-3!">
+      <div className="flex items-center gap-3">
+        {gameMode === 'PVC' ? (
+          <KreeduMascot mood={kreeduMood} size={44} />
+        ) : (
+          <User className="w-5 h-5 text-[#D8401F] shrink-0" />
+        )}
+        <div className="flex-1 min-w-0">
+          <span className="font-fraunces font-bold text-sm text-[#5C140F]">
+            {gameMode === 'PVC' ? 'Kreedu' : '2-Player Local Match'}
+          </span>
+          <p className="text-[11px] text-[#6B4E3D] leading-snug">
+            {gameMode === 'PVP' && 'Pass the device between turns.'}
+            {gameMode === 'PVC' && difficulty === 'EASY' && 'Casual pace, one move deep.'}
+            {gameMode === 'PVC' && difficulty === 'MEDIUM' && 'Balanced search with move ordering.'}
+            {gameMode === 'PVC' && difficulty === 'HARD' && 'Deep search — plays for keeps.'}
+          </p>
+        </div>
+        {gameMode === 'PVC' && (
+          <span className="px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase shrink-0">
+            {LEVEL_NAMES[DIFF_LEVEL[difficulty]]}
+          </span>
+        )}
+      </div>
+    </FolkArtFrame>
+  ) : (
+    <>
+      {gameMode === 'PVC' ? (
+        <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
+          <div className="flex items-center justify-between border-b-2 border-[#5C140F] pb-2 mb-3">
+            <div className="flex items-center gap-2">
+              <Bot className="w-4 h-4 text-[#0E5C58]" />
+              <span className="font-fraunces font-bold text-sm text-[#5C140F]">AI Opponent: Kreedu</span>
+            </div>
+            <span className="px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
+              {LEVEL_NAMES[DIFF_LEVEL[difficulty]]}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <KreeduMascot mood={kreeduMood} size={64} showDialogBubble dialogText={kreeduLine} />
+            <div className="text-xs text-[#2B1B12] space-y-1">
+              <p className="font-bold text-[#5C140F]">Iterative-Deepening Search</p>
+              <p className="text-[11px] text-[#6B4E3D]">
+                {difficulty === 'EASY' && 'Casual pace, one move deep, with a human-like wobble.'}
+                {difficulty === 'MEDIUM' && 'Balanced minimax with transposition table and move ordering.'}
+                {difficulty === 'HARD' && 'Deep search with null-move pruning and quiescence — plays for keeps.'}
+              </p>
+            </div>
+          </div>
+        </FolkArtFrame>
+      ) : (
+        <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
+          <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-3">
+            <User className="w-4 h-4 text-[#D8401F]" />
+            <span className="font-fraunces font-bold text-sm text-[#5C140F]">2-Player Local Match</span>
+          </div>
+          <p className="text-xs text-[#2B1B12]">Pass the device between turns. {kreeduLine}</p>
+        </FolkArtFrame>
+      )}
+    </>
+  );
+
+  const moveLogPanel = (
+    // in the card on a phone there's no room left for the log, so it's left out there
+    <FolkArtFrame bg="bg-[#F6ECD2]" className={`p-4 flex-1 flex-col${embedded ? ' p-3! hidden md:flex md:min-h-20' : ' flex'}`}>
+      <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-2">
+        <History className="w-4 h-4 text-[#5C140F]" />
+        <h4 className="font-fraunces text-sm font-bold text-[#5C140F]">Move Log ({moveLog.length})</h4>
+      </div>
+      {/* in the card the log fills the side column's leftover height */}
+      <div className={`${embedded ? 'flex-1 min-h-0' : 'max-h-65'} overflow-y-auto space-y-1 pr-1 text-xs`}>
+        {moveLog.length === 0 ? (
+          <p className="text-center py-4 text-xs italic text-[#6B4E3D]">Moves will appear here as you play...</p>
+        ) : (
+          moveLog.slice().reverse().map((rec, idx) => (
+            <div key={rec.id} className={`px-2 py-1.5 border-[1.5px] border-[#5C140F] flex items-center justify-between ${idx % 2 === 0 ? 'bg-[#E4D19E]' : 'bg-[#F6ECD2]'}`}>
+              <span className="font-mono text-[10px] text-[#6B4E3D] w-7">#{rec.moveNumber}</span>
+              <span className="font-bold text-[#2B1B12] flex-1 text-center">{rec.san}</span>
+              <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 border border-[#5C140F] ${rec.side > 0 ? 'bg-[#F6ECD2] text-[#5C140F]' : 'bg-[#5C140F] text-white'}`}>
+                {rec.side > 0 ? 'W' : 'B'}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </FolkArtFrame>
+  );
+
+  return (
+    <>
+      {embedded ? (
+        // Board on the left at the card's full height; the rest in a side
+        // column whose move log takes up whatever height is left over.
+        <div className="min-h-screen flex items-center justify-center p-3 sm:p-4">
+          <div className="w-full grid grid-cols-1 md:grid-cols-[auto_minmax(280px,360px)] gap-5 justify-center md:items-stretch">
+            <div className="embed-board mx-auto">{boardEl}</div>
+            {/* capped at the card's height (minus padding) so the move log shrinks rather than overflowing */}
+            <div className="flex flex-col gap-3 md:min-h-0 md:max-h-[calc(100vh-2rem)]">
+              {utilityBar}
+              {statusBanner}
+              {capturesStrip}
+              {opponentPanel}
+              {moveLogPanel}
+            </div>
           </div>
         </div>
-        <div className="text-xs font-bold text-[#5C140F]">Move {Pos.full}</div>
-      </div>
+      ) : (
+        <div className="max-w-7xl mx-auto py-3 sm:py-6 px-3 sm:px-6">
+          {utilityBar}
+          {statusBanner}
 
-      {/* Board + sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-8 flex flex-col items-center">
-          <GameBoard
-            variant={variant}
-            board={board}
-            boardStyle={boardStyle}
-            selected={selected}
-            targetSquares={targetSquares}
-            captureSquares={captureSquares}
-            lastMove={lastMove}
-            checkedSq={checkedSq}
-            flipped={flipped}
-            hints={hints}
-            disabled={over || thinking || !!pendingPromo || (gameMode === 'PVC' && Pos.side !== humanSide)}
-            onSquareClick={handleSquareClick}
-            letterOf={letterOf}
-          />
-
-          {/* Captures strip */}
-          <div className="w-full max-w-140 mt-4 grid grid-cols-2 gap-3">
-            <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.w} has captured</span>
-                {diff > 0 && <span className="text-[10px] font-bold text-[#D8401F]">+{diff}</span>}
-              </div>
-              <div className="flex flex-wrap gap-1 min-h-5">
-                {capByIvory.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
-                {capByIvory.map((t, idx) => (
-                  <PieceIcon key={idx} variant={variant} letter={t} ivory={false} className="w-4 h-4" />
-                ))}
-              </div>
+          {/* Board + sidebar */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8 flex flex-col items-center">
+              {boardEl}
+              {capturesStrip}
             </div>
-            <div className="border-2 border-[#5C140F] p-2.5 bg-[#F6ECD2]">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-bold text-[#5C140F]">{info.sides.b} has captured</span>
-                {diff < 0 && <span className="text-[10px] font-bold text-[#5C140F]">+{-diff}</span>}
-              </div>
-              <div className="flex flex-wrap gap-1 min-h-5">
-                {capByEbony.length === 0 && <span className="text-[10px] italic text-[#6B4E3D]">Nothing yet</span>}
-                {capByEbony.map((t, idx) => (
-                  <PieceIcon key={idx} variant={variant} letter={t} ivory className="w-4 h-4" />
-                ))}
-              </div>
+
+            <div className="lg:col-span-4 flex flex-col gap-4">
+              {opponentPanel}
+              {moveLogPanel}
             </div>
           </div>
         </div>
-
-        <div className="lg:col-span-4 flex flex-col gap-4">
-          {gameMode === 'PVC' ? (
-            <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
-              <div className="flex items-center justify-between border-b-2 border-[#5C140F] pb-2 mb-3">
-                <div className="flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-[#0E5C58]" />
-                  <span className="font-fraunces font-bold text-sm text-[#5C140F]">AI Opponent: Kreedu</span>
-                </div>
-                <span className="px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase">
-                  {LEVEL_NAMES[DIFF_LEVEL[difficulty]]}
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <KreeduMascot mood={kreeduMood} size={64} showDialogBubble dialogText={kreeduLine} />
-                <div className="text-xs text-[#2B1B12] space-y-1">
-                  <p className="font-bold text-[#5C140F]">Iterative-Deepening Search</p>
-                  <p className="text-[11px] text-[#6B4E3D]">
-                    {difficulty === 'EASY' && 'Casual pace, one move deep, with a human-like wobble.'}
-                    {difficulty === 'MEDIUM' && 'Balanced minimax with transposition table and move ordering.'}
-                    {difficulty === 'HARD' && 'Deep search with null-move pruning and quiescence — plays for keeps.'}
-                  </p>
-                </div>
-              </div>
-            </FolkArtFrame>
-          ) : (
-            <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 sm:p-5">
-              <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-3">
-                <User className="w-4 h-4 text-[#D8401F]" />
-                <span className="font-fraunces font-bold text-sm text-[#5C140F]">2-Player Local Match</span>
-              </div>
-              <p className="text-xs text-[#2B1B12]">Pass the device between turns. {kreeduLine}</p>
-            </FolkArtFrame>
-          )}
-
-          <FolkArtFrame bg="bg-[#F6ECD2]" className="p-4 flex-1 flex flex-col">
-            <div className="flex items-center gap-2 border-b-2 border-[#5C140F] pb-2 mb-2">
-              <History className="w-4 h-4 text-[#5C140F]" />
-              <h4 className="font-fraunces text-sm font-bold text-[#5C140F]">Move Log ({moveLog.length})</h4>
-            </div>
-            <div className="max-h-65 overflow-y-auto space-y-1 pr-1 text-xs">
-              {moveLog.length === 0 ? (
-                <p className="text-center py-4 text-xs italic text-[#6B4E3D]">Moves will appear here as you play...</p>
-              ) : (
-                moveLog.slice().reverse().map((rec, idx) => (
-                  <div key={rec.id} className={`px-2 py-1.5 border-[1.5px] border-[#5C140F] flex items-center justify-between ${idx % 2 === 0 ? 'bg-[#E4D19E]' : 'bg-[#F6ECD2]'}`}>
-                    <span className="font-mono text-[10px] text-[#6B4E3D] w-7">#{rec.moveNumber}</span>
-                    <span className="font-bold text-[#2B1B12] flex-1 text-center">{rec.san}</span>
-                    <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 border border-[#5C140F] ${rec.side > 0 ? 'bg-[#F6ECD2] text-[#5C140F]' : 'bg-[#5C140F] text-white'}`}>
-                      {rec.side > 0 ? 'W' : 'B'}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </FolkArtFrame>
-        </div>
-      </div>
+      )}
 
       {/* PROMOTION MODAL */}
       {pendingPromo && (
@@ -579,6 +676,6 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

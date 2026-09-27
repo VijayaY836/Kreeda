@@ -55,6 +55,7 @@ function LangSwitcher({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => v
 function EmbeddedPlay() {
   const [lang, setLang] = useState<Lang>(loadLang)
   useEffect(() => {
+    document.documentElement.classList.add('vp-embedded')
     document.body.style.background = 'transparent'
     document.body.style.minHeight = '0'
     postToHub({ view: 'game', title: 'Vaikunthapali' })
@@ -62,11 +63,11 @@ function EmbeddedPlay() {
   return (
     <LangContext.Provider value={lang}>
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4">
-        <LangSwitcher lang={lang} onChange={(l) => { setLang(l); saveLang(l) }} />
         <Vaikunthapali
           mode={HUB_PARAMS.get('mode') === 'solo' ? 'solo' : 'mascot'}
           vpVersion="india"
           onExit={() => postToHub({ close: true })}
+          header={<LangSwitcher lang={lang} onChange={(l) => { setLang(l); saveLang(l) }} />}
         />
       </div>
     </LangContext.Provider>

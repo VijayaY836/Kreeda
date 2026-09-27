@@ -42,10 +42,14 @@ export function Vaikunthapali({
   mode,
   vpVersion,
   onExit,
+  header,
 }: {
   mode: 'solo' | 'mascot'
   vpVersion: VpVersion
   onExit: () => void
+  // Shown above the scores — the hub's game card passes the language switcher
+  // here so it can sit in the side column next to the board.
+  header?: React.ReactNode
 }) {
   const lang = useLang()
   const [youPos, setYouPos] = useState(1)
@@ -430,6 +434,7 @@ export function Vaikunthapali({
 
   return (
     <div className="vp-wrap">
+      {header && <div className="vp-header">{header}</div>}
       <div className="vp-hud">
         <span className={`vp-chip${turn === 'you' && phase !== 'over' ? ' active' : ''}`}>
           {L.you} · {youPos}

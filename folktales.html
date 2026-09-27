@@ -460,6 +460,13 @@
     aspect-ratio:1;
     transition:box-shadow .4s ease;
   }
+  /* frozen frame of the narrating GIF, shown over it whenever she isn't speaking */
+  .narration-panel .grandmother-mascot .gm-still{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:contain;
+    display:block;
+  }
   .narration-panel .grandmother-mascot.is-speaking{
     box-shadow:0 0 0 3px var(--gold), 0 0 0 8px rgba(199,164,103,0.25);
     animation:gm-breathe 2.4s ease-in-out infinite;
@@ -735,6 +742,25 @@ document.querySelectorAll('[data-grandmother]').forEach(slot => {
 });
 const readerGrandmother = document.querySelector('.narration-panel .grandmother-mascot');
 
+/* Grandmother only moves while she's actually telling the story. A GIF can't be
+   paused, so when she stops we copy its current frame onto a canvas laid over it
+   and hide the moving image; when she starts again the canvas comes off. */
+const gmGif = readerGrandmother.querySelector('img');
+const gmStill = document.createElement('canvas');
+gmStill.className = 'gm-still';
+gmStill.setAttribute('aria-hidden', 'true');
+function setGrandmotherMoving(moving){
+  if (moving) { gmStill.remove(); gmGif.style.visibility = ''; return; }
+  if (!gmGif.complete || !gmGif.naturalWidth) return; // not loaded yet — the load handler below freezes it
+  gmStill.width = gmGif.naturalWidth;
+  gmStill.height = gmGif.naturalHeight;
+  gmStill.getContext('2d').drawImage(gmGif, 0, 0);
+  readerGrandmother.appendChild(gmStill);
+  gmGif.style.visibility = 'hidden';
+}
+// before the first "Listen" she waits, still
+gmGif.addEventListener('load', () => setGrandmotherMoving(narrator.state === 'playing'));
+
 /* ---------------- Categories view ---------------- */
 const catGrid = document.getElementById('cat-grid');
 CATEGORIES.forEach(cat => {
@@ -863,9 +889,7 @@ function escapeHTML(s){
    ~15s, and speechSynthesis.pause() is unreliable across browsers. Chunking
    lets pause/resume and speed changes restart cleanly at the current sentence,
    and gives the short breaths between sentences that make it sound unhurried. */
-const SPEEDS = [0.75, 1, 1.25, 1.5];
-const BASE_RATE = 0.88;   // a touch slower than default — gentle, unhurried
-const BASE_PITCH = 1.0;
+const SPEEDS = [0.75, 1, 1.25, 1.5]; // the voice's own rate at 1×; pitch is left at the voice's default
 const LANG_CODES = { en:'en-IN', hi:'hi-IN', te:'te-IN', ta:'ta-IN', kn:'kn-IN', ml:'ml-IN' };
 const WARM_VOICES = ['neerja','veena','heera','isha','kajal','ananya','aashi','swara','lekha','kalpana','shruti','pallavi','sapna','sobhana','vani'];
 const MALE_VOICES = ['rishi','ravi','prabhat','madhur','hemant','mohan','valluvar','gagan','midhun','aarav','kunal','rehaan','arjun'];
@@ -982,8 +1006,7 @@ const narrator = {
     const u = new SpeechSynthesisUtterance(chunk.text);
     u.voice = voice;
     u.lang = voice.lang;
-    u.rate = BASE_RATE * SPEEDS[this.speedIdx];
-    u.pitch = BASE_PITCH;
+    u.rate = SPEEDS[this.speedIdx];
     let finished = false;
     const next = () => {
       if (finished || token !== this.token) return;
@@ -1120,6 +1143,7 @@ const narrator = {
     speed.innerHTML = `${ICON.speed}<span>Speed ${SPEEDS[this.speedIdx]}×</span>`;
     speed.disabled = !canSpeak;
     readerGrandmother.classList.toggle('is-speaking', this.state === 'playing');
+    setGrandmotherMoving(this.state === 'playing');
 
     // spec §8.5: no voice for this language → text only, with a short notice
     if (this.audioMode) { if (this.state !== 'paused') this.showNotice(''); }

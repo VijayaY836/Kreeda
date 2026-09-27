@@ -84,3 +84,43 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* The match inside the KREEDA hub's card (GameView embedded): the board is as
+   tall as the card allows, leaving room for the side column on the right. The
+   board is roughly square (its coordinate labels add a few px), so its width
+   is capped by the frame height minus the page padding. */
+.embed-board {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .embed-board {
+    width: min(calc(100vw - 420px), calc(100vh - 48px));
+  }
+}
+
+/* Move feedback on the board: the moved piece glides in from its start square
+   (--dx/--dy, in squares), a captured piece fades out under it, and the move
+   arrow appears once the piece has landed. Reduced-motion users get the end
+   state immediately via the rule above. */
+@keyframes piece-slide {
+  from { transform: translate(calc(var(--dx) * 100%), calc(var(--dy) * 100%)) scale(1.08); }
+  to { transform: none; }
+}
+.piece-slide {
+  z-index: 10;
+  animation: piece-slide 700ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+@keyframes capture-fade {
+  0%, 60% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.55); }
+}
+.capture-fade {
+  animation: capture-fade 700ms ease-in both;
+}
+@keyframes move-arrow-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.move-arrow {
+  animation: move-arrow-in 260ms ease-out 620ms both;
+}

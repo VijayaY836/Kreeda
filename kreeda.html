@@ -859,33 +859,34 @@
       background: transparent;
     }
 
-    /* The match itself: the card fills the screen and the board scrolls
-       inside the frame, so the game's own pop-ups stay centred in view. */
-    .modal-overlay.game {
+    /* Full-size card (Chaturangam's setup, and every match): the card fills
+       the screen and its content scrolls inside the frame if it must, so the
+       game's own pop-ups stay centred in view. */
+    .modal-overlay.fill {
       padding: 12px;
     }
 
-    .modal.game {
+    .modal.fill {
       max-width: 1240px;
       height: calc(100vh - 24px);
       height: calc(100dvh - 24px);
       max-height: none;
     }
 
-    .modal.game .modal-head {
+    .modal.fill .modal-head {
       padding: 14px 22px 8px;
     }
 
-    .modal.game h3 {
+    .modal.fill h3 {
       font-size: 20px;
     }
 
-    .modal.game .modal-body {
+    .modal.fill .modal-body {
       padding: 0 8px 8px;
       overflow: hidden;
     }
 
-    .modal.game .tut-frame {
+    .modal.fill .tut-frame {
       height: 100% !important;
     }
 
@@ -1964,9 +1965,15 @@
       document.getElementById('modal-body').innerHTML = '';
       if (lastFocus) lastFocus.focus();
     }
+    // "game": a match is in progress, so closing asks first and a stray click
+    // beside the card is ignored. "fill": the full-size card.
     function setGameCard(on) {
       document.getElementById('modal').classList.toggle('game', on);
-      document.getElementById('modal-overlay').classList.toggle('game', on);
+      setFillCard(on);
+    }
+    function setFillCard(on) {
+      document.getElementById('modal').classList.toggle('fill', on);
+      document.getElementById('modal-overlay').classList.toggle('fill', on);
     }
     document.getElementById('modal-overlay').addEventListener('click', e => {
       // a stray click beside the board shouldn't end a match
@@ -2014,6 +2021,7 @@
     function openEmbeddedSetup(src) {
       openEmbeddedCard(`${currentGame.name} · Play`, 'Set Up Your Match',
         `${src}&difficulty=${CHAT_LEVELS[currentLevel] || 'MEDIUM'}`, `${currentGame.name} match setup`);
+      setFillCard(true);
     }
     // Games with no setup step (Vaikunthapali, Vaamana Guntalu) open straight
     // onto the board.
@@ -2034,6 +2042,7 @@
       if (d.close) closeModal(true);
       if (d.view) {
         setGameCard(d.view === 'game');
+        if (d.view === 'setup') setFillCard(true);
         if (d.title) document.getElementById('modal-title').textContent = d.title;
       }
       if (d.start && d.start.gameMode === 'PVC') {

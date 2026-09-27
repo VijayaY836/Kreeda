@@ -42,6 +42,41 @@
   html.embedded body{background:transparent; min-height:0;}
   html.embedded .topbar{display:none;}
   html.embedded .app{padding:10px 14px 32px;}
+  /* the card's "?" / Board guide button covers the rules */
+  html.embedded .howto{display:none;}
+  /* Wider screens: the board takes the card's full width and height, and the
+     title, scores, status and buttons move to a side column, so the whole
+     game fits without scrolling. The board is ~0.47× as tall as it is wide,
+     so capping its width at ~2.1× the frame height keeps it on screen. */
+  @media (min-width:900px){
+    html.embedded .app{
+      max-width:none;
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:min(calc(100vw - 370px), calc((100vh - 44px) * 2.1), 1000px) 290px;
+      grid-template-areas:
+        "board top"
+        "board bottom";
+      column-gap:28px;
+      justify-content:center;
+      align-content:center;
+      align-items:center;
+    }
+    /* the two halves of the side column meet at the board's middle */
+    html.embedded .side{grid-area:top; align-self:end;}
+    html.embedded .side-bottom{grid-area:bottom; align-self:start;}
+    html.embedded .board-frame{grid-area:board;}
+    html.embedded .game-head{margin:0 0 12px;}
+    html.embedded .game-head h1{font-size:24px;}
+    html.embedded .native-line{font-size:12.5px;}
+    html.embedded .hud{grid-template-columns:1fr; gap:8px; margin-bottom:10px;}
+    html.embedded .plaque{padding:6px 12px;}
+    html.embedded .plaque .n{font-size:24px;}
+    html.embedded .status{margin-bottom:0;}
+    html.embedded .controls{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
+    html.embedded .controls .btn{min-width:0;}
+    html.embedded .controls .btn.primary{grid-column:1 / -1;}
+  }
 
   /* ---------- header ---------- */
   .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px;}
@@ -356,6 +391,7 @@
     <a class="backbtn" href="../../kreeda.html">&larr; All games</a>
   </div>
 
+  <div class="side">
   <div class="game-head">
     <div>
       <h1>Vaamana Guntalu</h1>
@@ -385,6 +421,8 @@
     <div class="sub" id="status-sub">Your row is the bottom seven pits. Choose a glowing pit to sow — Kreedu plays the top row.</div>
   </div>
 
+  </div>
+
   <div class="board-frame">
     <span class="board-corner tl"></span><span class="board-corner tr"></span>
     <span class="board-corner bl"></span><span class="board-corner br"></span>
@@ -397,10 +435,12 @@
     </div>
   </div>
 
+  <div class="side side-bottom">
   <div class="controls">
     <button class="btn primary" onclick="newGame()">New round</button>
     <button class="btn ghost" id="btn-pace" onclick="togglePace()">Pace: Slow</button>
     <button class="btn ghost" onclick="openGuide()">Board guide</button>
+  </div>
   </div>
 
   <section class="howto">
