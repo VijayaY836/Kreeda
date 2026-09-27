@@ -18,10 +18,12 @@ export const StepViewer: React.FC<StepViewerProps> = ({ practice, imageClassName
   const stepCount = practice.steps.length;
   const [mode, setMode] = useState<Mode>(hasGif ? 'gif' : 'steps');
   const [step, setStep] = useState(0);
+  const [imageError, setImageError] = useState(false);
   const stepImages = useMemo(() => getStepImages(practice.id, stepCount), [practice.id, stepCount]);
 
   const stepImage = stepImages[step];
-  const staticImage = stepImage ?? practice.image;
+  const fallbackImage = practice.demoGif ?? practice.image;
+  const displayImage = imageError ? fallbackImage : (stepImage ?? fallbackImage);
 
   const modeButton = (key: Mode, label: string) => (
     <button
@@ -49,11 +51,12 @@ export const StepViewer: React.FC<StepViewerProps> = ({ practice, imageClassName
         <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className={imageClassName} />
       ) : (
         <>
-          {staticImage && (
+          {displayImage && (
             <img
-              src={staticImage}
+              src={displayImage}
               alt={stepImage ? `${practice.name}, step ${step + 1}` : ''}
               className={imageClassName}
+              onError={() => setImageError(true)}
             />
           )}
 
@@ -63,7 +66,7 @@ export const StepViewer: React.FC<StepViewerProps> = ({ practice, imageClassName
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8402E]">
                   Step {step + 1} of {stepCount}
                 </span>
-                {!stepImage && staticImage && (
+                {!stepImage && !imageError && displayImage && (
                   <span className="text-[10px] text-[#5C5142]">No image for this step yet</span>
                 )}
               </div>
@@ -75,7 +78,10 @@ export const StepViewer: React.FC<StepViewerProps> = ({ practice, imageClassName
                 <div className="flex items-center gap-2 mt-2.5">
                   <button
                     type="button"
-                    onClick={() => setStep(s => Math.max(0, s - 1))}
+                    onClick={() => {
+                      setImageError(false);
+                      setStep(s => Math.max(0, s - 1));
+                    }}
                     disabled={step === 0}
                     aria-label="Previous step"
                     className="p-1 rounded-lg text-[#1F3B2E] cursor-pointer hover:bg-white disabled:opacity-30 disabled:cursor-default"
@@ -88,14 +94,20 @@ export const StepViewer: React.FC<StepViewerProps> = ({ practice, imageClassName
                     max={stepCount - 1}
                     step={1}
                     value={step}
-                    onChange={e => setStep(Number(e.target.value))}
+                    onChange={e => {
+                      setImageError(false);
+                      setStep(Number(e.target.value));
+                    }}
                     aria-label="Exercise step"
                     aria-valuetext={`Step ${step + 1} of ${stepCount}`}
                     className="flex-1 accent-[#1F3B2E] cursor-pointer"
                   />
                   <button
                     type="button"
-                    onClick={() => setStep(s => Math.min(stepCount - 1, s + 1))}
+                    onClick={() => {
+                      setImageError(false);
+                      setStep(s => Math.min(stepCount - 1, s + 1));
+                    }}
                     disabled={step === stepCount - 1}
                     aria-label="Next step"
                     className="p-1 rounded-lg text-[#1F3B2E] cursor-pointer hover:bg-white disabled:opacity-30 disabled:cursor-default"

@@ -47,6 +47,29 @@ const ALIASES: Record<string, string> = {
   japa: 'om-chanting',
 };
 
+const STEP_FOLDER_ALIASES: Record<string, string> = {
+  'loosening-neck': 'Griva Shakti Vikasaka',
+  'loosening-shoulder': 'Skandha Chakra',
+  'loosening-trunk': 'Kati Chakrasana',
+  'loosening-knee': 'Janu Shakti Vikasaka',
+  'surya-namaskar-slow': 'Surya Namaskar(Slow)',
+  'surya-namaskar-paced': 'Surya Namaskar(Paced)',
+  tadasana: 'Tadasana',
+  vrikshasana: 'Vrikshasana',
+  padahastasana: 'Padahastasana',
+  shalabhasana: 'Shalabhasana',
+  dhanurasana: 'Dhanurasana',
+  setubandhasana: 'Setu Bandhasana',
+  uttanapadasana: 'Uttanapadasana',
+  pavanamuktasana: 'Pavanamuktasana',
+  matsyasana: 'Matsyasana',
+  bhujangasana: 'Bhujangasana',
+};
+
+function normalizeAssetName(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
 export function getImage(id: string): string | undefined {
   return REGISTRY[id] ?? REGISTRY[ALIASES[id]];
 }
@@ -69,18 +92,54 @@ export function getDemoGif(id: string): string | undefined {
   return ANIMATION_REGISTRY[id] ?? ANIMATION_REGISTRY[DEMO_GIF_ALIASES[id]];
 }
 
-// Per-step posture images live one level deeper, in
-// src/assets/<section>/steps/<practice-id>-<step number>.<ext> (1-based, e.g.
-// "steps/bhujangasana-2.png" pairs with the practice's second text step).
-// Kept out of REGISTRY so a step file can never replace a card thumbnail.
-const stepModules = import.meta.glob<string>('../assets/*/steps/*.{jpg,jpeg,png,webp,svg}', {
+// Per-step posture images can live in either a flat naming format or inside a per-
+// exercise folder with numbered files like step_1.png / Step_1.png. Keep these out of
+// REGISTRY so they never replace the card thumbnail image.
+const stepModules = import.meta.glob<string>('../assets/*/steps/**/*.{jpg,jpeg,png,webp,svg}', {
   eager: true,
   query: '?url',
   import: 'default',
 });
 const STEP_REGISTRY = toRegistry(stepModules);
 
-// Returns one entry per text step; undefined where no image exists for that step.
 export function getStepImages(id: string, stepCount: number): (string | undefined)[] {
-  return Array.from({ length: stepCount }, (_, i) => STEP_REGISTRY[`${id}-${i + 1}`]);
+  const folderAliases = Array.from(
+    new Set([
+      id,
+      STEP_FOLDER_ALIASES[id] ?? '',
+      id.replace(/[-_]/g, ' '),
+      id.replace(/[-_]/g, ''),
+      (STEP_FOLDER_ALIASES[id] ?? '').replace(/[-_]/g, ' '),
+      (STEP_FOLDER_ALIASES[id] ?? '').replace(/[-_]/g, ''),
+    ].filter(Boolean))
+  );
+
+  const normalizedAliases = folderAliases.map(normalizeAssetName);
+
+  return Array.from({ length: stepCount }, (_, i) => {
+    const stepNumber = i + 1;
+    const legacyImage = STEP_REGISTRY[`${id}-${stepNumber}`];
+    if (legacyImage) return legacyImage;
+
+    const folderMatch = Object.entries(stepModules).find(([path]) => {
+      const normalizedPath = path.replace(/\\/g, '/').toLowerCase();
+      const filename = path.split('/').pop()?.toLowerCase() ?? '';
+      const folderName = path.split('/').slice(-2, -1)[0]?.toLowerCase() ?? '';
+      const matchesFolder = normalizedAliases.includes(normalizeAssetName(folderName));
+      const matchesStepFile =
+        filename.includes(`step${stepNumber}`) ||
+        filename.includes(`step_${stepNumber}`) ||
+        filename.includes(`step-${stepNumber}`) ||
+        filename.includes(`${stepNumber}.png`) ||
+        filename.includes(`${stepNumber}.jpg`) ||
+        filename.includes(`${stepNumber}.jpeg`) ||
+        filename.includes(`${stepNumber}.webp`);
+
+      return matchesFolder && (matchesStepFile || normalizedPath.includes(`/steps/${id.toLowerCase()}/`));
+    });
+
+    if (folderMatch) return folderMatch[1];
+
+    return `/assets/steps/${id}/step_${stepNumber}.png`;
+  });
 }
