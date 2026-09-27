@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { DaySession, Mood, PlanSlotItem } from '../types';
 import { getPractice } from '../data/practices';
 import { playBell } from '../engine/audio';
+import { getStepImages } from '../data/images';
 import { CONTRA_LABELS } from './PracticeDetailModal';
 import { KreeduMascot } from './KreeduMascot';
 import { X, Pause, Play, SkipForward, Check } from 'lucide-react';
@@ -42,11 +43,30 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
   const [index, setIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
   const intervalRef = useRef<number | null>(null);
 
   const item = items[index];
   const practice = item ? getPractice(item.practiceId) : undefined;
   const isRepBased = !!practice && (practice.reps != null || practice.rounds != null);
+  const practiceStepImages = useMemo(() => practice ? getStepImages(practice.id, practice.steps.length) : [], [practice]);
+  const hasStepAssets = practiceStepImages.some(Boolean) && practice.steps.length > 1;
+  const defaultDisplayImage = practice?.image ?? practice?.demoGif;
+  const currentStepImage = hasStepAssets ? (practiceStepImages[stepIndex] ?? defaultDisplayImage) : defaultDisplayImage;
+
+  useEffect(() => {
+    setStepIndex(0);
+  }, [practice?.id]);
+
+  useEffect(() => {
+    if (!practice || !hasStepAssets || !started || paused || secondsLeft <= 0) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setStepIndex(previous => previous + 1 >= practice.steps.length ? 0 : previous + 1);
+    }, 4000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [practice, hasStepAssets, started, paused, secondsLeft, stepIndex]);
   // The countdown runs only while there is time left and it isn't paused.
   // Depending on this (not on secondsLeft itself) lets the interval start once
   // the new item's duration has been loaded, without restarting on every tick.
@@ -145,9 +165,61 @@ export const SessionPlayer: React.FC<SessionPlayerProps> = ({ session, onExit, o
           </div>
         )}
 
-        {practice.demoGif && (
-          <div className="mb-4 bg-[#EADFC4] border border-[#C7A467]/70 rounded-xl p-2 inline-block">
-            <img src={practice.demoGif} alt={`${practice.name} step-by-step demo`} className="max-w-full max-h-64 mx-auto" />
+        {practice.steps.length > 0 && hasStepAssets && (
+          <div className="mb-4">
+            {currentStepImage && (
+              <div className="mb-3 bg-[#EADFC4] border border-[#C7A467]/70 rounded-xl p-2 inline-block w-full max-w-md">
+                <img src={currentStepImage} alt={`${practice.name} step ${stepIndex + 1}`} className="max-w-full max-h-64 mx-auto object-contain" />
+              </div>
+            )}
+
+            <div className="max-w-md mx-auto rounded-xl border border-[#C7A467]/70 bg-[#FBF3E2] p-3 text-left">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8402E]">
+                  Step {stepIndex + 1} of {practice.steps.length}
+                </span>
+              </div>
+              <p className="text-[13px] text-[#2A241E] leading-relaxed min-h-[2.5rem]">{practice.steps[stepIndex]}</p>
+
+              {practice.steps.length > 1 && (
+                <div className="flex items-center gap-2 mt-3">
+                  <button
+                    type="button"
+                    onClick={() => setStepIndex(i => Math.max(0, i - 1))}
+                    disabled={stepIndex === 0}
+                    className="p-1 rounded-lg text-[#1F3B2E] cursor-pointer hover:bg-white disabled:opacity-30 disabled:cursor-default"
+                    aria-label="Previous step"
+                  >
+                    <SkipForward className="w-4 h-4 rotate-180" />
+                  </button>
+                  <input
+                    type="range"
+                    min={0}
+                    max={practice.steps.length - 1}
+                    step={1}
+                    value={stepIndex}
+                    onChange={(e) => setStepIndex(Number(e.target.value))}
+                    aria-label="Exercise step"
+                    className="flex-1 accent-[#1F3B2E] cursor-pointer"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setStepIndex(i => Math.min(practice.steps.length - 1, i + 1))}
+                    disabled={stepIndex === practice.steps.length - 1}
+                    className="p-1 rounded-lg text-[#1F3B2E] cursor-pointer hover:bg-white disabled:opacity-30 disabled:cursor-default"
+                    aria-label="Next step"
+                  >
+                    <SkipForward className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {(!practice.steps.length || !hasStepAssets) && defaultDisplayImage && (
+          <div className="mb-4 bg-[#EADFC4] border border-[#C7A467]/70 rounded-xl p-2 inline-block w-full max-w-md">
+            <img src={defaultDisplayImage} alt={`${practice.name} demonstration`} className="max-w-full max-h-64 mx-auto object-contain" />
           </div>
         )}
 
