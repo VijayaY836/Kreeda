@@ -4,12 +4,11 @@ import { SECTION_CONTENT } from '../data/sectionContent';
 import { practicesBySection, LIBRARY_GROUPS } from '../data/practices';
 import { PracticeCard } from './PracticeCard';
 import { PracticeDetailModal } from './PracticeDetailModal';
-import { SpreadMapView } from './SpreadMapView';
 import { HeritageCards } from './HeritageCards';
 import { FolkDivider } from './FolkArtMotifs';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 
-export type SectionTab = 'history' | 'facts' | 'library' | 'heritage' | 'map';
+export type SectionTab = 'history' | 'facts' | 'library' | 'heritage';
 
 interface SectionHomeProps {
   section: Section;
@@ -31,7 +30,6 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
     { key: 'facts', label: 'Fun Facts' },
     { key: 'library', label: 'Library' },
     ...(section === 'vyayam' ? [{ key: 'heritage' as SectionTab, label: 'Heritage' }] : []),
-    { key: 'map', label: 'Spread Map' },
   ];
 
   return (
@@ -123,8 +121,6 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
       )}
 
       {tab === 'heritage' && section === 'vyayam' && <HeritageCards />}
-
-      {tab === 'map' && <SpreadMapView content={content} />}
 
       {selected && (
         <PracticeDetailModal
