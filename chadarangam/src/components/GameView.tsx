@@ -15,7 +15,7 @@ import { FolkDivider, KolamCorner } from './FolkArtMotifs';
 import { KreeduMascot } from './KreeduMascot';
 import {
   RotateCcw, HelpCircle, Settings, Trophy, History, Bot, User,
-  Volume2, VolumeX, X, FlipVertical2, Undo2, Flag, Users,
+  Volume2, VolumeX, X, FlipVertical2, Undo2, Flag, Users, Lightbulb,
 } from 'lucide-react';
 
 interface GameViewProps {
@@ -324,6 +324,7 @@ export const GameView: React.FC<GameViewProps> = ({ settings, onNavigate, soundE
             </button>
           )}
           <button onClick={() => setHints(h => !h)} className={`flex items-center gap-1 px-2.5 py-1.5 border-[1.5px] border-[#5C140F] text-xs font-bold cursor-pointer ${hints ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12]'}`}>
+            <Lightbulb className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Hints</span>
           </button>
           <button onClick={onToggleSound} className="w-8 h-8 flex items-center justify-center bg-[#F6ECD2] hover:bg-white border-[1.5px] border-[#5C140F] text-[#5C140F] cursor-pointer">

@@ -1,3 +1,12 @@
 # API keys — never commit
 .env
+
+# Dependencies — reinstall with `npm install` in each app
+node_modules/
+.vite/
+
+# Build output
 dist/
+
+*.local
+.DS_Store

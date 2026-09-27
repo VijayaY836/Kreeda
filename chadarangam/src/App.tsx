@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GameSettings, ViewTab, Variant } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -8,6 +8,7 @@ import { InteractiveTutorial } from './components/InteractiveTutorial';
 import { GameView } from './components/GameView';
 import { FolkDivider, ChariotWheelIcon } from './components/FolkArtMotifs';
 import { sounds } from './utils/soundEngine';
+import { VARIANT_INFO } from './utils/pieceArt';
 import { X } from 'lucide-react';
 
 const DEFAULT_SETTINGS: GameSettings = {
@@ -20,26 +21,116 @@ const DEFAULT_SETTINGS: GameSettings = {
   soundEnabled: true,
 };
 
-// The KREEDA hub's game screen deep-links here: ?start=play&difficulty=EASY
-// drops straight into a Chaturanga game vs Kreedu, ?start=tutorial opens the
-// interactive tutorial. Anything else lands on the normal home screen.
+// The KREEDA hub's game screen deep-links here: ?start=play drops straight
+// into a match (settings below), ?start=setup opens match setup and
+// ?start=tutorial the interactive tutorial. Anything else lands on the normal
+// home screen.
 const HUB_PARAMS = new URLSearchParams(window.location.search);
-const HUB_DIFFICULTY = HUB_PARAMS.get('difficulty')?.toUpperCase();
 const INITIAL_TAB: ViewTab =
   HUB_PARAMS.get('start') === 'play' ? 'GAME'
     : HUB_PARAMS.get('start') === 'setup' ? 'MODE_SELECT'
       : HUB_PARAMS.get('start') === 'tutorial' ? 'TUTORIAL' : 'HOME';
-const INITIAL_SETTINGS: GameSettings =
-  HUB_DIFFICULTY === 'EASY' || HUB_DIFFICULTY === 'MEDIUM' || HUB_DIFFICULTY === 'HARD'
-    ? { ...DEFAULT_SETTINGS, difficulty: HUB_DIFFICULTY }
-    : DEFAULT_SETTINGS;
+
+// Match settings carried in the URL — the hub's setup card passes all of them
+// (?variant=chess&mode=PVP&difficulty=HARD&side=-1&board=checkered); any that
+// are missing or invalid keep their default.
+function pick<T extends string | number>(value: string | number | undefined, allowed: readonly T[]): T | undefined {
+  return allowed.find((a) => a === value);
+}
+const HUB_SIDE = HUB_PARAMS.get('side');
+const INITIAL_SETTINGS: GameSettings = {
+  ...DEFAULT_SETTINGS,
+  variant: pick(HUB_PARAMS.get('variant') ?? undefined, ['chaturanga', 'chess'] as const) ?? DEFAULT_SETTINGS.variant,
+  gameMode: pick(HUB_PARAMS.get('mode')?.toUpperCase(), ['PVC', 'PVP'] as const) ?? DEFAULT_SETTINGS.gameMode,
+  difficulty: pick(HUB_PARAMS.get('difficulty')?.toUpperCase(), ['EASY', 'MEDIUM', 'HARD'] as const) ?? DEFAULT_SETTINGS.difficulty,
+  humanSide: pick(HUB_SIDE === null ? undefined : Number(HUB_SIDE), [1, -1] as const) ?? DEFAULT_SETTINGS.humanSide,
+  boardStyle: pick(HUB_PARAMS.get('board') ?? undefined, ['ashtapada', 'checkered'] as const) ?? DEFAULT_SETTINGS.boardStyle,
+};
+
+// ?embed=pieces / ?embed=play render just the tutorial, or match setup
+// followed by the match itself, for the hub's cards (kreeda.html frames this
+// page). Setup and tutorial post their height so the card fits them; the match
+// instead fills the card and scrolls inside the frame, so its own pop-ups
+// (promotion, game over, settings) stay centred in view. Escape asks the card
+// to close, except mid-match.
+const EMBED = HUB_PARAMS.get('embed');
+
+type StartSettings = Pick<GameSettings, 'variant' | 'gameMode' | 'difficulty' | 'humanSide' | 'boardStyle'>;
+const postToHub = (msg: object) => window.parent.postMessage({ source: 'kreeda-embed', ...msg }, '*');
+
+function EmbeddedView({ fill = false, children }: { fill?: boolean; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    document.body.classList.remove('min-h-screen');
+    document.body.style.background = 'transparent';
+  }, []);
+  useEffect(() => {
+    if (fill) return;
+    const observer = new ResizeObserver(() => postToHub({ height: ref.current!.offsetHeight }));
+    observer.observe(ref.current!);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') postToHub({ close: true }); };
+    window.addEventListener('keydown', onKey);
+    return () => { observer.disconnect(); window.removeEventListener('keydown', onKey); };
+  }, [fill]);
+  return <div ref={ref} className="text-[#5C140F] font-manrope">{children}</div>;
+}
+
+function EmbeddedPlay() {
+  const [playing, setPlaying] = useState(false);
+  const [settings, setSettings] = useState<GameSettings>(INITIAL_SETTINGS);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  // Remount the match on every Begin so it always starts fresh.
+  const [matchKey, setMatchKey] = useState(0);
+
+  useEffect(() => {
+    postToHub({ view: playing ? 'game' : 'setup', title: playing ? `${VARIANT_INFO[settings.variant].title} Match` : 'Set Up Your Match' });
+    window.scrollTo(0, 0);
+  }, [playing, settings.variant]);
+
+  const start = (next: StartSettings) => {
+    setSettings(prev => ({ ...prev, ...next }));
+    setMatchKey(k => k + 1);
+    setPlaying(true);
+    postToHub({ start: next });
+  };
+
+  return (
+    <EmbeddedView fill={playing}>
+      {playing ? (
+        <GameView
+          key={matchKey}
+          settings={settings}
+          soundEnabled={soundEnabled}
+          onToggleSound={() => setSoundEnabled(!sounds.toggleMute())}
+          onNavigate={(tab) => (tab === 'MODE_SELECT' ? setPlaying(false) : postToHub({ close: true }))}
+        />
+      ) : (
+        <ModeSelectView
+          embedded
+          initialVariant={settings.variant}
+          initial={settings}
+          onNavigate={() => {}}
+          onStartGame={start}
+        />
+      )}
+    </EmbeddedView>
+  );
+}
 
 export default function App() {
+  if (EMBED === 'pieces') {
+    return <EmbeddedView><InteractiveTutorial embedded onComplete={() => {}} /></EmbeddedView>;
+  }
+  if (EMBED === 'play') return <EmbeddedPlay />;
+  return <HubApp />;
+}
+
+function HubApp() {
   const [currentTab, setCurrentTab] = useState<ViewTab>(INITIAL_TAB);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGlobalHelp, setShowGlobalHelp] = useState(false);
   const [settings, setSettings] = useState<GameSettings>(INITIAL_SETTINGS);
-  const [homeVariant, setHomeVariant] = useState<Variant>('chaturanga');
+  const [homeVariant, setHomeVariant] = useState<Variant>(INITIAL_SETTINGS.variant);
 
   const handleToggleSound = () => {
     const muted = sounds.toggleMute();

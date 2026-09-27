@@ -11,6 +11,9 @@ import {
 interface InteractiveTutorialProps {
   onComplete: () => void;
   initialVariant?: Variant;
+  // Shown inside the KREEDA hub's tutorial card: the card supplies its own
+  // title and Play button, and only the Pieces tab is offered for now.
+  embedded?: boolean;
 }
 
 type Tab = 'PIECES' | 'RULES';
@@ -77,7 +80,7 @@ function demoCells(t: PieceLetter, variant: Variant): CellKind[] {
 }
 const CELL_BG: Record<CellKind, string> = { '': '#F6ECD2', mv: '#CFE3C4', mv2: '#CFE3C4', cap: '#F3B79C', hop: '#F6ECD2' };
 
-export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComplete, initialVariant = 'chaturanga' }) => {
+export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComplete, initialVariant = 'chaturanga', embedded = false }) => {
   const [tab, setTab] = useState<Tab>('PIECES');
   const [variant, setVariant] = useState<Variant>(initialVariant);
   const [demoPiece, setDemoPiece] = useState<PieceLetter>(ORDER[initialVariant][0]);
@@ -91,14 +94,18 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
   const switchVariant = (v: Variant) => { setVariant(v); setDemoPiece(ORDER[v][0]); };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold font-fraunces text-[#5C140F] mb-2">Tutorial</h1>
-        <p className="max-w-xl mx-auto text-sm text-[#6B4E3D] mb-6">
-          Every piece's movement, and the rules that separate the two eras — try both before your first match.
-        </p>
+    <div className={embedded ? 'py-1' : 'max-w-5xl mx-auto py-8 px-4'}>
+      <div className={`text-center ${embedded ? 'mb-4' : 'mb-8'}`}>
+        {!embedded && (
+          <>
+            <h1 className="text-4xl sm:text-5xl font-extrabold font-fraunces text-[#5C140F] mb-2">Tutorial</h1>
+            <p className="max-w-xl mx-auto text-sm text-[#6B4E3D] mb-6">
+              Every piece's movement, and the rules that separate the two eras — try both before your first match.
+            </p>
+          </>
+        )}
 
-        <div className="inline-flex bg-[#F6ECD2] border-2 border-[#5C140F] p-1 gap-1 mb-4">
+        {!embedded && <div className="inline-flex bg-[#F6ECD2] border-2 border-[#5C140F] p-1 gap-1 mb-4">
           {(['PIECES', 'RULES'] as Tab[]).map((t) => (
             <button
               key={t}
@@ -110,7 +117,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
               {t === 'PIECES' ? 'The Pieces' : 'The Rules'}
             </button>
           ))}
-        </div>
+        </div>}
 
         <div className="flex justify-center gap-2">
           {(['chaturanga', 'chess'] as Variant[]).map((v) => (
@@ -127,7 +134,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
 
       {/* ---------------- PIECES ---------------- */}
       {tab === 'PIECES' && (
-        <FolkArtFrame bg="bg-[#F6ECD2]" className="p-5 sm:p-7 mb-8">
+        <FolkArtFrame bg="bg-[#F6ECD2]" className={embedded ? 'p-4 sm:p-5' : 'p-5 sm:p-7 mb-8'}>
           <div className="flex flex-wrap gap-1.5 mb-5">
             {order.map((k) => (
               <button
@@ -277,7 +284,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
         </div>
       )}
 
-      <div className="text-center">
+      {!embedded && <div className="text-center">
         <button
           onClick={onComplete}
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#D8401F] hover:bg-[#B83215] text-white border-[3px] border-[#5C140F] text-sm font-bold uppercase tracking-wider cursor-pointer"
@@ -286,7 +293,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
           Play {info.title}
           <ArrowRight className="w-4 h-4" />
         </button>
-      </div>
+      </div>}
     </div>
   );
 };

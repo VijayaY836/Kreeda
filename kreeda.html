@@ -844,6 +844,51 @@
       outline: none;
     }
 
+    /* A game's own app framed in the card: Chaturangam's pieces tutorial and
+       match setup, and the Chaturangam / Vaikunthapali / Vaamana Guntalu boards */
+    .modal.wide {
+      max-width: 760px;
+      max-height: min(90vh, 860px);
+    }
+
+    .tut-frame {
+      display: block;
+      width: 100%;
+      height: 520px;
+      border: 0;
+      background: transparent;
+    }
+
+    /* The match itself: the card fills the screen and the board scrolls
+       inside the frame, so the game's own pop-ups stay centred in view. */
+    .modal-overlay.game {
+      padding: 12px;
+    }
+
+    .modal.game {
+      max-width: 1240px;
+      height: calc(100vh - 24px);
+      height: calc(100dvh - 24px);
+      max-height: none;
+    }
+
+    .modal.game .modal-head {
+      padding: 14px 22px 8px;
+    }
+
+    .modal.game h3 {
+      font-size: 20px;
+    }
+
+    .modal.game .modal-body {
+      padding: 0 8px 8px;
+      overflow: hidden;
+    }
+
+    .modal.game .tut-frame {
+      height: 100% !important;
+    }
+
     .modal-head {
       padding: 24px 26px 10px;
     }
@@ -853,6 +898,10 @@
       overflow-y: auto;
       flex: 1;
       min-height: 0;
+    }
+
+    .modal-foot[hidden] {
+      display: none;
     }
 
     .modal-foot {
@@ -1572,6 +1621,7 @@
        The rules are written as the house rules KREEDA's boards will follow. */
     const screens = {
       'vaikunthapali': {
+        gameEmbed: 'games/vaikunthapali/dist/index.html?embed=play',
         blurb: 'A board of virtue and vice. Ladders of good deeds lift you, snakes of bad ones drag you down, and square 100 is Vaikuntha itself.',
         tutorial: [
           { t: 'Meet the board', d: 'One hundred squares, climbing from the bottom-left corner. The path snakes back and forth: left to right on one row, right to left on the next.' },
@@ -1626,6 +1676,7 @@
         facts: ['Cowrie shells were once used as money across the Indian Ocean. Here they work as dice.', 'Kavade, the Kannada word for cowrie, gives the game one of its many names across Karnataka.', 'Some families play with tamarind seeds split in half, reading flat side up or down instead of cowries.']
       },
       'vamana-guntalu': {
+        gameEmbed: 'games/vamana-guntalu/vamana-guntalu.html?embed=play',
         blurb: 'Fourteen pits, a handful of seeds each, and a lot of counting ahead. Sow seeds around the board and capture the pits that fall your way.',
         tutorial: [
           { t: 'The board', d: 'Two rows of seven pits: the row nearest you is yours. Every pit starts with 5 seeds.' },
@@ -1645,14 +1696,15 @@
       },
       'chaturangam': {
         blurb: 'The four divisions of an ancient Indian army on an 8×8 board, and the ancestor of chess. Trap the opposing Raja to win.',
-        tutorialHref: 'chadarangam/dist/index.html?start=tutorial',
+        tutorialEmbed: 'chadarangam/dist/index.html?embed=pieces',
+        playEmbed: 'chadarangam/dist/index.html?embed=play',
         tutorial: [],
         rules: [
           { h: 'Pieces', items: ['<strong>Raja</strong> (king): one step in any direction.', '<strong>Mantri</strong> (minister): one step diagonally.', '<strong>Gaja</strong> (elephant): jumps exactly two squares diagonally, leaping over anything in between.', '<strong>Ashva</strong> (horse): moves like a chess knight.', '<strong>Ratha</strong> (chariot): any distance in a straight line.', '<strong>Padati</strong> (foot soldier): one step forward, captures one step diagonally forward.'] },
           { h: 'Special rules', items: ['Foot soldiers never move two squares, even on their first move.', 'A foot soldier reaching the far rank becomes a Mantri.', 'There is no castling.'] },
           { h: 'Winning', items: ['Checkmate the opposing Raja, <strong>or</strong> capture every other piece and leave the Raja bare.'] }
         ],
-        rulesNote: 'Tutorial opens the interactive Chaturangam lessons.',
+        rulesNote: 'Tutorial shows how every piece moves, on an interactive board.',
         difficulty: { easy: 'Sishya, the novice: plays quickly and loosely.', medium: 'Yodha, the warrior: solid and hard to trick.', hard: 'Senapati, the general: calculates deeply and punishes mistakes.' },
         facts: ['"Chaturanga" means four limbs: infantry, cavalry, elephants and chariots, the divisions of a Gupta-era army.', 'The Gaja\'s two-square diagonal jump survived in Persian shatranj as the "alfil". It became the bishop only in 15th-century Europe.', 'The Mantri\'s single diagonal step grew into the modern queen, now the strongest piece on the board.']
       },
@@ -1892,19 +1944,33 @@
 
     function openSheet(kicker, title) {
       lastFocus = document.activeElement;
-      document.getElementById('modal').style.setProperty('--accent', currentGame.accent);
+      const modal = document.getElementById('modal');
+      modal.style.setProperty('--accent', currentGame.accent);
+      modal.classList.remove('wide');
+      setGameCard(false);
+      document.getElementById('modal-foot').hidden = false;
       document.getElementById('modal-kicker').textContent = kicker;
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-overlay').classList.add('active');
     }
-    function closeModal() {
+    // force skips the leave-the-match check (the game itself asked to close)
+    function closeModal(force) {
       const o = document.getElementById('modal-overlay');
       if (!o.classList.contains('active')) return;
+      if (!force && document.getElementById('modal').classList.contains('game') &&
+        !confirm('Leave this match? The game in progress will be lost.')) return;
       o.classList.remove('active');
+      setGameCard(false);
+      document.getElementById('modal-body').innerHTML = '';
       if (lastFocus) lastFocus.focus();
     }
+    function setGameCard(on) {
+      document.getElementById('modal').classList.toggle('game', on);
+      document.getElementById('modal-overlay').classList.toggle('game', on);
+    }
     document.getElementById('modal-overlay').addEventListener('click', e => {
-      if (e.target.id === 'modal-overlay') closeModal();
+      // a stray click beside the board shouldn't end a match
+      if (e.target.id === 'modal-overlay' && !document.getElementById('modal').classList.contains('game')) closeModal();
     });
     document.addEventListener('keydown', e => {
       if (!document.getElementById('modal-overlay').classList.contains('active')) return;
@@ -1919,13 +1985,62 @@
       const sc = screens[currentGame.id];
       // Daadi Aata ships its own interactive tutorial — hand off to it
       if (currentGame.id === 'daadi-aata') { window.location.href = 'games/daadi-aata/dist/index.html?start=tutorial'; return; }
-      // Chaturangam ships its own interactive lessons — hand off to them
-      if (sc.tutorialHref) { window.location.href = sc.tutorialHref; return; }
+      // Chaturangam's interactive pieces guide opens inside the card itself
+      if (sc.tutorialEmbed) { openEmbeddedTutorial(sc.tutorialEmbed); return; }
       tutStep = 0;
       openSheet(`${currentGame.name} · Tutorial`, '');
       renderTutorial();
       document.getElementById('tut-next').focus();
     }
+    // Opens a card around one view of a game's own app (?embed=...).
+    // footHtml is optional; without it the card has no footer.
+    function openEmbeddedCard(kicker, title, src, frameTitle, footHtml) {
+      openSheet(kicker, title);
+      document.getElementById('modal').classList.add('wide');
+      document.getElementById('modal-body').innerHTML =
+        `<iframe class="tut-frame" id="tut-frame" title="${frameTitle}" src="${src}"></iframe>`;
+      const foot = document.getElementById('modal-foot');
+      foot.innerHTML = footHtml || '';
+      foot.hidden = !footHtml;
+      document.getElementById('modal').focus();
+    }
+    function openEmbeddedTutorial(src) {
+      openEmbeddedCard(`${currentGame.name} · Tutorial`, 'The Pieces', src, `${currentGame.name} pieces tutorial`, `
+    <p class="rules-note">Tap a piece to see where it can move.</p>
+    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">Play Now</button>`);
+    }
+    // The hub's Easy/Medium/Hard maps onto Kreedu's three strengths.
+    const CHAT_LEVELS = { easy: 'EASY', medium: 'MEDIUM', hard: 'HARD' };
+    function openEmbeddedSetup(src) {
+      openEmbeddedCard(`${currentGame.name} · Play`, 'Set Up Your Match',
+        `${src}&difficulty=${CHAT_LEVELS[currentLevel] || 'MEDIUM'}`, `${currentGame.name} match setup`);
+    }
+    // Games with no setup step (Vaikunthapali, Vaamana Guntalu) open straight
+    // onto the board.
+    function openEmbeddedGame(src) {
+      openEmbeddedCard(`${currentGame.name} · Play`, currentGame.name, src, `${currentGame.name} board`);
+      setGameCard(true);
+    }
+    // The framed view posts its content height (so the card fits it without a
+    // second scrollbar), a close request (Escape, or the game's Home button),
+    // which view it's on (setup or the match, which gets the full-size card),
+    // and the settings each match starts with.
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d || d.source !== 'kreeda-embed') return;
+      const frame = document.getElementById('tut-frame');
+      if (!frame || e.source !== frame.contentWindow) return;
+      if (d.height) frame.style.height = Math.ceil(d.height) + 'px';
+      if (d.close) closeModal(true);
+      if (d.view) {
+        setGameCard(d.view === 'game');
+        if (d.title) document.getElementById('modal-title').textContent = d.title;
+      }
+      if (d.start && d.start.gameMode === 'PVC') {
+        const level = Object.keys(CHAT_LEVELS).find(k => CHAT_LEVELS[k] === d.start.difficulty);
+        if (level) { setLevel(level); saveLevel(currentGame.id, level); }
+      }
+    });
     function renderTutorial() {
       const steps = screens[currentGame.id].tutorial;
       const st = steps[tutStep];
@@ -1970,12 +2085,14 @@
     /* ---------------- play ---------------- */
     function startPlay() {
       const g = currentGame;
+      // Chaturangam's setup, and then the match itself, play out in a card
+      const sc = screens[g.id];
+      if (sc && sc.playEmbed) { openEmbeddedSetup(sc.playEmbed); return; }
+      // …and the Vaikunthapali and Vaamana Guntalu boards open in one too
+      if (sc && sc.gameEmbed) { openEmbeddedGame(`${sc.gameEmbed}&mode=${currentMode}`); return; }
       const destinations = {
-        vaikunthapali: `games/vaikunthapali/dist/index.html?start=play&mode=${currentMode}`,
         'puli-meka': 'games/puli-meka/dist/index.html?start=play',
         'ashta-chamma': 'games/ashta-chamma/dist/index.html?start=play',
-        'vamana-guntalu': 'games/vamana-guntalu/vamana-guntalu.html',
-        chaturangam: 'chadarangam/dist/index.html?start=setup',
         'daadi-aata': 'games/daadi-aata/dist/index.html?start=mode_select'
       };
       window.location.href = destinations[g.id];
