@@ -1,4 +1,4 @@
-/* Algebraic-ish move notation — ported from legacy-vanilla/app.js `moveText`.
+/* Algebraic-ish move notation — ported from the original vanilla-JS build's `moveText`.
    Chess: standard SAN. Chaturangam: piece-tag + from-to, e.g. "Rt e2-e4". */
 import {
   Pos, FILE, RANK, NAME_OF_SQ, LET, P,

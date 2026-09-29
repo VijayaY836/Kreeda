@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, hasPlan, onNavigate 
       <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <a
-            href="../../kreeda-home.html"
+            href="../../index.html"
             className={`${pill} hidden sm:inline-flex bg-[#FBF3E2]/90 border-[#2A241E]/15 text-[#2A241E] hover:border-[#C7A467]`}
             title="Back to KREEDA"
           >

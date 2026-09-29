@@ -1,5 +1,5 @@
 /* ============================================================
-   Piece artwork + metadata (TypeScript port of legacy-vanilla/pieces.js)
+   Piece artwork + metadata (TypeScript port of the original vanilla-JS pieces.js)
    Chess pieces: the standard Cburnett set (Wikimedia Commons,
    Category:SVG_chess_pieces — CC-BY-SA 3.0 / GFDL), retraced to use
    var(--pc-fill)/var(--pc-stroke) so ivory/ebony theming matches every

@@ -6,7 +6,7 @@
     --font-body: 'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-telugu: 'Tiro Telugu', sans-serif;
 
-    /* KREEDA theme palette — matches kreeda-home.html / kreeda.html */
+    /* KREEDA theme palette — matches index.html / kreeda.html */
     --color-ink: #2A241E;
     --color-ink-soft: #5C5142;
     --color-navy: #1F3A5C;
@@ -68,7 +68,7 @@
 }
 
 /* ================= Module home — same pinned-illustration hero as the hub's
-   kreeda.html / kreeda-home.html. Sizes use cqw (1% of the hero's rendered
+   kreeda.html / index.html. Sizes use cqw (1% of the hero's rendered
    width) so everything scales with the frame. ================= */
 .hub-hero{ position:relative; min-height:100vh; }
 /* the background fills the whole screen at any size and stays put while the page scrolls over it */

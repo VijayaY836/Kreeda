@@ -5,7 +5,7 @@
    Board: Int8Array(64). index = rank*8 + file, a1 = 0.
    Positive = ivory/white, negative = ebony/black.
    Ported faithfully from the original vanilla-JS engine
-   (legacy-vanilla/engine.js) — same algorithms, same behaviour,
+   (engine.js in the original vanilla-JS build) — same algorithms, same behaviour,
    wrapped for use from React instead of DOM-bound app.js.
    ============================================================ */
 import { Variant } from '../types';

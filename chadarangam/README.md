@@ -5,10 +5,8 @@ A React + TypeScript rebuild of the Chaturangam/Chess module, restyled to match
 the Daadi Aata module: aged-paper cream, thick flat maroon outlines, no
 gradients/shadows, Fraunces + Manrope + Tiro Telugu type, Kreedu the mascot).
 
-The original dependency-free vanilla-JS build (single `index.html`, no
-framework) still lives in [`legacy-vanilla/`](legacy-vanilla/) and remains
-fully playable on its own — see `legacy-vanilla/Chaturangam-README.md` for
-its technical writeup. This app is a from-scratch UI on top of the *same*
+It replaces an earlier dependency-free vanilla-JS build (still available in
+the git history). This app is a from-scratch UI on top of the *same*
 rules/search engine, faithfully ported to TypeScript.
 
 ## Running it
@@ -25,9 +23,9 @@ npm run lint      # tsc --noEmit
 - `src/utils/chessEngine.ts` — the rules-agnostic board engine (move
   generation, make/unmake, Zobrist hashing, evaluation, iterative-deepening
   search with PVS/null-move/quiescence). Ported 1:1 from
-  `legacy-vanilla/engine.js`; no DOM references, pure logic.
+  the vanilla build's `engine.js`; no DOM references, pure logic.
 - `src/utils/pieceArt.ts` — piece SVG artwork and metadata (ported from
-  `legacy-vanilla/pieces.js`), rendered via `components/PieceIcon.tsx` using
+  the vanilla build's `pieces.js`), rendered via `components/PieceIcon.tsx` using
   the same `--pc-fill`/`--pc-stroke` theming trick as the original.
 - `src/utils/notation.ts` — move notation (SAN for chess, tag notation for
   Chaturangam), ported from `app.js`'s `moveText()`.
@@ -36,7 +34,7 @@ npm run lint      # tsc --noEmit
   check/checkmate/stalemate/bare-king handling, Kreedu's AI turn scheduling.
 - `src/components/Header.tsx`, `FolkArtFrame.tsx`, `FolkArtMotifs.tsx`,
   `KreeduMascot.tsx`, `src/utils/soundEngine.ts` — the shared KREEDA design
-  system, adapted from the Daadi Aata module (`../Kreeda/Kreeda/src`) with
+  system, adapted from the Daadi Aata module (`../games/daadi-aata/src`) with
   Chaturangam-specific branding (chariot-wheel motif in place of the lotus,
   ivory/ebony piece theming in place of P1/P2 pebbles).
 - `src/components/HomeView.tsx`, `ModeSelectView.tsx`, `HowToPlayView.tsx`,

@@ -1,12 +1,21 @@
-# API keys — never commit
+# Secrets (e.g. SARVAM_API_KEY for folktales/narrate.mjs) — never commit
 .env
+*.local
 
-# Dependencies — reinstall with `npm install` in each app
+# Dependencies — reinstall with `npm install` inside each module
 node_modules/
 .vite/
 
-# Build output
-dist/
+# Build output is committed on purpose: the hub links straight to each
+# module's dist/index.html, so a fresh clone works without a build step.
+# Rebuild with `npm run build` and commit dist/ after changing src/.
 
-*.local
+# Generated narration voice previews (folktales/narrate.mjs --samples)
+folktales/voice-samples/
+
+# Tooling and OS noise
+__pycache__/
+*.pyc
+*.log
 .DS_Store
+Thumbs.db

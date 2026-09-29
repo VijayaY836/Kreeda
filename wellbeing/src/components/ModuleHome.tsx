@@ -13,7 +13,7 @@ interface ModuleHomeProps {
 }
 
 // Physical Wellbeing's own scene (river ghat, mudgars, yoga mat), in the KREEDA root folder
-const HUB_BG = '../../physical-wellbeing1.png';
+const HUB_BG = '../../assets/images/wellbeing-bg.png';
 
 const SECTION_META: Record<Section, { icon: React.ReactNode; eyebrow: string; accent: string }> = {
   yoga: {
@@ -47,7 +47,7 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
 
       <div className="hub-content relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
         <header className="relative flex flex-wrap items-center justify-between gap-3 mb-6">
-          <a href="../../kreeda-home.html" className="hub-pill hub-home-link" aria-label="Back to KREEDA home">
+          <a href="../../index.html" className="hub-pill hub-home-link" aria-label="Back to KREEDA home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
             Home
           </a>
