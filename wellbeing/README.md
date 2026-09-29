@@ -1,4 +1,4 @@
-# Physical Wellbeing (శారీరిక)
+# Physical Wellbeing
 
 A React + TypeScript module implementing `spec.md`'s Yoga / Vyayam / Dhyana
 module, styled to match the KREEDA hub (`kreeda-home.html`, `kreeda.html`):
