@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AIDifficulty, GameMode, ViewTab } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -15,7 +15,10 @@ import { sounds } from './utils/soundEngine';
 import { HelpCircle, X } from 'lucide-react';
 
 function resolveInitialTab(): ViewTab {
-  const start = new URLSearchParams(window.location.search).get('start');
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('embed') === 'tutorial') return 'TUTORIAL';
+  if (params.get('embed') === 'play') return 'MODE_SELECT';
+  const start = params.get('start');
   if (start === 'play') return 'GAME';
   if (start === 'mode_select') return 'MODE_SELECT';
   if (start === 'tutorial') return 'TUTORIAL';
@@ -23,12 +26,34 @@ function resolveInitialTab(): ViewTab {
 }
 const INITIAL_TAB: ViewTab = resolveInitialTab();
 
+// ?embed=play / ?embed=tutorial render just match setup → match (or the
+// interactive tutorial) for the KREEDA hub's game card (kreeda.html frames
+// this page): no header, and anything that would leave those views asks the
+// card to close instead. Escape closes the card too, except mid-match.
+const EMBED = new URLSearchParams(window.location.search).get('embed');
+if (EMBED) document.body.style.background = 'transparent'; // the card supplies the paper
+const EMBED_TABS: ViewTab[] = ['MODE_SELECT', 'GAME', 'TUTORIAL'];
+const postToHub = (msg: object) => window.parent.postMessage({ source: 'kreeda-embed', ...msg }, '*');
+const EMBED_TITLES: Partial<Record<ViewTab, string>> = { MODE_SELECT: 'Match setup', GAME: 'Daadi Aata', TUTORIAL: 'Tutorial' };
+
+
 export default function App() {
   const [currentTab, setCurrentTab] = useState<ViewTab>(INITIAL_TAB);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [showGlobalHelp, setShowGlobalHelp] = useState<boolean>(false);
   const [gameMode, setGameMode] = useState<GameMode>('PVC');
   const [gameDifficulty, setGameDifficulty] = useState<AIDifficulty>('MEDIUM');
+
+  useEffect(() => {
+    if (!EMBED) return;
+    postToHub({ view: currentTab === 'GAME' ? 'game' : 'setup', title: EMBED_TITLES[currentTab] });
+  }, [currentTab]);
+  useEffect(() => {
+    if (!EMBED || currentTab === 'GAME') return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') postToHub({ close: true }); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [currentTab]);
 
   const handleToggleSound = () => {
     const isMuted = sounds.toggleMute();
@@ -39,24 +64,29 @@ export default function App() {
     setGameMode(mode);
     setGameDifficulty(difficulty);
     setCurrentTab('GAME');
+    if (EMBED) postToHub({ start: { gameMode: mode, difficulty } });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigate = (tab: ViewTab) => {
+    if (EMBED) {
+      if (tab === 'HOW_TO_PLAY') tab = 'TUTORIAL';
+      if (!EMBED_TABS.includes(tab)) { postToHub({ close: true }); return; }
+    }
     setCurrentTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#EFDFB8] text-[#5C140F] font-manrope">
+    <div className={`min-h-screen flex flex-col ${EMBED ? '' : 'bg-[#EFDFB8] '}text-[#5C140F] font-manrope`}>
       {/* Top Traditional Folk Art Header */}
-      <Header
+      {!EMBED && <Header
         currentTab={currentTab}
         onNavigate={handleNavigate}
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}
         onOpenHelp={() => setShowGlobalHelp(true)}
-      />
+      />}
 
       {/* Main View Area */}
       <main className="flex-1 w-full">

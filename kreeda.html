@@ -2020,8 +2020,13 @@
 
     function openTutorial() {
       const sc = screens[currentGame.id];
-      // Daadi Aata ships its own interactive tutorial — hand off to it
-      if (currentGame.id === 'daadi-aata') { window.location.href = 'games/daadi-aata/dist/index.html?start=tutorial'; return; }
+      // Daadi Aata's own interactive tutorial opens inside the card
+      if (currentGame.id === 'daadi-aata') {
+        openEmbeddedCard(T('games.kTutorial', { game: gameName(currentGame) }), T('games.kTutorial', { game: gameName(currentGame) }),
+          'games/daadi-aata/dist/index.html?embed=tutorial', T('games.kTutorial', { game: gameName(currentGame) }));
+        setFillCard(true);
+        return;
+      }
       // Chaturangam's interactive pieces guide opens inside the card itself
       if (sc.tutorialEmbed) { openEmbeddedTutorial(sc.tutorialEmbed); return; }
       tutStep = 0;
@@ -2129,12 +2134,14 @@
       if (sc && sc.playEmbed) { openEmbeddedSetup(sc.playEmbed); return; }
       // …and the Vaikunthapali and Vaamana Guntalu boards open in one too
       if (sc && sc.gameEmbed) { openEmbeddedGame(`${sc.gameEmbed}&mode=${currentMode}`); return; }
-      const destinations = {
-        'puli-meka': 'games/puli-meka/dist/index.html?start=play',
-        'ashta-chamma': 'games/ashta-chamma/dist/index.html?start=play',
-        'daadi-aata': 'games/daadi-aata/dist/index.html?start=mode_select'
+      // Puli Meka and Daadi Aata open on their own match setup, and Ashta
+      // Chamma straight onto its board
+      const setups = {
+        'puli-meka': 'games/puli-meka/dist/index.html?embed=play',
+        'daadi-aata': 'games/daadi-aata/dist/index.html?embed=play'
       };
-      window.location.href = destinations[g.id];
+      if (setups[g.id]) { openEmbeddedSetup(setups[g.id]); return; }
+      if (g.id === 'ashta-chamma') openEmbeddedGame('games/ashta-chamma/dist/index.html?embed=play');
     }
 
     function showToast(msg) {

@@ -63,9 +63,26 @@ function GameView({ onBack }: { onBack: () => void }) {
   return <main className="page game-page"><div className="game-heading"><div><h1>Ashta Chamma</h1><p>Four shells. Eight steps. One beautifully unpredictable journey home.</p></div></div><div ref={gameRoot} className="ashta-mount" /></main>;
 }
 
-const INITIAL_VIEW: View = new URLSearchParams(window.location.search).get('start') === 'play' ? 'GAME' : 'HOME';
+const HUB_PARAMS = new URLSearchParams(window.location.search);
+// ?embed=play renders just the board for the KREEDA hub's game card
+// (kreeda.html frames this page), without the site header and footer.
+const EMBED_PLAY = HUB_PARAMS.get('embed') === 'play';
+const INITIAL_VIEW: View = EMBED_PLAY || HUB_PARAMS.get('start') === 'play' ? 'GAME' : 'HOME';
+
+function EmbeddedGame() {
+  useEffect(() => {
+    document.documentElement.classList.add('ashta-embedded');
+    window.parent.postMessage({ source: 'kreeda-embed', view: 'game', title: 'Ashta Chamma' }, '*');
+  }, []);
+  return <GameView onBack={() => {}} />;
+}
 
 export default function App() {
+  if (EMBED_PLAY) return <EmbeddedGame />;
+  return <HubApp />;
+}
+
+function HubApp() {
   const [view, setView] = useState<View>(INITIAL_VIEW);
   const navigate = (next: View) => { setView(next); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   return <div className="app-shell"><Header view={view} onNavigate={navigate} /><div className="content"><>{view === 'HOME' && <Home onNavigate={navigate} />}{view === 'GAME' && <GameView onBack={() => navigate('HOME')} />}{view !== 'HOME' && view !== 'GAME' && <InfoView view={view} onNavigate={navigate} />}</></div><footer><b>KREEDA</b><span>Traditional games, kept in play.</span><span>Ashta Chamma · offline edition</span></footer></div>;

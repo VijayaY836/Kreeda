@@ -515,6 +515,7 @@
   @media (max-width:760px){
     .ashta-side-col{ flex:1 1 100%; }
     .ashta-shell-col{ flex:1 1 100%; transform:none; }
+    .ashta-board-col{ flex:1 1 100%; transform:none; }
     .ashta-shells{ width:100%; height:min(300px, 80vw); }
     .ashta-board{ width:100%; max-width:346px; height:auto; aspect-ratio:1/1; }
   }
