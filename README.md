@@ -1,10 +1,16 @@
+<div align="center">
+
 # KREEDA · క్రీడ
+
+### India's traditional games, fitness and stories — offline, private, and classroom-ready.
+
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) ![Offline](https://img.shields.io/badge/Offline-yes-4CAF50)
 
 ![System architecture](system-architecture.jpeg)
 
-**India's traditional games, fitness and stories — offline, private, and classroom-ready.**
-
 Built for **Smart India Hackathon (SIH) 2026**.
+
+</div>
 
 ## Table of contents
 - [About](#about)
