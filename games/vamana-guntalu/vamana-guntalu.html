@@ -379,7 +379,7 @@
   // Before first paint, so the hub's card never flashes the site header.
   if (new URLSearchParams(location.search).get('embed') === 'play') {
     document.documentElement.classList.add('embedded');
-    parent.postMessage({ source: 'kreeda-embed', view: 'game', title: 'Vaamana Guntalu' }, '*');
+    parent.postMessage({ source: 'kreeda-embed', view: 'game' }, '*'); // the hub titles the card in the chosen language
   }
 </script>
 <div class="app">

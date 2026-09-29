@@ -70,9 +70,16 @@
 /* ================= Module home — same pinned-illustration hero as the hub's
    kreeda.html / kreeda-home.html. Sizes use cqw (1% of the hero's rendered
    width) so everything scales with the frame. ================= */
-.hub-hero{ position:relative; width:fit-content; margin:0 auto; line-height:0; }
-.hub-bg{ display:block; max-width:100vw; max-height:100vh; width:auto; height:auto; }
-.hub-content{ position:absolute; inset:0; line-height:normal; container-type:size; }
+.hub-hero{ position:relative; min-height:100vh; }
+/* the background fills the whole screen at any size and stays put while the page scrolls over it */
+.hub-bg{ position:fixed; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; object-position:center; pointer-events:none; }
+.hub-content{ position:relative; line-height:normal; container-type:inline-size; }
+/* a soft cream wash over the top of the picture, and a glow behind headings that sit on it */
+.hub-hero::after{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(241,232,210,0.55) 0%, rgba(241,232,210,0.18) 38%, rgba(241,232,210,0) 60%);
+}
+.hub-glow{ text-shadow:0 0 16px rgba(251,243,226,0.95), 0 0 5px rgba(251,243,226,0.9), 0 0 2px rgba(251,243,226,0.9); }
 
 .hub-pill{
   appearance:none; -webkit-appearance:none;
@@ -176,11 +183,10 @@
 
 /* narrow screens: collapse the pinned illustration into a normal flowing page */
 @media (max-width:760px){
-  .hub-hero{ width:100%; }
-  .hub-bg{ width:100%; max-width:none; max-height:none; height:28vh; min-height:150px; object-fit:cover; object-position:center 35%; }
-  .hub-content{ position:static; container-type:normal; }
-  .hub-home-link{ top:calc(max(28vh, 150px) + 14px); left:16px; }
-  .hub-controls{ position:static; justify-content:flex-end; padding:14px 16px 0; }
+  .hub-bg{ object-position:65% center; } /* keep the tree and the mudgars in view on tall screens */
+  /* phones: Home and the buttons share one row, the title gets its own */
+  .hub-home-link{ position:static; }
+  .hub-controls{ position:static; justify-content:flex-end; }
   .hub-pill{ font-size:13px; }
   .hub-avatar{ width:36px; height:36px; font-size:14px; }
   .hub-header{ position:static; transform:none; padding:6px 16px 4px; }
@@ -200,3 +206,10 @@
   .hub-actions{ margin-top:20px; }
   .hub-primary{ font-size:17px; padding:12px 28px; }
 }
+
+/* History timeline: each event rises in, one after another (skipped for reduced motion above) */
+@keyframes tl-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.tl-item { animation: tl-in .45s ease-out both; }

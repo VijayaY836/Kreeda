@@ -4,7 +4,7 @@ import { KolamCorner } from './FolkArtMotifs';
 import { PieceIcon } from './PieceIcon';
 import { GameBoard } from './GameBoard';
 import { CHAT_BACK, CHESS_BACK, LET, P, SQ } from '../utils/chessEngine';
-import { VARIANT_INFO } from '../utils/pieceArt';
+import { t, useLang, sideName, variantTitle, levelName } from '../i18n';
 import { ArrowLeft, Play, Bot, Users, LayoutGrid, Grid3x3 } from 'lucide-react';
 
 interface ModeSelectViewProps {
@@ -18,10 +18,11 @@ interface ModeSelectViewProps {
   embedded?: boolean;
 }
 
-const DIFF_META: { key: AIDifficulty; emoji: string; label: string; sanskrit: string }[] = [
-  { key: 'EASY', emoji: '🌱', label: 'Sishya', sanskrit: 'the pupil' },
-  { key: 'MEDIUM', emoji: '⚖️', label: 'Yodha', sanskrit: 'the warrior' },
-  { key: 'HARD', emoji: '🔥', label: 'Senapati', sanskrit: 'the general' },
+// level 1–3 → Sishya / Yodha / Senapati (names and hints in i18n.ts)
+const DIFF_META: { key: AIDifficulty; emoji: string; level: number }[] = [
+  { key: 'EASY', emoji: '🌱', level: 1 },
+  { key: 'MEDIUM', emoji: '⚖️', level: 2 },
+  { key: 'HARD', emoji: '🔥', level: 3 },
 ];
 
 const letterOf = (piece: number): PieceLetter => LET[Math.abs(piece)] as PieceLetter;
@@ -39,13 +40,13 @@ function previewBoard(variant: Variant): number[] {
 }
 
 export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onStartGame, initialVariant, initial = {}, embedded = false }) => {
+  useLang(); // re-render when the app language changes
   const [variant, setVariant] = useState<Variant>(initialVariant);
   const [gameMode, setGameMode] = useState<GameMode>(initial.gameMode ?? 'PVC');
   const [difficulty, setDifficulty] = useState<AIDifficulty>(initial.difficulty ?? 'MEDIUM');
   const [humanSide, setHumanSide] = useState<Side>(initial.humanSide ?? 1);
   const [boardStyle, setBoardStyle] = useState<'ashtapada' | 'checkered'>(initial.boardStyle ?? 'ashtapada');
 
-  const info = VARIANT_INFO[variant];
   const effectiveBoardStyle = variant === 'chess' ? 'checkered' : boardStyle;
   const accent = variant === 'chaturanga' ? '#D8401F' : '#0E5C58';
   const accentDark = variant === 'chaturanga' ? '#B83215' : '#094340';
@@ -62,8 +63,8 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
     <div className={embedded ? 'min-h-screen flex items-center justify-center px-3 sm:px-5 py-4' : 'max-w-6xl mx-auto py-8 sm:py-12 px-4'}>
       {!embedded && (
         <div className="text-center mb-8">
-          <h1 className="font-fraunces font-extrabold text-3xl sm:text-4xl text-[#5C140F] mb-1">Set Up Your Match</h1>
-          <p className="text-xs sm:text-sm text-[#6B4E3D]">Everything on one screen — pick, tweak, begin.</p>
+          <h1 className="font-fraunces font-extrabold text-3xl sm:text-4xl text-[#5C140F] mb-1">{t('setup.title')}</h1>
+          <p className="text-xs sm:text-sm text-[#6B4E3D]">{t('setup.sub')}</p>
         </div>
       )}
 
@@ -77,10 +78,9 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
 
           {/* 1. Variant */}
           <div className={section}>
-            <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Game</span>
+            <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">{t('setup.game')}</span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(['chaturanga', 'chess'] as Variant[]).map((v) => {
-                const vInfo = VARIANT_INFO[v];
                 const sel = variant === v;
                 return (
                   <button
@@ -90,8 +90,8 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
                   >
                     <PieceIcon variant={v} letter="K" ivory className="w-8 h-8 shrink-0" />
                     <div>
-                      <div className="font-fraunces font-bold text-sm text-[#5C140F]">{vInfo.title}</div>
-                      <div className="text-[10px] text-[#6B4E3D]">{v === 'chaturanga' ? 'Gupta-era, ~6th c.' : 'Modern game'}</div>
+                      <div className="font-fraunces font-bold text-sm text-[#5C140F]">{variantTitle(v)}</div>
+                      <div className="text-[10px] text-[#6B4E3D]">{t(`setup.era.${v}`)}</div>
                     </div>
                   </button>
                 );
@@ -101,19 +101,19 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
 
           {/* 2. Opponent */}
           <div className={section}>
-            <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Opponent</span>
+            <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">{t('setup.opponent')}</span>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setGameMode('PVC')}
                 className={`flex items-center justify-center gap-2 py-3 border-2 border-[#5C140F] text-sm font-bold cursor-pointer transition-colors ${gameMode === 'PVC' ? 'bg-[#0E5C58] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
               >
-                <Bot className="w-4 h-4" /> Kreedu AI
+                <Bot className="w-4 h-4" /> {t('setup.ai')}
               </button>
               <button
                 onClick={() => setGameMode('PVP')}
                 className={`flex items-center justify-center gap-2 py-3 border-2 border-[#5C140F] text-sm font-bold cursor-pointer transition-colors ${gameMode === 'PVP' ? 'bg-[#D8401F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
               >
-                <Users className="w-4 h-4" /> 2 Players
+                <Users className="w-4 h-4" /> {t('setup.pvp')}
               </button>
             </div>
           </div>
@@ -122,37 +122,37 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
           {gameMode === 'PVC' && (
             <div className={`${section} grid grid-cols-1 sm:grid-cols-2 gap-6`}>
               <div>
-                <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Kreedu's Strength</span>
+                <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">{t('setup.strength')}</span>
                 <div className="grid grid-cols-3 gap-1.5">
                   {DIFF_META.map((d) => (
                     <button
                       key={d.key}
                       onClick={() => setDifficulty(d.key)}
-                      title={d.sanskrit}
+                      title={t(`level.hint.${d.level}`)}
                       className={`flex flex-col items-center py-2 border-2 border-[#5C140F] text-[11px] font-bold cursor-pointer transition-colors ${difficulty === d.key ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
                     >
                       <span className="text-base leading-none mb-0.5">{d.emoji}</span>
-                      {d.label}
+                      {levelName(d.level)}
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Play As</span>
+                <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">{t('setup.playAs')}</span>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     onClick={() => setHumanSide(1)}
                     className={`flex items-center justify-center gap-1.5 py-2 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${humanSide === 1 ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
                   >
                     <span className="w-3 h-3 rounded-full bg-[#F6ECD2] border-2 border-current" />
-                    {info.sides.w}
+                    {sideName(variant, 'w')}
                   </button>
                   <button
                     onClick={() => setHumanSide(-1)}
                     className={`flex items-center justify-center gap-1.5 py-2 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${humanSide === -1 ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
                   >
                     <span className="w-3 h-3 rounded-full bg-[#5C140F] border-2 border-[#EFA90C]" />
-                    {info.sides.b}
+                    {sideName(variant, 'b')}
                   </button>
                 </div>
               </div>
@@ -162,19 +162,19 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
           {/* 4. Board style (Chaturangam only) */}
           {variant === 'chaturanga' && (
             <div className={section}>
-              <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">Board Style</span>
+              <span className="block text-[11px] font-bold uppercase tracking-[0.15em] text-[#6B4E3D] mb-2">{t('setup.board')}</span>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setBoardStyle('ashtapada')}
                   className={`flex items-center justify-center gap-1.5 py-2.5 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${boardStyle === 'ashtapada' ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
                 >
-                  <LayoutGrid className="w-3.5 h-3.5" /> Ashtapada (traditional)
+                  <LayoutGrid className="w-3.5 h-3.5" /> {t('setup.ashtapada')}
                 </button>
                 <button
                   onClick={() => setBoardStyle('checkered')}
                   className={`flex items-center justify-center gap-1.5 py-2.5 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${boardStyle === 'checkered' ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
                 >
-                  <Grid3x3 className="w-3.5 h-3.5" /> Checkered
+                  <Grid3x3 className="w-3.5 h-3.5" /> {t('setup.checkered')}
                 </button>
               </div>
             </div>
@@ -190,7 +190,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = accent)}
           >
             <Play className="w-5 h-5 fill-current" />
-            Begin {info.title} Match
+            {t('setup.begin', { title: variantTitle(variant) })}
           </button>
         </div>
 
@@ -203,9 +203,9 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
         >
           <div className="bg-[#F6ECD2] border-[3px] border-[#5C140F] p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="font-fraunces font-bold text-sm text-[#5C140F]">{info.title} Preview</span>
+              <span className="font-fraunces font-bold text-sm text-[#5C140F]">{t('setup.preview', { title: variantTitle(variant) })}</span>
               <span className="text-[10px] font-bold uppercase tracking-wide text-[#6B4E3D]">
-                {effectiveBoardStyle === 'checkered' ? 'Checkered' : 'Ashtapada'}
+                {t(`setup.tag.${effectiveBoardStyle}`)}
               </span>
             </div>
             <GameBoard
@@ -224,9 +224,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
               letterOf={letterOf}
             />
             <p className="text-[11px] text-[#6B4E3D] mt-3 text-center">
-              {variant === 'chaturanga'
-                ? 'Armies mirror — the Raja faces the Raja down the d-file.'
-                : 'Armies rotate — each Queen starts on her own colour.'}
+              {t(`setup.cap.${variant}`)}
             </p>
           </div>
         </div>
@@ -235,7 +233,7 @@ export const ModeSelectView: React.FC<ModeSelectViewProps> = ({ onNavigate, onSt
       {!embedded && <div className="mt-5 text-center">
         <button onClick={() => onNavigate('HOME')} className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C140F] hover:underline cursor-pointer">
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Home</span>
+          <span>{t('setup.backHome')}</span>
         </button>
       </div>}
     </div>

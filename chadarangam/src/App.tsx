@@ -8,7 +8,7 @@ import { InteractiveTutorial } from './components/InteractiveTutorial';
 import { GameView } from './components/GameView';
 import { FolkDivider, ChariotWheelIcon } from './components/FolkArtMotifs';
 import { sounds } from './utils/soundEngine';
-import { VARIANT_INFO } from './utils/pieceArt';
+import { t, useLang, variantTitle } from './i18n';
 import { X } from 'lucide-react';
 
 const DEFAULT_SETTINGS: GameSettings = {
@@ -80,6 +80,7 @@ function EmbeddedView({ fill = false, closeOnEscape = !fill, children }: { fill?
 }
 
 function EmbeddedPlay() {
+  const lang = useLang();
   const [playing, setPlaying] = useState(false);
   const [settings, setSettings] = useState<GameSettings>(INITIAL_SETTINGS);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -87,9 +88,9 @@ function EmbeddedPlay() {
   const [matchKey, setMatchKey] = useState(0);
 
   useEffect(() => {
-    postToHub({ view: playing ? 'game' : 'setup', title: playing ? `${VARIANT_INFO[settings.variant].title} Match` : 'Set Up Your Match' });
+    postToHub({ view: playing ? 'game' : 'setup', title: playing ? t('match.title', { title: variantTitle(settings.variant) }) : t('setup.title') });
     window.scrollTo(0, 0);
-  }, [playing, settings.variant]);
+  }, [playing, settings.variant, lang]);
 
   const start = (next: StartSettings) => {
     setSettings(prev => ({ ...prev, ...next }));

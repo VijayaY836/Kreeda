@@ -337,12 +337,20 @@ export const VP_I18N: Record<Lang, VPStrings> = {
   },
 }
 
-const LANG_KEY = 'kreeda-vp-lang'
+// The whole KREEDA app shares one language setting ("kreeda-lang", see
+// js/i18n.js in the hub). The hub's game card also passes ?lang=xx, which wins.
+// The old game-only key is still read so an earlier choice isn't lost.
+const LANG_KEY = 'kreeda-lang'
+const OLD_LANG_KEY = 'kreeda-vp-lang'
 
 export function loadLang(): Lang {
+  const fromUrl = new URLSearchParams(window.location.search).get('lang') as Lang | null
+  if (fromUrl && LANGS.includes(fromUrl)) return fromUrl
   try {
-    const saved = localStorage.getItem(LANG_KEY) as Lang | null
-    if (saved && LANGS.includes(saved)) return saved
+    for (const key of [LANG_KEY, OLD_LANG_KEY]) {
+      const saved = localStorage.getItem(key) as Lang | null
+      if (saved && LANGS.includes(saved)) return saved
+    }
   } catch {
     /* storage unavailable */
   }

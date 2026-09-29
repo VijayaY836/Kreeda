@@ -5,8 +5,15 @@ import { practicesBySection, LIBRARY_GROUPS } from '../data/practices';
 import { PracticeCard } from './PracticeCard';
 import { PracticeDetailModal } from './PracticeDetailModal';
 import { HeritageCards } from './HeritageCards';
-import { FolkDivider } from './FolkArtMotifs';
+import { FolkDivider, SunMedallionIcon, MaceIcon, OmSpiralIcon } from './FolkArtMotifs';
 import { ArrowLeft, Sparkles } from 'lucide-react';
+
+// shown faintly on timeline events that have no picture
+const SECTION_MOTIF: Record<Section, React.ReactNode> = {
+  yoga: <SunMedallionIcon size={40} color="#1F3B2E" />,
+  vyayam: <MaceIcon size={40} color="#A8402E" />,
+  dhyana: <OmSpiralIcon size={40} color="#1F3A5C" />,
+};
 
 export type SectionTab = 'history' | 'facts' | 'library' | 'heritage';
 
@@ -16,9 +23,11 @@ interface SectionHomeProps {
   initialTab?: SectionTab;
   onBack: () => void;
   onStartPractice: (practice: Practice) => void;
+  // shown in a card over the Exercises page, which has its own close button
+  inCard?: boolean;
 }
 
-export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessionsCompleted, initialTab, onBack, onStartPractice }) => {
+export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessionsCompleted, initialTab, onBack, onStartPractice, inCard = false }) => {
   const [tab, setTab] = useState<SectionTab>(initialTab ?? 'history');
   const [selected, setSelected] = useState<Practice | null>(null);
   const content = SECTION_CONTENT[section];
@@ -33,10 +42,12 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 wb-fade-in">
-      <button onClick={onBack} className="inline-flex items-center gap-1.5 text-[#1F3B2E] font-bold text-sm mb-4 cursor-pointer hover:underline">
-        <ArrowLeft className="w-4 h-4" /> Back to Physical Wellbeing
-      </button>
+    <div className={`max-w-6xl mx-auto px-4 wb-fade-in ${inCard ? 'pt-14 pb-6 sm:pt-5 sm:pr-16' : 'py-6'}`}>
+      {!inCard && (
+        <button onClick={onBack} className="inline-flex items-center gap-1.5 text-[#1F3B2E] font-bold text-sm mb-4 cursor-pointer hover:underline">
+          <ArrowLeft className="w-4 h-4" /> Back to Physical Wellbeing
+        </button>
+      )}
 
       <div className="relative mb-5 border border-[#C7A467]/70 rounded-2xl shadow-[0_8px_24px_rgba(42,30,20,0.10)] overflow-hidden">
         {content.heroImage && (
@@ -65,23 +76,60 @@ export const SectionHome: React.FC<SectionHomeProps> = ({ section, totalSessions
       </div>
 
       {tab === 'history' && (
-        <div className="space-y-4 max-w-2xl">
-          {content.timeline.map((ev, i) => (
-            <div key={ev.id ?? i} className="flex gap-3">
-              <div className="w-24 shrink-0 text-right text-[11px] font-semibold text-[#1F3B2E] pt-0.5">{ev.era}</div>
-              <div className="flex-1 border-l-2 border-[#C7A467]/40 pl-4 pb-4 flex gap-3">
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-fraunces font-bold text-[#1F3B2E]">{ev.title}</h4>
-                  <p className="text-[13.5px] text-[#2A241E] leading-relaxed">{ev.text}</p>
-                </div>
-                {ev.image && (
-                  <img src={ev.image} alt="" className="w-16 h-16 shrink-0 object-cover border border-[#C7A467]/70 rounded-xl" />
-                )}
-              </div>
-            </div>
-          ))}
-          <FolkDivider />
-          <p className="text-[11px] text-[#5C5142]">Sources: {content.sources.map(s => s.title).join('; ')}</p>
+        // One vertical timeline: a spine in the section's colour on the left,
+        // with a slim card per event beside it (picture as a thumbnail on the right).
+        <div className="max-w-3xl mx-auto">
+          <div className="relative">
+            <div
+              aria-hidden="true"
+              className="absolute top-2 bottom-2 left-[11px] w-[3px] rounded-full"
+              style={{ background: `linear-gradient(to bottom, transparent, ${content.color} 6%, ${content.color} 94%, transparent)`, opacity: 0.45 }}
+            />
+            <ol className="relative space-y-3">
+              {content.timeline.map((ev, i) => (
+                <li
+                  key={ev.id ?? i}
+                  className="tl-item grid grid-cols-[26px_minmax(0,1fr)] gap-x-3 items-start"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  {/* marker on the spine */}
+                  <div className="flex justify-center pt-4">
+                    <span
+                      className="block w-4 h-4 rounded-full bg-[#FBF3E2] border-[3px] shadow-[0_0_0_4px_rgba(241,232,210,1)]"
+                      style={{ borderColor: content.color }}
+                    />
+                  </div>
+
+                  <article className="relative bg-[#F6EFDE] border border-[#C7A467]/70 rounded-xl shadow-[0_4px_14px_rgba(42,30,20,0.07)] p-3 sm:p-3.5 flex gap-3 sm:gap-4 items-start">
+                    <div className="flex-1 min-w-0">
+                      <span
+                        className="inline-block max-w-full px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide text-[#FBF3E2] leading-snug"
+                        style={{ backgroundColor: content.color }}
+                      >
+                        {ev.era}
+                      </span>
+                      <h4 className="font-fraunces text-base sm:text-[17px] font-bold text-[#1F3B2E] mt-1.5 mb-0.5">{ev.title}</h4>
+                      <p className="text-[13px] text-[#2A241E] leading-relaxed">{ev.text}</p>
+                    </div>
+                    {/* whole picture as a thumbnail; a faint section motif when there's none */}
+                    <div className="w-14 h-14 sm:w-24 sm:h-24 shrink-0 rounded-lg bg-[#EADFC4] border border-[#C7A467]/60 flex items-center justify-center overflow-hidden">
+                      {ev.image
+                        ? <img src={ev.image} alt="" className="max-w-full max-h-full object-contain" />
+                        : <span aria-hidden="true" className="opacity-30">{SECTION_MOTIF[section]}</span>}
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <FolkDivider className="my-5" />
+          <div className="max-w-3xl mx-auto bg-[#F6EFDE] border border-[#C7A467]/70 rounded-xl px-4 py-3.5">
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#5C5142] mb-1.5">Sources</h4>
+            <ul className="list-disc pl-5 space-y-0.5 text-[12px] text-[#5C5142] leading-relaxed">
+              {content.sources.map((src, i) => <li key={i}>{src.title}</li>)}
+            </ul>
+          </div>
         </div>
       )}
 

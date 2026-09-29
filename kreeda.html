@@ -10,6 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Fraunces:opsz,wght@9..144,400..700&family=Marcellus&family=Sora:wght@400;500;600;700&family=Tiro+Telugu&display=swap"
     rel="stylesheet">
+  <script src="js/i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
@@ -149,29 +150,48 @@
     }
 
     /* ================= GAMES VIEW =================
-     Same pinned-illustration hero as kreeda-home.html: the image is capped by
-     both viewport dimensions and the content is laid over it. Sizes inside use
-     cqw (1% of the hero's rendered width) so the 2x3 grid scales with the
-     frame whether the image is width- or height-limited. */
+     The illustration (games1.png) covers the whole screen behind everything.
+     The content sits in a centred box with the picture's own proportions
+     (1672×941), as large as fits the screen, so the layout inside can keep
+     using cqw/cqh (1% of that box) and scale the 2x3 grid with it. */
     .hero.view.active {
       position: relative;
-      display: block;
-      width: fit-content;
-      margin: 0 auto;
-      line-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
     }
 
     .hero .bg {
-      display: block;
-      max-width: 100vw;
-      max-height: 100vh;
-      width: auto;
-      height: auto;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      pointer-events: none;
+    }
+
+    /* soft cream wash at the top so the heading reads over the sky and trees */
+    .hero.view.active::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: linear-gradient(to bottom, rgba(241, 232, 210, 0.45) 0%, rgba(241, 232, 210, 0.12) 30%, rgba(241, 232, 210, 0) 50%);
     }
 
     .hero-content {
-      position: absolute;
-      inset: 0;
+      position: relative;
+      z-index: 1;
+      width: min(100vw, calc(100vh * 1672 / 941));
+      height: min(100vh, calc(100vw * 941 / 1672));
+      flex-shrink: 0;
       line-height: normal;
       container-type: size;
     }
@@ -200,6 +220,9 @@
     }
 
     .header-block {
+      /* the title strip spans the full width and would sit on top of the Home and language buttons;
+         it isn't interactive, so clicks pass through it */
+      pointer-events: none;
       position: absolute;
       left: 50%;
       top: 7%;
@@ -209,6 +232,7 @@
     }
 
     .masthead {
+      text-shadow: 0 0 18px rgba(251, 243, 226, 0.95), 0 0 6px rgba(251, 243, 226, 0.9);
       font-family: 'Fraunces', Georgia, serif;
       font-weight: 600;
       font-size: clamp(20px, 3.2cqw, 52px);
@@ -1137,22 +1161,19 @@
 
     /* ---------- narrow screens: collapse the pinned illustration into a normal flowing page ---------- */
     @media (max-width:760px) {
+      /* the page flows and scrolls; the picture stays behind it, covering the screen */
       .hero.view.active {
-        width: 100%;
-      }
-
-      .hero .bg {
-        width: 100%;
-        max-width: none;
-        max-height: none;
-        height: 28vh;
-        min-height: 150px;
-        object-fit: cover;
-        object-position: center 35%;
+        display: block;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
       }
 
       .hero-content {
-        position: static;
+        position: relative; /* above the fixed picture and wash */
+        z-index: 1;
+        width: auto;
+        height: auto;
         container-type: normal;
       }
 
@@ -1162,9 +1183,9 @@
         padding: 14px 16px 0;
       }
 
-      /* sits on the same row as the controls, just below the cropped image */
+      /* sits on the same row as the controls, at the top of the page */
       .hero .home-link {
-        top: calc(max(28vh, 150px) + 14px);
+        top: 14px;
         left: 16px;
       }
 
@@ -1378,7 +1399,7 @@
 
   <!-- ============ GAMES VIEW ============ -->
   <div class="view hero active" id="view-home">
-    <img class="bg" src="bg.png" alt="">
+    <img class="bg" src="games1.png" alt="">
 
     <div class="hero-content">
 
@@ -1387,25 +1408,25 @@
           stroke-linejoin="round">
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        Home
+        <span data-i18n="common.home">Home</span>
       </a>
 
       <div class="header-controls">
-        <button class="pill-lang" type="button">
+        <button class="pill-lang" type="button" data-lang-picker>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
             <circle cx="12" cy="12" r="9" />
             <path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z" />
           </svg>
-          Languages
+          <span class="lang-current">English</span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M6 9l6 6 6-6" />
           </svg>
         </button>
-        <button class="avatar" type="button" aria-label="Account">A</button>
+        <button class="avatar" type="button" aria-label="Account" data-i18n-attr="aria-label:common.account">A</button>
       </div>
 
       <div class="header-block">
-        <h1 class="masthead">Games</h1>
+        <h1 class="masthead" data-i18n="games.title">Games</h1>
       </div>
 
       <div class="cards-block">
@@ -1417,7 +1438,7 @@
 
   <!-- ============ GAME SCREEN ============ -->
   <div class="view hero" id="view-detail">
-    <img class="bg" src="bg.png" alt="">
+    <img class="bg" src="games1.png" alt="">
 
     <div class="hero-content">
 
@@ -1426,21 +1447,21 @@
           stroke-linejoin="round">
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        All games
+        <span data-i18n="games.allGames">All games</span>
       </button>
 
       <div class="header-controls">
-        <button class="pill-lang" type="button">
+        <button class="pill-lang" type="button" data-lang-picker>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
             <circle cx="12" cy="12" r="9" />
             <path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z" />
           </svg>
-          Languages
+          <span class="lang-current">English</span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M6 9l6 6 6-6" />
           </svg>
         </button>
-        <button class="avatar" type="button" aria-label="Account">A</button>
+        <button class="avatar" type="button" aria-label="Account" data-i18n-attr="aria-label:common.account">A</button>
       </div>
 
       <div class="detail-shell" id="detail-shell">
@@ -1457,7 +1478,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" />
             </svg>
-            Play Now
+            <span data-i18n="games.play">Play Now</span>
           </button>
           <button class="action-btn" type="button" onclick="openTutorial()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -1465,7 +1486,7 @@
               <circle cx="12" cy="12" r="9" />
               <path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5M12 17h.01" />
             </svg>
-            Tutorial
+            <span data-i18n="games.tutorial">Tutorial</span>
           </button>
           <button class="action-btn" type="button" onclick="openRules()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -1473,18 +1494,18 @@
               <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Z" />
               <path d="M5 17a3 3 0 0 1 3-3h11M9 8h6" />
             </svg>
-            Rules
+            <span data-i18n="games.rules">Rules</span>
           </button>
 
-          <div class="difficulty" id="d-difficulty" role="radiogroup" aria-label="Difficulty">
-            <button class="diff-btn" type="button" role="radio" data-level="easy">Easy</button>
-            <button class="diff-btn" type="button" role="radio" data-level="medium">Medium</button>
-            <button class="diff-btn" type="button" role="radio" data-level="hard">Hard</button>
+          <div class="difficulty" id="d-difficulty" role="radiogroup" aria-label="Difficulty" data-i18n-attr="aria-label:games.difficulty">
+            <button class="diff-btn" type="button" role="radio" data-level="easy" data-i18n="games.easy">Easy</button>
+            <button class="diff-btn" type="button" role="radio" data-level="medium" data-i18n="games.medium">Medium</button>
+            <button class="diff-btn" type="button" role="radio" data-level="hard" data-i18n="games.hard">Hard</button>
           </div>
           <p class="diff-note" id="d-diff-note" aria-live="polite"></p>
         </section>
 
-        <aside class="detail-card detail-right" aria-label="Where it's played">
+        <aside class="detail-card detail-right" aria-label="Where it's played" data-i18n-attr="aria-label:games.whereTitle">
           <div class="map-frame" id="map-frame">
             <svg class="paths" id="map-paths"></svg>
             <div class="map-title" id="map-title"></div>
@@ -1515,7 +1536,7 @@
   <!-- Tutorial / Rules sheet -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal" id="modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button class="close" type="button" aria-label="Close" onclick="closeModal()">✕</button>
+      <button class="close" type="button" aria-label="Close" data-i18n-attr="aria-label:common.close" onclick="closeModal()">✕</button>
       <div class="modal-head">
         <p class="kicker" id="modal-kicker"></p>
         <h3 id="modal-title"></h3>
@@ -1732,7 +1753,14 @@
 
     /* ---------------- render games grid ---------------- */
     const arrowSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
+    const T = (key, vars) => KREEDA_I18N.t(key, vars);
+    // the game's name in the chosen language's script (falls back to English)
+    const gameName = g => T('games.name.' + g.id) === 'games.name.' + g.id ? g.name : T('games.name.' + g.id);
+    const eyebrowOf = g => T(g.hasSoloMode ? 'games.eyebrow.solo' : 'games.eyebrow.vs');
+
     const grid = document.getElementById('game-grid');
+    function renderGrid() {
+    grid.innerHTML = '';
     games.forEach(g => {
       const card = document.createElement('article');
       card.className = 'game-card';
@@ -1740,12 +1768,12 @@
       card.innerHTML = `
     <div class="plate">${g.image ? `<img src="${g.image}" alt="${g.name}">` : icons[g.icon]}</div>
     <div class="card-body">
-      <p class="card-eyebrow">${g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu'}</p>
-      <h2>${g.name}</h2>
+      <p class="card-eyebrow">${eyebrowOf(g)}</p>
+      <h2>${gameName(g)}</h2>
       <p class="native">${g.native}</p>
       <div class="card-cta">
         <span class="flourish-line"></span>
-        <button class="arrow-btn" type="button" aria-label="Explore ${g.name}">${arrowSVG}</button>
+        <button class="arrow-btn" type="button" aria-label="${T('games.explore', { game: gameName(g) })}">${arrowSVG}</button>
         <span class="flourish-line"></span>
       </div>
     </div>
@@ -1753,6 +1781,8 @@
       card.onclick = () => openGame(g.id);
       grid.appendChild(card);
     });
+    }
+    renderGrid();
 
     /* ---------------- navigation ---------------- */
     let currentGame = null;
@@ -1786,8 +1816,8 @@
       const g = currentGame;
       const sc = screens[g.id];
       document.getElementById('detail-shell').style.setProperty('--accent', g.accent);
-      document.getElementById('d-eyebrow').textContent = g.hasSoloMode ? 'Solo or vs Kreedu' : 'vs Kreedu';
-      document.getElementById('d-title').textContent = g.name;
+      document.getElementById('d-eyebrow').textContent = eyebrowOf(g);
+      document.getElementById('d-title').textContent = gameName(g);
       document.getElementById('d-native').textContent = g.native;
       document.getElementById('d-blurb').textContent = sc.blurb;
 
@@ -1795,9 +1825,9 @@
       const modeArea = document.getElementById('d-mode-area');
       if (g.hasSoloMode) {
         modeArea.innerHTML = `
-      <div class="mode-toggle" role="radiogroup" aria-label="Mode">
-        <button id="mode-mascot" type="button" role="radio" onclick="setMode('mascot')">vs Kreedu</button>
-        <button id="mode-solo" type="button" role="radio" onclick="setMode('solo')">Solo</button>
+      <div class="mode-toggle" role="radiogroup" aria-label="${T('games.mode')}">
+        <button id="mode-mascot" type="button" role="radio" onclick="setMode('mascot')">${T('games.mode.vs')}</button>
+        <button id="mode-solo" type="button" role="radio" onclick="setMode('solo')">${T('games.mode.solo')}</button>
       </div>`;
       } else {
         modeArea.innerHTML = '';
@@ -1805,7 +1835,7 @@
 
       // difficulty
       setLevel(loadLevel(g.id));
-      if (g.hasSoloMode) setMode('mascot');
+      if (g.hasSoloMode) setMode(currentMode);
 
       const mapFrame = document.getElementById('map-frame');
       if (g.id === 'vaikunthapali') {
@@ -1869,7 +1899,7 @@
         x: spread(p.x, Math.min(...xs), Math.max(...xs), 18, 82),
         y: spread(p.y, Math.min(...ys), Math.max(...ys), 42, 82)
       }));
-      document.getElementById('map-title').innerHTML = `<strong>Where it's played</strong>${g.mapSub}`;
+      document.getElementById('map-title').innerHTML = `<strong>${T('games.whereTitle')}</strong>${g.mapSub}`;
       const pinsWrap = document.getElementById('map-pins');
       pinsWrap.innerHTML = '';
       g.pins.forEach((p, i) => {
@@ -1899,7 +1929,7 @@
       } else {
         svg.removeAttribute('viewBox');
       }
-      document.getElementById('map-caption').textContent = g.path ? 'Dotted line traces its journey · tap a pin' : 'No single origin claimed · tap a pin';
+      document.getElementById('map-caption').textContent = T(g.path ? 'games.caption.path' : 'games.caption.none');
 
       showPin(0);
     }
@@ -1914,7 +1944,7 @@
     <h3>${p.name}</h3>
     <p class="fact-story">${p.fact}</p>
     <p class="fact-how">${p.how}</p>
-    <ul class="did-you-know"><li class="dyk-label">Did you know</li>${facts}</ul>`;
+    <ul class="did-you-know"><li class="dyk-label">${T('games.dyk')}</li>${facts}</ul>`;
       box.scrollTop = 0;
     }
 
@@ -1959,7 +1989,7 @@
       const o = document.getElementById('modal-overlay');
       if (!o.classList.contains('active')) return;
       if (!force && document.getElementById('modal').classList.contains('game') &&
-        !confirm('Leave this match? The game in progress will be lost.')) return;
+        !confirm(T('games.leave'))) return;
       o.classList.remove('active');
       setGameCard(false);
       document.getElementById('modal-body').innerHTML = '';
@@ -1995,7 +2025,7 @@
       // Chaturangam's interactive pieces guide opens inside the card itself
       if (sc.tutorialEmbed) { openEmbeddedTutorial(sc.tutorialEmbed); return; }
       tutStep = 0;
-      openSheet(`${currentGame.name} · Tutorial`, '');
+      openSheet(T('games.kTutorial', { game: gameName(currentGame) }), '');
       renderTutorial();
       document.getElementById('tut-next').focus();
     }
@@ -2005,28 +2035,28 @@
       openSheet(kicker, title);
       document.getElementById('modal').classList.add('wide');
       document.getElementById('modal-body').innerHTML =
-        `<iframe class="tut-frame" id="tut-frame" title="${frameTitle}" src="${src}"></iframe>`;
+        `<iframe class="tut-frame" id="tut-frame" title="${frameTitle}" src="${src}&lang=${KREEDA_I18N.lang}"></iframe>`;
       const foot = document.getElementById('modal-foot');
       foot.innerHTML = footHtml || '';
       foot.hidden = !footHtml;
       document.getElementById('modal').focus();
     }
     function openEmbeddedTutorial(src) {
-      openEmbeddedCard(`${currentGame.name} · Tutorial`, 'The Pieces', src, `${currentGame.name} pieces tutorial`, `
-    <p class="rules-note">Tap a piece to see where it can move.</p>
-    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">Play Now</button>`);
+      openEmbeddedCard(T('games.kTutorial', { game: gameName(currentGame) }), T('games.pieces'), src, T('games.kTutorial', { game: gameName(currentGame) }), `
+    <p class="rules-note">${T('games.tapPiece')}</p>
+    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">${T('games.play')}</button>`);
     }
     // The hub's Easy/Medium/Hard maps onto Kreedu's three strengths.
     const CHAT_LEVELS = { easy: 'EASY', medium: 'MEDIUM', hard: 'HARD' };
     function openEmbeddedSetup(src) {
-      openEmbeddedCard(`${currentGame.name} · Play`, 'Set Up Your Match',
-        `${src}&difficulty=${CHAT_LEVELS[currentLevel] || 'MEDIUM'}`, `${currentGame.name} match setup`);
+      openEmbeddedCard(T('games.kPlay', { game: gameName(currentGame) }), T('games.setup'),
+        `${src}&difficulty=${CHAT_LEVELS[currentLevel] || 'MEDIUM'}`, T('games.setup'));
       setFillCard(true);
     }
     // Games with no setup step (Vaikunthapali, Vaamana Guntalu) open straight
     // onto the board.
     function openEmbeddedGame(src) {
-      openEmbeddedCard(`${currentGame.name} · Play`, currentGame.name, src, `${currentGame.name} board`);
+      openEmbeddedCard(T('games.kPlay', { game: gameName(currentGame) }), gameName(currentGame), src, gameName(currentGame));
       setGameCard(true);
     }
     // The framed view posts its content height (so the card fits it without a
@@ -2054,18 +2084,18 @@
       const steps = screens[currentGame.id].tutorial;
       const st = steps[tutStep];
       const last = tutStep === steps.length - 1;
-      document.getElementById('modal-title').textContent = `Step ${tutStep + 1} of ${steps.length}`;
+      document.getElementById('modal-title').textContent = T('games.step', { n: tutStep + 1, total: steps.length });
       document.getElementById('modal-body').innerHTML = `
     <div class="tut-step">
       <div class="tut-num">${tutStep + 1}</div>
       <div><h4>${st.t}</h4><p>${st.d}</p></div>
     </div>
-    ${st.tip ? `<div class="tut-tip"><img src="kreedu-mascot.png" alt=""><span><strong>Kreedu's tip:</strong> ${st.tip}</span></div>` : ''}`;
+    ${st.tip ? `<div class="tut-tip"><img src="kreedu-mascot.png" alt=""><span><strong>${T('games.tip')}</strong> ${st.tip}</span></div>` : ''}`;
       document.getElementById('modal-foot').innerHTML = `
     <div class="tut-dots" aria-hidden="true">${steps.map((_, i) => `<span class="${i === tutStep ? 'on' : ''}"></span>`).join('')}</div>
     <div class="tut-nav">
-      <button class="pill-btn" type="button" onclick="tutGo(-1)" ${tutStep === 0 ? 'disabled' : ''}>Back</button>
-      <button class="pill-btn solid" id="tut-next" type="button" onclick="${last ? 'closeModal(); startPlay()' : 'tutGo(1)'}">${last ? 'Play Now' : 'Next'}</button>
+      <button class="pill-btn" type="button" onclick="tutGo(-1)" ${tutStep === 0 ? 'disabled' : ''}>${T('games.back')}</button>
+      <button class="pill-btn solid" id="tut-next" type="button" onclick="${last ? 'closeModal(); startPlay()' : 'tutGo(1)'}">${last ? T('games.play') : T('games.next')}</button>
     </div>`;
     }
     function tutGo(d) {
@@ -2079,15 +2109,15 @@
 
     function openRules() {
       const sc = screens[currentGame.id];
-      openSheet(`${currentGame.name} · Rules`, 'How to play');
+      openSheet(T('games.kRules', { game: gameName(currentGame) }), T('games.howTo'));
       document.getElementById('modal-body').innerHTML = sc.rules.map(r => `
     <div class="rules-section">
       <h4>${r.h}</h4>
       <ul>${r.items.map(i => `<li>${i}</li>`).join('')}</ul>
     </div>`).join('');
       document.getElementById('modal-foot').innerHTML = `
-    <p class="rules-note">${sc.rulesNote || 'Stuck? The Tutorial walks through it step by step.'}</p>
-    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">Play Now</button>`;
+    <p class="rules-note">${sc.rulesNote || T('games.stuck')}</p>
+    <button class="pill-btn solid" type="button" onclick="closeModal(); startPlay()">${T('games.play')}</button>`;
       document.getElementById('modal').focus();
     }
 
@@ -2113,6 +2143,115 @@
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2200);
     }
+  </script>
+  <script>
+    KREEDA_I18N.add({
+      en: {
+        'games.title': 'Games', 'games.allGames': 'All games',
+        'games.eyebrow.solo': 'Solo or vs Kreedu', 'games.eyebrow.vs': 'vs Kreedu',
+        'games.mode': 'Mode', 'games.mode.vs': 'vs Kreedu', 'games.mode.solo': 'Solo',
+        'games.play': 'Play Now', 'games.tutorial': 'Tutorial', 'games.rules': 'Rules',
+        'games.difficulty': 'Difficulty', 'games.easy': 'Easy', 'games.medium': 'Medium', 'games.hard': 'Hard',
+        'games.whereTitle': "Where it's played",
+        'games.caption.path': 'Dotted line traces its journey · tap a pin',
+        'games.caption.none': 'No single origin claimed · tap a pin',
+        'games.dyk': 'Did you know',
+        'games.leave': 'Leave this match? The game in progress will be lost.',
+        'games.kTutorial': '{game} · Tutorial', 'games.kRules': '{game} · Rules', 'games.kPlay': '{game} · Play',
+        'games.pieces': 'The Pieces', 'games.setup': 'Set Up Your Match',
+        'games.tapPiece': 'Tap a piece to see where it can move.',
+        'games.step': 'Step {n} of {total}', 'games.back': 'Back', 'games.next': 'Next',
+        'games.howTo': 'How to play', 'games.stuck': 'Stuck? The Tutorial walks through it step by step.',
+        'games.tip': "Kreedu's tip:", 'games.explore': 'Explore {game}',
+      },
+      hi: {
+        'games.title': 'खेल', 'games.allGames': 'सभी खेल',
+        'games.eyebrow.solo': 'अकेले या क्रीडु के साथ', 'games.eyebrow.vs': 'क्रीडु के साथ',
+        'games.mode': 'मोड', 'games.mode.vs': 'क्रीडु के साथ', 'games.mode.solo': 'अकेले',
+        'games.play': 'अभी खेलें', 'games.tutorial': 'सीखें', 'games.rules': 'नियम',
+        'games.difficulty': 'कठिनाई', 'games.easy': 'आसान', 'games.medium': 'मध्यम', 'games.hard': 'कठिन',
+        'games.whereTitle': 'यह कहाँ खेला जाता है',
+        'games.caption.path': 'बिंदुदार रेखा इसकी यात्रा दिखाती है · किसी पिन पर टैप करें',
+        'games.caption.none': 'कोई एक उद्गम स्थान नहीं · किसी पिन पर टैप करें',
+        'games.dyk': 'क्या आप जानते हैं',
+        'games.leave': 'क्या यह मैच छोड़ना है? चल रहा खेल खो जाएगा।',
+        'games.kTutorial': '{game} · सीखें', 'games.kRules': '{game} · नियम', 'games.kPlay': '{game} · खेलें',
+        'games.pieces': 'मोहरे', 'games.setup': 'अपना मैच तैयार करें',
+        'games.tapPiece': 'किसी मोहरे पर टैप करें और देखें कि वह कहाँ चल सकता है।',
+        'games.step': 'चरण {n} / {total}', 'games.back': 'पीछे', 'games.next': 'आगे',
+        'games.howTo': 'कैसे खेलें', 'games.stuck': 'अटक गए? "सीखें" हर कदम समझाता है।',
+        'games.tip': 'क्रीडु की सलाह:', 'games.explore': '{game} देखें',
+        'games.name.vaikunthapali': 'वैकुंठपाली', 'games.name.puli-meka': 'पुली मेका', 'games.name.ashta-chamma': 'अष्ट चम्मा',
+        'games.name.vamana-guntalu': 'वामन गुंटलु', 'games.name.chaturangam': 'चतुरंगम', 'games.name.daadi-aata': 'दाडी आटा',
+      },
+      te: {
+        'games.title': 'ఆటలు', 'games.allGames': 'అన్ని ఆటలు',
+        'games.eyebrow.solo': 'ఒంటరిగా లేదా క్రీడుతో', 'games.eyebrow.vs': 'క్రీడుతో',
+        'games.mode': 'విధానం', 'games.mode.vs': 'క్రీడుతో', 'games.mode.solo': 'ఒంటరిగా',
+        'games.play': 'ఇప్పుడే ఆడండి', 'games.tutorial': 'నేర్చుకోండి', 'games.rules': 'నియమాలు',
+        'games.difficulty': 'కష్టత', 'games.easy': 'సులభం', 'games.medium': 'మధ్యస్థం', 'games.hard': 'కష్టం',
+        'games.whereTitle': 'ఎక్కడ ఆడతారు',
+        'games.caption.path': 'చుక్కల గీత దీని ప్రయాణాన్ని చూపుతుంది · ఏదైనా పిన్‌ను నొక్కండి',
+        'games.caption.none': 'ఒకే ఒక్క మూలం లేదు · ఏదైనా పిన్‌ను నొక్కండి',
+        'games.dyk': 'మీకు తెలుసా',
+        'games.leave': 'ఈ ఆటను వదిలేయాలా? జరుగుతున్న ఆట పోతుంది.',
+        'games.kTutorial': '{game} · నేర్చుకోండి', 'games.kRules': '{game} · నియమాలు', 'games.kPlay': '{game} · ఆడండి',
+        'games.pieces': 'పావులు', 'games.setup': 'మీ ఆటను సిద్ధం చేసుకోండి',
+        'games.tapPiece': 'ఏదైనా పావును నొక్కి, అది ఎక్కడికి కదలగలదో చూడండి.',
+        'games.step': 'దశ {n} / {total}', 'games.back': 'వెనుకకు', 'games.next': 'తరువాత',
+        'games.howTo': 'ఎలా ఆడాలి', 'games.stuck': 'చిక్కుకున్నారా? "నేర్చుకోండి" ప్రతి అడుగూ వివరిస్తుంది.',
+        'games.tip': 'క్రీడు సలహా:', 'games.explore': '{game} చూడండి',
+        'games.name.vaikunthapali': 'వైకుంఠపాళి', 'games.name.puli-meka': 'పులి మేక', 'games.name.ashta-chamma': 'అష్ట చెమ్మా',
+        'games.name.vamana-guntalu': 'వామన గుంటలు', 'games.name.chaturangam': 'చతురంగం', 'games.name.daadi-aata': 'దాడి ఆట',
+      },
+      ta: {
+        'games.title': 'விளையாட்டுகள்', 'games.allGames': 'அனைத்து விளையாட்டுகள்',
+        'games.eyebrow.solo': 'தனியாக அல்லது க்ரீடுவுடன்', 'games.eyebrow.vs': 'க்ரீடுவுடன்',
+        'games.mode': 'முறை', 'games.mode.vs': 'க்ரீடுவுடன்', 'games.mode.solo': 'தனியாக',
+        'games.play': 'இப்போது விளையாடு', 'games.tutorial': 'கற்றுக்கொள்', 'games.rules': 'விதிகள்',
+        'games.difficulty': 'கடினம்', 'games.easy': 'எளிது', 'games.medium': 'நடுத்தரம்', 'games.hard': 'கடினம்',
+        'games.whereTitle': 'எங்கே விளையாடப்படுகிறது',
+        'games.caption.path': 'புள்ளிக்கோடு இதன் பயணத்தைக் காட்டுகிறது · ஒரு பின்னைத் தொடவும்',
+        'games.caption.none': 'ஒரே தோற்றம் என்று எதுவும் இல்லை · ஒரு பின்னைத் தொடவும்',
+        'games.dyk': 'உங்களுக்குத் தெரியுமா',
+        'games.leave': 'இந்த ஆட்டத்தை விட்டு வெளியேறவா? நடந்துகொண்டிருக்கும் ஆட்டம் இழக்கப்படும்.',
+        'games.kTutorial': '{game} · கற்றுக்கொள்', 'games.kRules': '{game} · விதிகள்', 'games.kPlay': '{game} · விளையாடு',
+        'games.pieces': 'காய்கள்', 'games.setup': 'உங்கள் ஆட்டத்தை அமையுங்கள்',
+        'games.tapPiece': 'ஒரு காயைத் தொட்டு அது எங்கே நகரலாம் என்று பாருங்கள்.',
+        'games.step': 'படி {n} / {total}', 'games.back': 'பின்', 'games.next': 'அடுத்து',
+        'games.howTo': 'எப்படி விளையாடுவது', 'games.stuck': 'சிக்கிக்கொண்டீர்களா? "கற்றுக்கொள்" ஒவ்வொரு படியையும் விளக்கும்.',
+        'games.tip': 'க்ரீடுவின் குறிப்பு:', 'games.explore': '{game} பார்க்க',
+        'games.name.vaikunthapali': 'வைகுந்தபாளி', 'games.name.puli-meka': 'புலி மேகா', 'games.name.ashta-chamma': 'அஷ்ட செம்மா',
+        'games.name.vamana-guntalu': 'வாமன குண்டலு', 'games.name.chaturangam': 'சதுரங்கம்', 'games.name.daadi-aata': 'தாடி ஆட்டம்',
+      },
+      ml: {
+        'games.title': 'കളികൾ', 'games.allGames': 'എല്ലാ കളികളും',
+        'games.eyebrow.solo': 'ഒറ്റയ്ക്കോ ക്രീഡുവിനൊപ്പമോ', 'games.eyebrow.vs': 'ക്രീഡുവിനൊപ്പം',
+        'games.mode': 'രീതി', 'games.mode.vs': 'ക്രീഡുവിനൊപ്പം', 'games.mode.solo': 'ഒറ്റയ്ക്ക്',
+        'games.play': 'ഇപ്പോൾ കളിക്കൂ', 'games.tutorial': 'പഠിക്കാം', 'games.rules': 'നിയമങ്ങൾ',
+        'games.difficulty': 'കാഠിന്യം', 'games.easy': 'എളുപ്പം', 'games.medium': 'ഇടത്തരം', 'games.hard': 'കഠിനം',
+        'games.whereTitle': 'എവിടെയൊക്കെ കളിക്കുന്നു',
+        'games.caption.path': 'കുത്തുവര ഇതിന്റെ യാത്ര കാണിക്കുന്നു · ഒരു പിൻ തൊടുക',
+        'games.caption.none': 'ഒരൊറ്റ ഉത്ഭവസ്ഥാനമില്ല · ഒരു പിൻ തൊടുക',
+        'games.dyk': 'നിങ്ങൾക്കറിയാമോ',
+        'games.leave': 'ഈ കളി ഉപേക്ഷിക്കണോ? നടന്നുകൊണ്ടിരിക്കുന്ന കളി നഷ്ടപ്പെടും.',
+        'games.kTutorial': '{game} · പഠിക്കാം', 'games.kRules': '{game} · നിയമങ്ങൾ', 'games.kPlay': '{game} · കളിക്കാം',
+        'games.pieces': 'കരുക്കൾ', 'games.setup': 'നിങ്ങളുടെ കളി സജ്ജമാക്കൂ',
+        'games.tapPiece': 'ഒരു കരു തൊട്ട് അത് എങ്ങോട്ട് നീങ്ങാമെന്ന് കാണൂ.',
+        'games.step': 'ഘട്ടം {n} / {total}', 'games.back': 'പിന്നോട്ട്', 'games.next': 'അടുത്തത്',
+        'games.howTo': 'എങ്ങനെ കളിക്കാം', 'games.stuck': 'കുടുങ്ങിയോ? "പഠിക്കാം" ഓരോ ഘട്ടവും വിശദീകരിക്കും.',
+        'games.tip': 'ക്രീഡുവിന്റെ ഉപദേശം:', 'games.explore': '{game} കാണുക',
+        'games.name.vaikunthapali': 'വൈകുണ്ഠപാളി', 'games.name.puli-meka': 'പുലി മേക', 'games.name.ashta-chamma': 'അഷ്ട ചെമ്മ',
+        'games.name.vamana-guntalu': 'വാമന ഗുണ്ടലു', 'games.name.chaturangam': 'ചതുരംഗം', 'games.name.daadi-aata': 'ദാഡി ആട്ട',
+      },
+    });
+    // the cards were first drawn before these words were registered
+    renderGrid();
+    // switching language re-draws the game cards and, if one is open, that game's page
+    KREEDA_I18N.onChange(() => {
+      renderGrid();
+      if (currentGame && document.getElementById('view-detail').classList.contains('active')) renderDetail();
+    });
   </script>
 </body>
 

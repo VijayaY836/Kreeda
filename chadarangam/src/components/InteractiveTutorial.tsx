@@ -4,6 +4,7 @@ import { FolkArtFrame } from './FolkArtFrame';
 import { ChariotWheelIcon } from './FolkArtMotifs';
 import { PieceIcon } from './PieceIcon';
 import { ORDER, PIECE_INFO, VARIANT_INFO } from '../utils/pieceArt';
+import { t, useLang, variantTitle, pieceName, pieceMeaning, worthLabel } from '../i18n';
 import {
   ArrowRight, ShieldAlert, CheckCircle, Crown, Grid3x3, Flag, Sparkles, Play, Swords,
 } from 'lucide-react';
@@ -81,6 +82,7 @@ function demoCells(t: PieceLetter, variant: Variant): CellKind[] {
 const CELL_BG: Record<CellKind, string> = { '': '#F6ECD2', mv: '#CFE3C4', mv2: '#CFE3C4', cap: '#F3B79C', hop: '#F6ECD2' };
 
 export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComplete, initialVariant = 'chaturanga', embedded = false }) => {
+  useLang(); // re-render when the app language changes
   const [tab, setTab] = useState<Tab>('PIECES');
   const [variant, setVariant] = useState<Variant>(initialVariant);
   const [demoPiece, setDemoPiece] = useState<PieceLetter>(ORDER[initialVariant][0]);
@@ -98,23 +100,23 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
       <div className={`text-center ${embedded ? 'mb-4' : 'mb-8'}`}>
         {!embedded && (
           <>
-            <h1 className="text-4xl sm:text-5xl font-extrabold font-fraunces text-[#5C140F] mb-2">Tutorial</h1>
+            <h1 className="text-4xl sm:text-5xl font-extrabold font-fraunces text-[#5C140F] mb-2">{t('tut.title')}</h1>
             <p className="max-w-xl mx-auto text-sm text-[#6B4E3D] mb-6">
-              Every piece's movement, and the rules that separate the two eras — try both before your first match.
+              {t('tut.sub')}
             </p>
           </>
         )}
 
         {!embedded && <div className="inline-flex bg-[#F6ECD2] border-2 border-[#5C140F] p-1 gap-1 mb-4">
-          {(['PIECES', 'RULES'] as Tab[]).map((t) => (
+          {(['PIECES', 'RULES'] as Tab[]).map((tb) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tb}
+              onClick={() => setTab(tb)}
               className={`px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold uppercase tracking-wide cursor-pointer transition-colors ${
-                tab === t ? 'bg-[#5C140F] text-white' : 'text-[#5C140F] hover:bg-[#E4D19E]'
+                tab === tb ? 'bg-[#5C140F] text-white' : 'text-[#5C140F] hover:bg-[#E4D19E]'
               }`}
             >
-              {t === 'PIECES' ? 'The Pieces' : 'The Rules'}
+              {tb === 'PIECES' ? t('tut.pieces') : t('tut.rules')}
             </button>
           ))}
         </div>}
@@ -126,7 +128,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
               onClick={() => switchVariant(v)}
               className={`px-4 py-2 border-2 border-[#5C140F] text-sm font-bold cursor-pointer ${variant === v ? 'bg-[#5C140F] text-white' : 'bg-[#E4D19E] text-[#2B1B12] hover:bg-white'}`}
             >
-              {VARIANT_INFO[v].title}
+              {variantTitle(v)}
             </button>
           ))}
         </div>
@@ -143,7 +145,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 border-2 border-[#5C140F] text-xs font-bold cursor-pointer ${demoPiece === k ? 'bg-white shadow-[2px_2px_0px_0px_#5C140F]' : 'bg-[#E4D19E] hover:bg-white'}`}
               >
                 <PieceIcon variant={variant} letter={k} ivory className="w-5 h-5" />
-                {PIECE_INFO[variant][k]?.n}
+                {pieceName(variant, k)}
               </button>
             ))}
           </div>
@@ -194,13 +196,13 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
                   <span className="w-4 h-4 border border-[#5C140F]/40 flex items-center justify-center shrink-0" style={{ backgroundColor: CELL_BG.mv }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-[#5F8F3B]" />
                   </span>
-                  <span className="text-[11px] font-bold text-[#2B1B12]">Normal move</span>
+                  <span className="text-[11px] font-bold text-[#2B1B12]">{t('tut.normal')}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="relative w-4 h-4 border border-[#5C140F]/40 shrink-0" style={{ backgroundColor: CELL_BG.cap }}>
                     <Swords className="absolute inset-0 m-auto w-2.5 h-2.5 text-[#B83215]" strokeWidth={2.5} />
                   </span>
-                  <span className="text-[11px] font-bold text-[#B83215]">Capture</span>
+                  <span className="text-[11px] font-bold text-[#B83215]">{t('tut.capture')}</span>
                 </div>
                 {hasMv2 && (
                   <div className="flex items-center gap-1.5">
@@ -209,7 +211,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
                         <span className="w-1 h-1 rounded-full bg-[#5F8F3B]" />
                       </span>
                     </span>
-                    <span className="text-[11px] font-bold text-[#2B1B12]">First move only</span>
+                    <span className="text-[11px] font-bold text-[#2B1B12]">{t('tut.first')}</span>
                   </div>
                 )}
                 {hasHop && (
@@ -217,7 +219,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
                     <span className="w-4 h-4 border border-[#5C140F]/40 flex items-center justify-center shrink-0 bg-[#F6ECD2]">
                       <span className="w-1.5 h-1.5 rounded-full border border-dashed border-[#5C140F]/50" />
                     </span>
-                    <span className="text-[11px] font-bold text-[#2B1B12]">Leaps over (no capture)</span>
+                    <span className="text-[11px] font-bold text-[#2B1B12]">{t('tut.hop')}</span>
                   </div>
                 )}
               </div>
@@ -225,15 +227,15 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
 
             <div className="flex-1">
               <span className="inline-block px-2 py-0.5 bg-[#E4D19E] border border-[#5C140F] text-[10px] font-bold text-[#2B1B12] uppercase mb-2">
-                {pinfo.worth}
+                {worthLabel(pinfo.worth)}
               </span>
               <h4 className="font-fraunces font-bold text-xl text-[#5C140F] mb-1">
-                {pinfo.n}{pinfo.t ? ` · ${pinfo.t}` : ''}{pinfo.en ? ` — ${pinfo.en}` : ''}
+                {pieceName(variant, demoPiece)}{pinfo.t && pinfo.t !== pieceName(variant, demoPiece) ? ` · ${pinfo.t}` : ''}{pinfo.en ? ` — ${pieceMeaning(variant, demoPiece)}` : ''}
               </h4>
-              <p className="text-sm text-[#2B1B12] mb-2"><strong>Moves:</strong> {pinfo.how}</p>
+              <p className="text-sm text-[#2B1B12] mb-2"><strong>{t('tut.moves')}</strong> {pinfo.how}</p>
               <p className="text-xs text-[#6B4E3D] leading-relaxed">{pinfo.note}</p>
               {variant === 'chaturanga' && pinfo.tag && (
-                <p className="text-xs text-[#6B4E3D] mt-2">Written as <strong>{pinfo.tag}</strong> in the move log.</p>
+                <p className="text-xs text-[#6B4E3D] mt-2">{t('tut.tag', { tag: pinfo.tag })}</p>
               )}
             </div>
           </div>
@@ -290,7 +292,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ onComp
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#D8401F] hover:bg-[#B83215] text-white border-[3px] border-[#5C140F] text-sm font-bold uppercase tracking-wider cursor-pointer"
         >
           <Play className="w-4 h-4 fill-current" />
-          Play {info.title}
+          {t('tut.play', { title: variantTitle(variant) })}
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>}

@@ -58,7 +58,7 @@ function EmbeddedPlay() {
     document.documentElement.classList.add('vp-embedded')
     document.body.style.background = 'transparent'
     document.body.style.minHeight = '0'
-    postToHub({ view: 'game', title: 'Vaikunthapali' })
+    postToHub({ view: 'game' }) // the hub titles the card in the chosen language
   }, [])
   return (
     <LangContext.Provider value={lang}>

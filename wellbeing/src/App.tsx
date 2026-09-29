@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Section, ViewTab, UserProfile, Mood, FeedbackRating, PracticeProgress, SessionLogEntry, DaySession, Practice } from './types';
 import { loadState, saveState, computeStreak, isoDate } from './engine/storage';
 import { buildWeeklyPlan, applyFeedback, startingIntensity, estimatePracticeSeconds } from './engine/planEngine';
@@ -8,6 +8,9 @@ import { Header } from './components/Header';
 import { Disclaimer } from './components/Disclaimer';
 import { ModuleHome } from './components/ModuleHome';
 import { SectionHome } from './components/SectionHome';
+import { SectionCard } from './components/SectionCard';
+import { TodayPlan } from './components/TodayPlan';
+import { SECTION_CONTENT } from './data/sectionContent';
 import { PlanBuilder } from './components/PlanBuilder';
 import { PlanOverview } from './components/PlanOverview';
 import { SessionPlayer } from './components/SessionPlayer';
@@ -20,6 +23,13 @@ export default function App() {
   const [state, setState] = useState(loadState);
   const [tab, setTab] = useState<ViewTab>('HOME');
   const [section, setSection] = useState<Section | null>(null);
+  // Yoga / Vyayam / Dhyana open in a card over the Exercises page (HOME)
+  const [sectionOpen, setSectionOpen] = useState(false);
+  // Today's Plan ('plan', or 'builder' while building one) and Mood also open in cards
+  const [homeCard, setHomeCard] = useState<null | 'plan' | 'builder' | 'mood'>(null);
+  const closeHomeCard = useCallback(() => setHomeCard(null), []);
+  // a session started from the Today's Plan card returns there when it's left
+  const [sessionFromCard, setSessionFromCard] = useState(false);
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const [pendingMoodBefore, setPendingMoodBefore] = useState<Mood | null>(null);
   // A single Library exercise played through the same SessionPlayer. It is not
@@ -37,20 +47,28 @@ export default function App() {
   const handleOpenSection = (s: Section) => {
     setSection(s);
     setReturnToLibrary(false);
-    setTab('SECTION');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSectionOpen(true);
   };
+  const handleCloseSection = useCallback(() => setSectionOpen(false), []);
 
   const handleBuildPlan = (profile: UserProfile) => {
     const plan = buildWeeklyPlan(profile, state.history.length);
     setState(s => ({ ...s, profile, plan, onboarded: true }));
-    handleNavigate('PLAN_OVERVIEW');
+    // built from the Today's Plan card: stay in the card and show the new plan
+    if (homeCard === 'builder') setHomeCard('plan');
+    else handleNavigate('PLAN_OVERVIEW');
   };
 
   const handleStartSession = (dayIndex: number) => {
     setSoloSession(null);
     setActiveDayIndex(dayIndex);
+    setSessionFromCard(homeCard === 'plan');
+    setHomeCard(null);
     handleNavigate('SESSION_PLAYER');
+  };
+  const handleSessionExit = () => {
+    if (sessionFromCard) { setHomeCard('plan'); handleNavigate('HOME'); }
+    else handleNavigate('PLAN_OVERVIEW');
   };
 
   const handleStartPractice = (practice: Practice) => {
@@ -75,10 +93,12 @@ export default function App() {
     handleNavigate('SESSION_PLAYER');
   };
 
+  // back from a single Library exercise: the section card reopens on its Library
   const handleSoloExit = () => {
     setSoloSession(null);
     setReturnToLibrary(true);
-    handleNavigate('SECTION');
+    setSectionOpen(true);
+    handleNavigate('HOME');
   };
 
   const handleSessionComplete = (moodBefore: Mood | null) => {
@@ -156,18 +176,45 @@ export default function App() {
             plan={state.plan}
             onOpenSection={handleOpenSection}
             onNavigate={handleNavigate}
-            onStartTodaySession={handleStartSession}
+            onOpenToday={() => setHomeCard(state.plan ? 'plan' : 'builder')}
+            onOpenMood={() => setHomeCard('mood')}
           />
         )}
 
-        {tab === 'SECTION' && section && (
-          <SectionHome
-            section={section}
-            totalSessionsCompleted={state.history.length}
-            onBack={() => handleNavigate('HOME')}
-            initialTab={returnToLibrary ? 'library' : undefined}
-            onStartPractice={handleStartPractice}
-          />
+        {tab === 'HOME' && sectionOpen && section && (
+          <SectionCard label={SECTION_CONTENT[section].title} onClose={handleCloseSection}>
+            <SectionHome
+              section={section}
+              totalSessionsCompleted={state.history.length}
+              onBack={handleCloseSection}
+              initialTab={returnToLibrary ? 'library' : undefined}
+              onStartPractice={handleStartPractice}
+              inCard
+            />
+          </SectionCard>
+        )}
+
+        {tab === 'HOME' && homeCard === 'plan' && state.plan && (
+          <SectionCard label="Today's Plan" size="compact" onClose={closeHomeCard}>
+            <TodayPlan plan={state.plan} onStartSession={handleStartSession} onEditInputs={() => setHomeCard('builder')} />
+          </SectionCard>
+        )}
+
+        {tab === 'HOME' && homeCard === 'builder' && (
+          <SectionCard label="Build your plan" onClose={closeHomeCard}>
+            <PlanBuilder
+              initialProfile={state.profile}
+              onCancel={() => setHomeCard(state.plan ? 'plan' : null)}
+              onComplete={handleBuildPlan}
+              inCard
+            />
+          </SectionCard>
+        )}
+
+        {tab === 'HOME' && homeCard === 'mood' && (
+          <SectionCard label="Mood" size="compact" onClose={closeHomeCard}>
+            <MoodLog entries={state.moodLog} onBack={closeHomeCard} onSave={handleMoodSave} inCard />
+          </SectionCard>
         )}
 
         {tab === 'PLAN_BUILDER' && (
@@ -194,7 +241,7 @@ export default function App() {
         {tab === 'SESSION_PLAYER' && !soloSession && activeSession && (
           <SessionPlayer
             session={activeSession}
-            onExit={() => handleNavigate('PLAN_OVERVIEW')}
+            onExit={handleSessionExit}
             onComplete={handleSessionComplete}
           />
         )}
