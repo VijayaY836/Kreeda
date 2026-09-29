@@ -1,172 +1,308 @@
 <div align="center">
 
-# KREEDA
+<img src="kreedu-mascot.png" alt="Kreedu, the KREEDA mascot" width="150" />
 
-### India's traditional games, movement practices and stories, gathered into one offline-first learning space.
+# K R E E D A
+### క్రీడ · क्रीड़ा · கிரீடா · ക്രീഡ
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
-![Offline](https://img.shields.io/badge/Offline--first-4CAF50)
+**India's heritage games, movement traditions and folktales, in one offline-first playground.**
 
+*Play the games your grandparents played. Move the way the akhadas trained. Hear the stories told under the banyan tree.*
 
+<br/>
 
-Built for **Smart India Hackathon (SIH) 2026**.
+![Smart India Hackathon 2026](https://img.shields.io/badge/Smart_India_Hackathon-2026-E4572E?style=for-the-badge)
+![Offline First](https://img.shields.io/badge/Offline-First-2E7D32?style=for-the-badge)
+![No Sign-in](https://img.shields.io/badge/No_Sign--in-Required-8D4B2F?style=for-the-badge)
+![5 Languages](https://img.shields.io/badge/Languages-5-6A4C93?style=for-the-badge)
+
+![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![Web Speech API](https://img.shields.io/badge/Web_Speech_API-FF9800?style=flat-square)
+
+<br/>
+
+[**The Games**](#-the-heritage-games) ·
+[**Wellbeing**](#-physical-wellbeing) ·
+[**Folktales**](#-folktales) ·
+[**Architecture**](#-how-it-works) ·
+[**Quick start**](#-quick-start)
 
 </div>
 
+<br/>
+
+<p align="center">
+  <img src="bg.png" alt="KREEDA home: a hand-painted riverside terrace with traditional game boards, a lamp and a storybook" width="100%" />
+</p>
+
 ---
 
-## What is KREEDA?
+## ✦ Why KREEDA?
 
-KREEDA is a browser-based cultural learning platform for children, families and classrooms. It brings together traditional Indian board games, guided physical wellbeing practices and illustrated folktales in a single, approachable hub.
+Pallanguzhi boards gather dust, Puli Meka lines fade from temple floors, and the stories of Tenali Rama are told less often at bedtime. KREEDA brings them back as something children want to open on a screen.
 
-The experience is designed for low-connectivity environments: there are no accounts, no backend services and no required network calls during play. Progress and preferences stay on the learner's device.
+It is a **browser-based cultural learning platform** for children, families and classrooms. Everything runs on the device, so there are **no accounts, no servers and no network calls during play**. That makes it usable in a village school with patchy internet just as well as in a city living room.
 
-## Explore
+<table>
+<tr>
+<td width="33%" align="center"><h3>🎲</h3><b>6 heritage games</b><br/><sub>each with an AI opponent, rules tutorial and a world map of where the game travelled</sub></td>
+<td width="33%" align="center"><h3>🧘</h3><b>3 wellbeing traditions</b><br/><sub>Yoga, Vyayam and Dhyana, with a personal weekly plan and guided sessions</sub></td>
+<td width="33%" align="center"><h3>📜</h3><b>6 story collections</b><br/><sub>illustrated folktales read aloud by a storytelling grandmother</sub></td>
+</tr>
+<tr>
+<td align="center"><h3>🌐</h3><b>5 languages</b><br/><sub>English · हिंदी · తెలుగు · தமிழ் · മലയാളം, one switch for the whole app</sub></td>
+<td align="center"><h3>📴</h3><b>Offline-first</b><br/><sub>game logic, AI and plans all run in the browser</sub></td>
+<td align="center"><h3>🎨</h3><b>One folk-art design system</b><br/><sub>aged-paper cream, maroon outlines and hand-painted scenes throughout</sub></td>
+</tr>
+</table>
 
-### Heritage games
+---
 
-Play and learn the stories behind six traditional games:
+## 🎲 The Heritage Games
 
-- **Chaturangam** — a strategic board game with a modern React interface, tutorials and an AI opponent.
-- **Vaikunthapali** — the historic snake-and-ladder tradition with cultural context and board guidance.
-- **Puli Meka** — a hunt-and-escape strategy game.
-- **Daadi Aata** — a traditional chase game with a folk-art presentation.
-- **Vaamana Guntalu** — a classic pit-and-counter game.
-- **Ashta Chamma** — a race game built around a traditional Indian board.
+<p align="center">
+  <img src="games1.png" alt="The Games courtyard: a sunlit stone courtyard strewn with traditional boards" width="100%" />
+</p>
 
-Each game can stand alone, while the hub provides a consistent way to discover games, rules, maps and tutorials.
+Every game opens onto an **illustrated world map**. Tap a pin to see what the game is called in that country, a fun fact about it, and the route it took to get there. Below the map are plain-language rules and an interactive tutorial, and then you play. When there's no second player, **Kreedu**, the mascot, steps in as your AI opponent.
 
-### Physical Wellbeing
+<table>
+<tr>
+<td width="50%" valign="top">
+<img src="games/chaturangam.jpg" alt="Chaturangam" width="100%" />
+<h3>♟️ Chaturangam <sub>చతురంగం</sub></h3>
+The ancestor of chess. Play the ancient variant or modern chess against a real search engine using iterative deepening, PVS, null-move pruning, quiescence and Zobrist hashing. Three difficulty levels: <b>Sishya</b>, <b>Yodha</b> and <b>Senapati</b>. It also includes an era timeline tracing how Chaturangam became chess.
+</td>
+<td width="50%" valign="top">
+<img src="games/vaikunthapali-card.png" alt="Vaikunthapali" width="100%" />
+<h3>🐍 Vaikunthapali <sub>వైకుంఠపాళి</sub></h3>
+The original snakes and ladders, where virtues lift you toward Vaikuntha and vices send you sliding down. It has an animated die, a snake swarm and the moral meaning behind every square.
+</td>
+</tr>
+<tr>
+<td valign="top">
+<img src="games/puli-meka.png" alt="Puli Meka" width="100%" />
+<h3>🐅 Puli Meka <sub>పులి మేక</sub></h3>
+Three tigers hunt fifteen goats. It's an asymmetric strategy game played for centuries on temple floors, better known abroad as Bagh-Chal. Play <b>vs Kreedu</b> or pass-and-play.
+</td>
+<td valign="top">
+<img src="games/daadi-aata.jpg" alt="Daadi Aata" width="100%" />
+<h3>⚪ Daadi Aata <sub>దాడి ఆట</sub></h3>
+India's take on the "mill" family (Nine Men's Morris). Line up three to capture. It has an AI opponent at <b>Easy / Medium / Hard</b>, plus a history page and a facts page.
+</td>
+</tr>
+<tr>
+<td valign="top">
+<img src="games/vaamana-guntalu.jpg" alt="Vaamana Guntalu" width="100%" />
+<h3>🪵 Vaamana Guntalu <sub>వామన గుంటలు</sub></h3>
+A mancala-style pit-and-seed game on a wooden board. The sowing is animated slowly so every seed can be followed as it moves.
+</td>
+<td valign="top">
+<img src="games/ashta-chamma.jpg" alt="Ashta Chamma" width="100%" />
+<h3>🐚 Ashta Chamma <sub>అష్టా చెమ్మా</sub></h3>
+A race-home game played with cowrie shells on a 5×5 board. It is one of the oldest ancestors of Ludo.
+</td>
+</tr>
+</table>
 
-The Wellbeing module combines three traditions:
+---
 
-- **Yoga** — asanas, breathing practices, history and a guided session library.
-- **Vyayam** — Dand, Baithak, mobility work and akhada heritage.
-- **Dhyana** — meditation practices across Buddhist, Vedic, Jain and Yogic traditions.
+## 🧘 Physical Wellbeing
 
-The module includes a deterministic weekly plan builder, safety and contraindication checks, progressive practice unlocks, timed sessions, mood check-ins and local progress history. It does not make medical claims or send health data to a server.
+<p align="center">
+  <img src="physical-wellbeing1.png" alt="Wellbeing: a riverside ghat at sunrise with gadas, mudgars and a yoga mat" width="100%" />
+</p>
 
-### Folktales
+Three living traditions, taught safely and progressively:
 
-The story library contains illustrated tales from Panchatantra, Tenali Ramakrishna, Vikram-Betal, Paramanandayya's disciples, freedom-fighter stories and festivals. Stories can be read in the browser and narrated sentence by sentence using the Web Speech API.
+| | Tradition | What's inside |
+|:-:|---|---|
+| 🧘‍♀️ | **Yoga** | Asanas with step-by-step images and GIFs, pranayama (Nadi Shodhana, Bhramari, Kapalabhati…), history from Patanjali to International Yoga Day |
+| 💪 | **Vyayam** | Dand, Baithak, Sapate and mobility drills, plus the heritage of the akhada: gada, mudgar, mallakhamb, kushti, Kalaripayattu and the Great Gama |
+| 🕯️ | **Dhyana** | Meditation across Buddhist, Vedic, Jain and Yogic lineages: Vipassana, Anapana, Trataka, Preksha, Maitri, walking meditation and more |
 
-## How it works
-![KREEDA system architecture](system-architecture.jpeg)
+**Features**
+
+- 🗓️ **Deterministic weekly plan builder** tailored to your focus areas, fitness level, age, daily minutes and days per week
+- 🛡️ **Safety and contraindication checks** before any practice is suggested
+- 🔓 **Progressive unlocks**, so harder practices open up as you build consistency
+- ⏱️ **Guided, timed session player** with audio cues and step viewer
+- 😊 **Mood check-ins** before and after sessions, with a local progress history
+- 🗺️ **Spread map** showing how each practice travelled the world
+
+> [!NOTE]
+> The Wellbeing module is educational and makes **no medical claims**. Profiles, plans, moods and history never leave the browser.
+
+---
+
+## 📜 Folktales
+
+<p align="center">
+  <img src="folk tales1.png" alt="Folktales: an open storybook on a wooden circle in a meadow at sunset" width="100%" />
+</p>
+
+<table>
+<tr>
+<td width="140" align="center"><img src="Grandmother.png" alt="The storytelling grandmother" width="130" /></td>
+<td>
+Pull up a seat. A storytelling grandmother narrates each tale <b>sentence by sentence</b> using the browser's Web Speech API, and each sentence is highlighted as she reads it.
+</td>
+</tr>
+</table>
+
+| Collection | Sample tales |
+|---|---|
+| 🐒 **Panchatantra** | *The Clever Monkey* · *The Blue Jackal* |
+| 👑 **Tenali Ramakrishna** | *The Handful* · *The Biggest Fool* |
+| 🧟 **Vikram–Betal** | *The Three Suitors* · *The Sacrifice* |
+| 🎓 **Paramanandayya Sishyulu** | *The Needle* · *Pearls of Laughter* |
+| ⚔️ **Freedom Fighters** | *Shivaji and Afzal Khan* · *The Disguise* |
+| 🪔 **Festival Stories** | *Naga Panchami* · *Bathukamma* |
+
+---
+
+## 🏛️ How it works
+
+<p align="center">
+  <img src="system-architecture.jpeg" alt="KREEDA system architecture" width="85%" />
+</p>
+
 ```mermaid
 flowchart LR
-    Hub[Static KREEDA hub] --> Games[Heritage games]
-    Hub --> Wellbeing[Physical Wellbeing]
-    Hub --> Stories[Folktales]
-    Games --> Browser[Browser storage and local game state]
-    Wellbeing --> Browser
-    Stories --> Speech[Web Speech API]
+    Hub["🏠 KREEDA hub<br/>(static HTML)"] --> Games["🎲 Heritage games"]
+    Hub --> Wellbeing["🧘 Physical Wellbeing"]
+    Hub --> Stories["📜 Folktales"]
+    Hub -.-> I18n["🌐 Shared i18n<br/>(5 languages)"]
+    Games --> AI["🤖 Kreedu AI<br/>(in-browser)"]
+    Games --> Store[("💾 localStorage")]
+    Wellbeing --> Store
+    Stories --> Speech["🗣️ Web Speech API"]
 ```
 
-- The top-level HTML pages provide navigation and the shared visual language.
-- React + TypeScript modules are built independently with Vite.
-- Game rules, AI and plan selection run in the browser.
-- Wellbeing data and game preferences use `localStorage`.
-- React modules can be embedded in the hub with the existing `postMessage` integration.
+- **Static hub.** `kreeda-home.html`, `kreeda.html` and `folktales.html` provide navigation and the shared visual language.
+- **Independent modules.** Each React + TypeScript game or module is built separately with Vite and embedded in the hub through a `postMessage` integration.
+- **Everything client-side.** Game rules, AI search and wellbeing plan selection all run in the browser.
+- **One language switch.** `js/i18n.js` stores the choice under `kreeda-lang` and passes it to every embedded module via `?lang=`.
 
-## Run it locally
+---
 
-### Open the hub
+## 🚀 Quick start
 
-From the repository root:
+> **Prerequisites:** Node.js 18+ and Python 3 (or any static file server).
+
+**1. Build the React modules** (once):
+
+```bash
+cd chadarangam && npm install && npm run build && cd ..
+cd wellbeing   && npm install && npm run build && cd ..
+```
+
+**2. Serve the hub** from the repository root:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Open <http://localhost:8000/kreeda-home.html>.
+**3. Open** <http://localhost:8000/kreeda-home.html> and start playing.
 
-Build the React modules once before using their hub cards:
+<details>
+<summary><b>🛠️ Developing an individual module</b></summary>
 
-```bash
-cd chadarangam
-npm install
-npm run build
+<br/>
 
-cd ../wellbeing
-npm install
-npm run build
-```
+| Module | Command | URL |
+|---|---|---|
+| Chaturangam | `cd chadarangam && npm i && npm run dev` | <http://localhost:3001> |
+| Physical Wellbeing | `cd wellbeing && npm i && npm run dev` | <http://localhost:3002> |
+| Daadi Aata / Puli Meka | `cd games/<name> && npm i && npm run dev` | <http://localhost:3000> |
+| Vaikunthapali | `cd games/vaikunthapali && npm i && npm run dev` | Vite default |
 
-### Develop Chaturangam
-
-```bash
-cd chadarangam
-npm install
-npm run dev
-```
-
-Open <http://localhost:3001>.
-
-### Develop Physical Wellbeing
+Type-check and build before opening a change:
 
 ```bash
-cd wellbeing
-npm install
-npm run dev
+npm run lint && npm run build
 ```
 
-Open <http://localhost:3002>.
-
-### Rebuild folktales
-
-After editing story source files:
+After editing folktale sources, regenerate the story data:
 
 ```bash
 node folktales/build-stories.mjs
 ```
 
-## Project layout
+</details>
+
+<details>
+<summary><b>📁 Project layout</b></summary>
+
+<br/>
 
 ```text
 Kreeda/
-  kreeda-home.html          Main hub: Games, Wellbeing and Folktales
-  kreeda.html               Games catalogue and maps
-  folktales.html            Folktale library and reader
-  chadarangam/              React Chaturangam module and chess engine
-  wellbeing/                React Yoga, Vyayam and Dhyana module
-  games/                    Individual game modules and assets
-  folktales/                Story sources, generated data and build scripts
-  assets/                   Shared media and world-map data
-  js/                       Shared map and legacy game scripts
+├── kreeda-home.html     🏠 Main hub: Games, Wellbeing, Folktales
+├── kreeda.html          🎲 Games catalogue and world maps
+├── folktales.html       📜 Folktale library and narrated reader
+├── chadarangam/         ♟️ Chaturangam (React) + chess/chaturanga engine
+├── wellbeing/           🧘 Yoga, Vyayam and Dhyana (React)
+├── games/
+│   ├── ashta-chamma/    🐚
+│   ├── daadi-aata/      ⚪
+│   ├── puli-meka/       🐅
+│   ├── vaikunthapali/   🐍
+│   └── vamana-guntalu/  🪵
+├── folktales/           Story sources, generated data, build and narration scripts
+├── js/                  Shared i18n and per-game world-map scripts
+└── assets/              Shared media and world-atlas data
 ```
 
-## Useful commands
+</details>
 
-```bash
-# Serve the hub
-python3 -m http.server 8000
+---
 
-# React module checks and builds
-cd chadarangam && npm run lint && npm run build
-cd ../wellbeing && npm run lint && npm run build
+## 🔒 Privacy by design
 
-# Rebuild generated story data
-node folktales/build-stories.mjs
-```
+| | |
+|---|---|
+| 👤 | No account, no sign-in, no tracking |
+| 🖥️ | No backend is required to play, read or practise |
+| 💾 | Plans, moods, progress and preferences stay in browser `localStorage` |
+| 🗣️ | Narration uses the browser's on-device Web Speech voices when available |
 
-## Privacy and offline behaviour
+---
 
-- No account or sign-in is required.
-- No application backend is required to play, read or practise.
-- Wellbeing profiles, plans, moods and session history remain in browser `localStorage`.
-- Narration uses the browser's local Web Speech API when available.
-- A local HTTP server is recommended for modules that load separate scripts or built assets.
+## 🗺️ Roadmap
 
-## Roadmap
+- [x] Six playable heritage games with AI opponents and world maps
+- [x] Yoga, Vyayam and Dhyana with a weekly plan builder
+- [x] Narrated folktale library
+- [x] Five-language support across the hub
+- [ ] More regional languages (ಕನ್ನಡ, मराठी, বাংলা…)
+- [ ] Migrate remaining legacy game pages to consistent Vite builds
+- [ ] Grow the folktale and heritage-game collections
+- [ ] Reviewed movement animations and classroom facilitation tools
 
-- Add more regional languages to rules, stories and wellbeing guidance.
-- Convert remaining legacy game pages to consistent Vite builds.
-- Expand the folktale and heritage-game collections.
-- Add reviewed movement animations and richer classroom facilitation tools.
+---
 
-## Contributing
+## 🤝 Contributing
 
-Keep new content local-first, cite historical and health-related sources, preserve the shared folk-art visual language and test the affected module with its `lint` and `build` commands before opening a change.
+Contributions are welcome. A few guidelines keep KREEDA coherent:
+
+1. **Stay local-first.** Don't add network dependencies at play time.
+2. **Cite your sources**, especially for historical and health-related content.
+3. **Respect the design system**: cream paper, maroon outlines, Fraunces and Manrope type, and Kreedu.
+4. **Test the module you touched** with `npm run lint && npm run build`.
+
+---
+
+<div align="center">
+
+<img src="kreedu-mascot.png" alt="Kreedu" width="70" />
+
+**Made with ❤️ for Smart India Hackathon 2026**
+
+<sub><i>"Kreeda" (క్రీడ / क्रीड़ा) means play, as in the play that teaches.</i></sub>
+
+</div>
