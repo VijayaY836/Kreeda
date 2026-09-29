@@ -5,6 +5,8 @@ interface SectionCardProps {
   label: string;
   // 'full' fills the screen (sections, plan); 'compact' sizes to its content (mood)
   size?: 'full' | 'compact';
+  // a running session shouldn't end from a stray click beside the card
+  closeOnBackdrop?: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }
@@ -12,7 +14,7 @@ interface SectionCardProps {
 /* A card over the Exercises page (a Yoga / Vyayam / Dhyana section, Today's
    Plan or the Mood log) instead of a separate page. The section's own pop-ups (practice details, the
    spread map) are fixed to the screen, so they still cover everything. */
-export const SectionCard: React.FC<SectionCardProps> = ({ label, size = 'full', onClose, children }) => {
+export const SectionCard: React.FC<SectionCardProps> = ({ label, size = 'full', closeOnBackdrop = true, onClose, children }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export const SectionCard: React.FC<SectionCardProps> = ({ label, size = 'full', 
   return (
     <div
       className="fixed inset-0 z-40 bg-[#2A241E]/45 flex items-center justify-center p-2 sm:p-5"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (closeOnBackdrop && e.target === e.currentTarget) onClose(); }}
     >
       <div
         ref={cardRef}

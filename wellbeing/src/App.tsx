@@ -26,7 +26,8 @@ export default function App() {
   // Yoga / Vyayam / Dhyana open in a card over the Exercises page (HOME)
   const [sectionOpen, setSectionOpen] = useState(false);
   // Today's Plan ('plan', or 'builder' while building one) and Mood also open in cards
-  const [homeCard, setHomeCard] = useState<null | 'plan' | 'builder' | 'mood'>(null);
+  // ... and so do the session player ('session') and its check-in afterwards ('post')
+  const [homeCard, setHomeCard] = useState<null | 'plan' | 'builder' | 'mood' | 'session' | 'post'>(null);
   const closeHomeCard = useCallback(() => setHomeCard(null), []);
   // a session started from the Today's Plan card returns there when it's left
   const [sessionFromCard, setSessionFromCard] = useState(false);
@@ -63,6 +64,9 @@ export default function App() {
     setSoloSession(null);
     setActiveDayIndex(dayIndex);
     setSessionFromCard(homeCard === 'plan');
+    // from the Exercises page (Today's Plan card) the session plays in a card;
+    // from the My Plan page it keeps its own full page
+    if (tab === 'HOME') { setHomeCard('session'); return; }
     setHomeCard(null);
     handleNavigate('SESSION_PLAYER');
   };
@@ -90,7 +94,9 @@ export default function App() {
         rounds: intensity.rounds,
       }],
     });
-    handleNavigate('SESSION_PLAYER');
+    // from a section card's Library: play it in a card, then return to that Library
+    setSectionOpen(false);
+    setHomeCard('session');
   };
 
   // back from a single Library exercise: the section card reopens on its Library
@@ -98,7 +104,20 @@ export default function App() {
     setSoloSession(null);
     setReturnToLibrary(true);
     setSectionOpen(true);
+    setHomeCard(null);
     handleNavigate('HOME');
+  };
+
+  // the session card: leaving returns to where it was started from; finishing a
+  // plan session moves on to the check-in in the same card
+  const handleCardSessionExit = useCallback(() => {
+    if (soloSession) { handleSoloExit(); return; }
+    setHomeCard(sessionFromCard ? 'plan' : null);
+  }, [soloSession, sessionFromCard]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleCardSessionComplete = (moodBefore: Mood | null) => {
+    if (soloSession) { handleSoloExit(); return; }
+    setPendingMoodBefore(moodBefore);
+    setHomeCard('post');
   };
 
   const handleSessionComplete = (moodBefore: Mood | null) => {
@@ -150,6 +169,7 @@ export default function App() {
 
     setPendingMoodBefore(null);
     setActiveDayIndex(null);
+    setHomeCard(null);
     handleNavigate('HOME');
   };
 
@@ -214,6 +234,23 @@ export default function App() {
         {tab === 'HOME' && homeCard === 'mood' && (
           <SectionCard label="Mood" size="compact" onClose={closeHomeCard}>
             <MoodLog entries={state.moodLog} onBack={closeHomeCard} onSave={handleMoodSave} inCard />
+          </SectionCard>
+        )}
+
+        {tab === 'HOME' && homeCard === 'session' && (soloSession || activeSession) && (
+          <SectionCard label="Practice session" closeOnBackdrop={false} onClose={handleCardSessionExit}>
+            <SessionPlayer
+              session={(soloSession ?? activeSession)!}
+              onExit={handleCardSessionExit}
+              onComplete={handleCardSessionComplete}
+              inCard
+            />
+          </SectionCard>
+        )}
+
+        {tab === 'HOME' && homeCard === 'post' && (
+          <SectionCard label="Session complete" size="compact" closeOnBackdrop={false} onClose={() => { setHomeCard(null); setActiveDayIndex(null); }}>
+            <PostSessionCheck onSubmit={handlePostSessionSubmit} />
           </SectionCard>
         )}
 
