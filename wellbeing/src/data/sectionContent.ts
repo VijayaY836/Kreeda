@@ -11,8 +11,8 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     heroImage: getImage('tadasana'),
     timeline: [
       { id: 'patanjali', era: 'c. 2nd century BCE – 4th century CE', title: 'Patanjali\'s Yoga Sutras', text: 'Systematised yoga into eight limbs, including asana (posture) and pranayama (breath) — dharana, dhyana and samadhi are the final three, carried further in Section C.', image: getImage('patanjali') },
-      { id: 'hatha-pradipika', era: '15th century', title: 'Hatha Yoga Pradipika', text: 'A foundational Hatha Yoga text describing asanas, breath control and cleansing practices in detail.' },
-      { id: 'gheranda-samhita', era: '17th–18th century', title: 'Gheranda Samhita', text: 'A later Hatha Yoga manual expanding the catalogue of postures and purification techniques.' },
+      { id: 'hatha-pradipika', era: '15th century', title: 'Hatha Yoga Pradipika', text: 'A foundational Hatha Yoga text describing asanas, breath control and cleansing practices in detail.', image: getImage('hatha-yoga-pradipika') },
+      { id: 'gheranda-samhita', era: '17th–18th century', title: 'Gheranda Samhita', text: 'A later Hatha Yoga manual expanding the catalogue of postures and purification techniques.', image: getImage('gheranda-sahmita') },
       { id: 'vivekananda-chicago', era: '1893', title: 'Vivekananda in Chicago', text: 'Swami Vivekananda\'s address at the World\'s Parliament of Religions introduced yoga philosophy to a global audience.', image: getImage('vivekananda-chicago') },
       { id: 'international-yoga-day', era: '2015 –', title: 'International Day of Yoga', text: 'The UN-recognised International Day of Yoga (21 June) marks yoga\'s formal global reach.', image: getImage('international-yoga-day') },
     ],
@@ -42,9 +42,9 @@ export const SECTION_CONTENT: Record<'yoga' | 'vyayam' | 'dhyana', SectionConten
     color: 'var(--color-brick)',
     heroImage: getImage('dand-basic'),
     timeline: [
-      { id: 'sushruta-samhita', era: 'Ancient', title: 'Sushruta Samhita', text: 'One of the foundational texts of Ayurveda describes ardhashakti — exercising to about half of one\'s full capacity — as the traditional guide to safe exertion.' },
-      { id: 'manasollasa', era: '12th century', title: 'Manasollasa', text: 'A royal encyclopaedia of the Chalukya court describing physical training and wrestling practices of the era.' },
-      { id: 'malla-purana', era: 'Medieval', title: 'Malla Purana', text: 'A text specifically dedicated to the training methods and code of the wrestling (malla) tradition.' },
+      { id: 'sushruta-samhita', era: 'Ancient', title: 'Sushruta Samhita', text: 'One of the foundational texts of Ayurveda describes ardhashakti — exercising to about half of one\'s full capacity — as the traditional guide to safe exertion.', image: getImage('Sushruta Samhita') },
+      { id: 'manasollasa', era: '12th century', title: 'Manasollasa', text: 'A royal encyclopaedia of the Chalukya court describing physical training and wrestling practices of the era.', image: getImage('Manasollasa') },
+      { id: 'malla-purana', era: 'Medieval', title: 'Malla Purana', text: 'A text specifically dedicated to the training methods and code of the wrestling (malla) tradition.', image: getImage('malla purana') },
       { id: 'akhada-great-gama', era: '19th–20th century', title: 'Akhada Culture & the Great Gama', text: 'Akhadas (wrestling gymnasiums) refined Dand-Baithak training; the legendary wrestler the Great Gama was said to perform thousands of reps daily.', image: getImage('great-gama') },
       { id: 'surya-namaskar-akhada', era: 'Early 20th century', title: 'Surya Namaskar in the Akhada', text: 'The Raja of Aundh popularised Surya Namaskar as a conditioning tool used alongside Dand-Baithak in akhadas.', image: getImage('surya-namaskar') },
     ],

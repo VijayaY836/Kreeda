@@ -1,3 +1,6 @@
+import joriImage from '../assets/vyayam/Jori.png';
+import nalImage from '../assets/vyayam/Nal Stone Ring.png';
+
 // Auto-registry of everything under src/assets/<section>/*, keyed by
 // filename without extension (e.g. "tadasana.jpg" -> "tadasana"). New images
 // dropped into those folders are picked up automatically — no manual import
@@ -30,6 +33,10 @@ function toRegistry(modules: Record<string, string>): Record<string, string> {
 
 const REGISTRY = toRegistry(staticModules);
 const ANIMATION_REGISTRY = toRegistry(animationModules);
+const IMAGE_OVERRIDES: Record<string, string> = {
+  jori: joriImage,
+  nal: nalImage,
+};
 
 // A handful of practice/content ids don't line up 1:1 with a fetched image
 // (several progressions share one reference photo, some content ids were
@@ -44,11 +51,13 @@ const ALIASES: Record<string, string> = {
   'baithak-basic': 'baithak',
   'baithak-high-rep': 'baithak',
   'baithak-slow-tempo': 'baithak',
+  jori: 'Jori',
+  nal: 'Nal Stone Ring',
   japa: 'om-chanting',
 };
 
 export function getImage(id: string): string | undefined {
-  return REGISTRY[id] ?? REGISTRY[ALIASES[id]];
+  return IMAGE_OVERRIDES[id] ?? REGISTRY[id] ?? REGISTRY[ALIASES[id]];
 }
 
 // Animated step-by-step demo clips — separate from the static card image,
