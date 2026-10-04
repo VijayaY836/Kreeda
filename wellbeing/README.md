@@ -2,9 +2,9 @@
 
 A React + TypeScript module implementing `spec.md`'s Yoga / Vyayam / Dhyana
 module, styled to match the KREEDA hub (`kreeda-home.html`, `kreeda.html`):
-cream cards with thin gold outlines and soft shadows over the shared `bg.png`
+cream cards with thin gold outlines and soft shadows over a shared hub
 illustration, evergreen/gold/brick/navy accents, Fraunces + Sora + Tiro Telugu
-type. The module home loads `../../bg.png` at runtime, so it only shows when
+type. The module home loads `../../assets/images/wellbeing-bg.png` at runtime, so it only shows when
 opened from `dist/` inside the hub folder (not under `npm run dev`).
 
 Fully offline: all content ships as local TypeScript data, the plan builder is

@@ -1,12 +1,22 @@
 # API keys — never commit
 .env
+*.local
 
-# Dependencies — reinstall with `npm install` in each app
+# Dependencies — reinstall with `npm install` in each module
 node_modules/
 .vite/
 
-# Build output
-dist/
+# Build output is committed on purpose: the hub pages link straight to each
+# module's dist/index.html, so a fresh clone works without running a build.
+# Rebuild with `npm run build` and commit the result.
 
-*.local
+# Logs and caches
+*.log
+__pycache__/
+*.pyc
+
+# OS / editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -13,7 +13,7 @@ interface ModuleHomeProps {
 }
 
 // Physical Wellbeing's own scene (river ghat, mudgars, yoga mat), in the KREEDA root folder
-const HUB_BG = '../../physical-wellbeing1.png';
+const HUB_BG = '../../assets/images/wellbeing-bg.png';
 
 const SECTION_META: Record<Section, { icon: React.ReactNode; eyebrow: string; accent: string }> = {
   yoga: {
