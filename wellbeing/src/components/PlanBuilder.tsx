@@ -64,13 +64,15 @@ interface PlanBuilderProps {
   initialProfile: UserProfile | null;
   onCancel: () => void;
   onComplete: (profile: UserProfile) => void;
+  // shown in a card over the Exercises page, which has its own close button
+  inCard?: boolean;
 }
 
 function toggle<T>(arr: T[], value: T): T[] {
   return arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value];
 }
 
-export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCancel, onComplete }) => {
+export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCancel, onComplete, inCard = false }) => {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<UserProfile>(initialProfile ?? DEFAULT_DRAFT);
 
@@ -88,9 +90,9 @@ export const PlanBuilder: React.FC<PlanBuilderProps> = ({ initialProfile, onCanc
   const back = () => (step === 0 ? onCancel() : setStep(s => s - 1));
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 wb-fade-in">
+    <div className={`max-w-2xl mx-auto px-4 wb-fade-in ${inCard ? 'pt-14 pb-6 sm:pt-6' : 'py-6'}`}>
       <button onClick={back} className="inline-flex items-center gap-1.5 text-[#1F3B2E] font-bold text-sm mb-4 cursor-pointer hover:underline">
-        <ArrowLeft className="w-4 h-4" /> {step === 0 ? 'Back to Physical Wellbeing' : 'Previous step'}
+        <ArrowLeft className="w-4 h-4" /> {step === 0 ? (inCard ? 'Cancel' : 'Back to Physical Wellbeing') : 'Previous step'}
       </button>
 
       {/* Stepper indicator */}

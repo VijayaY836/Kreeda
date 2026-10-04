@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Fraunces', Georgia, serif;
+    --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-telugu: 'Tiro Telugu', sans-serif;
+
+    --color-paper-cream: #EFDFB8;
+    --color-light-cream: #F6ECD2;
+    --color-deep-cream: #E4D19E;
+    --color-maroon: #5C140F;
+    --color-terracotta: #D8401F;
+    --color-marigold: #EFA90C;
+    --color-teal: #0E5C58;
+    --color-pink: #D9587B;
+    --color-dark-ink: #2B1B12;
+    --color-soft-ink: #6B4E3D;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-paper-cream);
+    color: var(--color-dark-ink);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-maroon);
+  }
+}

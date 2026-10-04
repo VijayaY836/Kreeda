@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaamana Guntalu — KREEDA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Manrope:wght@400;500;600;700;800&family=Tiro+Telugu&display=swap" rel="stylesheet">
+<style>
+  /* Palette and board treatment follow the Vaikunthapali board (games/vaikunthapali/src/styles.css). */
+  :root{
+    --paper:#EFDFB8;
+    --paper-deep:#E4D19E;
+    --maroon:#5C140F;
+    --terracotta:#D8401F;
+    --marigold:#EFA90C;
+    --teal:#0E5C58;
+    --blue:#3E6E9E;
+    --ink:#2B1B12;
+    --ink-soft:#6B4E3D;
+    --mahogany:#3D1A0A;
+    --mahogany-light:#5C2E14;
+    --mahogany-highlight:#7A4420;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at 30% 20%, rgba(239,169,12,.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 80%, rgba(92,20,15,.06) 0%, transparent 55%);
+    font-family:'Manrope', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .app{max-width:760px; margin:0 auto; padding:24px 18px 72px;}
+
+  /* ?embed=play — framed inside the KREEDA hub's game card, which has its own
+     close button, so the site header and its back-links are hidden. */
+  html.embedded body{background:transparent; min-height:0;}
+  html.embedded .topbar{display:none;}
+  html.embedded .app{padding:10px 14px 32px;}
+  /* the card's "?" / Board guide button covers the rules */
+  html.embedded .howto{display:none;}
+  /* Wider screens: the board takes the card's full width and height, and the
+     title, scores, status and buttons move to a side column, so the whole
+     game fits without scrolling. The board is ~0.47× as tall as it is wide,
+     so capping its width at ~2.1× the frame height keeps it on screen. */
+  @media (min-width:900px){
+    html.embedded .app{
+      max-width:none;
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:min(calc(100vw - 370px), calc((100vh - 44px) * 2.1), 1000px) 290px;
+      grid-template-areas:
+        "board top"
+        "board bottom";
+      column-gap:28px;
+      justify-content:center;
+      align-content:center;
+      align-items:center;
+    }
+    /* the two halves of the side column meet at the board's middle */
+    html.embedded .side{grid-area:top; align-self:end;}
+    html.embedded .side-bottom{grid-area:bottom; align-self:start;}
+    html.embedded .board-frame{grid-area:board;}
+    html.embedded .game-head{margin:0 0 12px;}
+    html.embedded .game-head h1{font-size:24px;}
+    html.embedded .native-line{font-size:12.5px;}
+    html.embedded .hud{grid-template-columns:1fr; gap:8px; margin-bottom:10px;}
+    html.embedded .plaque{padding:6px 12px;}
+    html.embedded .plaque .n{font-size:24px;}
+    html.embedded .status{margin-bottom:0;}
+    html.embedded .controls{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
+    html.embedded .controls .btn{min-width:0;}
+    html.embedded .controls .btn.primary{grid-column:1 / -1;}
+  }
+
+  /* ---------- header ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px;}
+  .wordmark{
+    font-family:'Fraunces', serif; font-weight:800; font-size:22px; color:var(--maroon);
+    display:flex; align-items:center; gap:8px; text-decoration:none;
+  }
+  .wordmark svg{width:28px; height:28px;}
+  .backbtn{color:var(--maroon); font-weight:800; font-size:14px; padding:8px 0; text-decoration:none;}
+  .game-head{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin:6px 0 16px;}
+  .game-head h1{font-family:'Fraunces',serif; font-size:30px; margin:0 0 2px; font-weight:800; color:var(--maroon);}
+  .native-line{color:var(--ink-soft); font-size:14px; font-weight:600;}
+  .native-line .te{font-family:'Tiro Telugu', serif; font-size:15px;}
+  .head-right{display:flex; align-items:center; gap:10px;}
+  .chip{
+    background:var(--paper-deep); border:2.5px solid var(--maroon); border-radius:2px;
+    padding:7px 14px; font-weight:800; font-size:12.5px; letter-spacing:.3px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 1px 2px 4px rgba(0,0,0,.15);
+  }
+  .guide-btn{
+    width:42px; height:42px; border-radius:50%; cursor:pointer; flex-shrink:0;
+    background:var(--teal); color:var(--paper);
+    font-family:'Fraunces',serif; font-size:19px; font-weight:800;
+    border:2.5px solid var(--mahogany);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 2px 6px rgba(0,0,0,.25);
+    transition:transform .12s ease;
+  }
+  .guide-btn:hover{transform:translateY(-2px);}
+
+  /* ---------- score plaques ---------- */
+  .hud{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+  .plaque{
+    position:relative; display:flex; align-items:center; gap:12px;
+    background:var(--paper-deep); border:2.5px solid var(--maroon); border-radius:2px;
+    padding:9px 14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 1px 2px 4px rgba(0,0,0,.15);
+    transition:background .3s ease;
+  }
+  .plaque.kreedu{flex-direction:row-reverse; text-align:right;}
+  .plaque.active{background:var(--marigold); animation:chipPulse .3s ease;}
+  .plaque.gain{animation:plaqueGain 1.2s ease;}
+  .plaque .who{font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--maroon);}
+  .plaque .n{font-family:'Fraunces',serif; font-size:28px; font-weight:800; line-height:1.05; color:var(--ink);}
+  .plaque .n small{font-family:'Manrope',sans-serif; font-size:12px; font-weight:700; color:var(--ink-soft); margin-left:3px;}
+  .plaque .face{width:42px; height:42px; flex-shrink:0;}
+  .plaque .face img{width:100%; height:100%; object-fit:contain; display:block;}
+  .plaque .token{
+    width:30px; height:30px; margin:6px; border-radius:50%; flex-shrink:0;
+    background:radial-gradient(circle at 35% 30%, #5a90c8 0%, var(--blue) 60%);
+    border:2px solid var(--mahogany);
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3), 0 2px 5px rgba(0,0,0,.35);
+  }
+  .gain-pop{
+    position:absolute; top:-6px; font-family:'Fraunces',serif; font-size:22px; font-weight:800;
+    color:var(--terracotta); text-shadow:0 1px 0 rgba(255,255,255,.6);
+    pointer-events:none; opacity:0;
+  }
+  .plaque.you .gain-pop{right:14px;}
+  .plaque.kreedu .gain-pop{left:14px;}
+  .gain-pop.show{animation:gainRise 1.6s ease forwards;}
+  @keyframes chipPulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
+  @keyframes plaqueGain{0%,100%{background:var(--paper-deep);}20%,70%{background:#F6D27A;}}
+  @keyframes gainRise{0%{opacity:0; transform:translateY(8px);}15%{opacity:1; transform:translateY(0);}75%{opacity:1; transform:translateY(-10px);}100%{opacity:0; transform:translateY(-18px);}}
+
+  /* ---------- status line ---------- */
+  .status{
+    min-height:66px; margin-bottom:14px; padding:10px 16px; text-align:center;
+    display:flex; flex-direction:column; justify-content:center;
+    background:var(--paper); border:2.5px solid var(--maroon); border-radius:2px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 1px 2px 4px rgba(0,0,0,.12);
+    transition:background .35s ease;
+  }
+  .status .main{font-family:'Fraunces',serif; font-size:19px; font-weight:800; color:var(--maroon); line-height:1.25;}
+  .status .sub{font-size:13px; font-weight:700; color:var(--ink-soft); margin-top:3px; line-height:1.45;}
+  .status.score{background:#F6D27A;}
+  .status.kreedu{background:var(--paper-deep);}
+
+  /* ---------- wooden board (frame reused from Vaikunthapali) ---------- */
+  .board-frame{
+    position:relative; padding:16px; border-radius:6px;
+    background:linear-gradient(145deg, var(--mahogany-highlight) 0%, var(--mahogany) 25%, var(--mahogany-light) 55%, var(--mahogany) 80%, #1E0A04 100%);
+    border:4px solid rgba(20,8,2,.8);
+    box-shadow:
+      inset 0 2px 0 rgba(122,68,32,.5),
+      inset 0 -3px 6px rgba(0,0,0,.4),
+      0 14px 34px rgba(0,0,0,.45),
+      0 4px 10px rgba(0,0,0,.3);
+  }
+  .board-frame::before{
+    content:''; position:absolute; inset:7px; pointer-events:none;
+    border:1.5px solid rgba(122,68,32,.45); border-radius:4px;
+    box-shadow:inset 0 0 4px rgba(0,0,0,.2);
+  }
+  .board-corner{
+    position:absolute; width:16px; height:16px; border-radius:50%; z-index:2;
+    background:radial-gradient(circle at 35% 30%, var(--mahogany-highlight) 0%, var(--mahogany) 50%, rgba(20,8,2,.9) 100%);
+    border:2px solid rgba(20,8,2,.6);
+    box-shadow:inset 0 1px 0 rgba(122,68,32,.4), 0 2px 4px rgba(0,0,0,.4);
+  }
+  .board-corner.tl{top:3px; left:3px;} .board-corner.tr{top:3px; right:3px;}
+  .board-corner.bl{bottom:3px; left:3px;} .board-corner.br{bottom:3px; right:3px;}
+
+  /* teak playing surface with grain, knots and hand-worn centre */
+  .board{
+    position:relative; border-radius:16px; padding:14px 16px;
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 50%, rgba(255,214,160,.13) 0%, transparent 70%),
+      radial-gradient(ellipse 5% 3% at 17% 22%, rgba(40,16,4,.35) 0%, transparent 100%),
+      radial-gradient(ellipse 4% 2.5% at 81% 76%, rgba(40,16,4,.3) 0%, transparent 100%),
+      linear-gradient(178deg, #94602F 0%, #87542A 35%, #7A4924 70%, #6E3F1F 100%);
+    box-shadow:
+      inset 0 2px 3px rgba(255,214,160,.22),
+      inset 0 -4px 8px rgba(0,0,0,.35),
+      0 0 0 2px rgba(20,8,2,.55);
+    overflow:hidden;
+  }
+  .board::before{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.55; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.16  0 0 0 0 0.06  1.5 0 0 0 -0.55'/%3E%3C/filter%3E%3Crect width='640' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size:640px 220px;
+  }
+  .row-label{
+    position:relative; text-align:center; font-size:10.5px; font-weight:800; letter-spacing:1.6px;
+    text-transform:uppercase; color:rgba(255,226,180,.62); text-shadow:0 -1px 0 rgba(0,0,0,.55);
+  }
+  .row-label.top{margin-bottom:8px;} .row-label.bot{margin-top:8px;}
+  .groove{
+    position:relative; height:2px; margin:14px 3%;
+    background:linear-gradient(90deg, transparent, rgba(30,10,2,.45) 8%, rgba(30,10,2,.45) 92%, transparent);
+    box-shadow:0 1px 0 rgba(255,214,160,.18);
+  }
+  .pits{position:relative; display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:clamp(6px, 1.8vw, 14px);}
+  .cell{display:flex; flex-direction:column; align-items:center; gap:5px;}
+  .pits.top .cell{flex-direction:column-reverse;}
+
+  /* carved hemispherical bowl: dark inner edge, inner shadow, lit lower lip, bevelled rim */
+  .pit{
+    --bowl:
+      inset 0 7px 12px rgba(0,0,0,.62),
+      inset 0 -4px 7px rgba(255,205,150,.16),
+      0 -2px 0 3px rgba(26,10,2,.30),
+      0 2px 0 3px rgba(255,214,160,.17);
+    position:relative; width:100%; aspect-ratio:1/1; padding:0; border:none; border-radius:50%;
+    background:radial-gradient(circle at 50% 40%, #3A1B0B 0%, #4E2711 42%, #66351A 70%, #7C4623 100%);
+    box-shadow:var(--bowl);
+    cursor:default; font:inherit; color:inherit;
+    transition:box-shadow .3s ease;
+  }
+  .pit:focus-visible{outline:3px solid var(--marigold); outline-offset:5px;}
+  .cell.legal .pit{cursor:pointer; animation:legalPulse 2.6s ease-in-out infinite;}
+  .cell.legal .pit:hover{animation:none; box-shadow:var(--bowl), 0 0 0 5px rgba(239,169,12,.55);}
+  .pit.selected{animation:none !important; box-shadow:var(--bowl), 0 0 0 5px rgba(239,169,12,.85) !important;}
+  .pit.harvest{animation:none !important; box-shadow:var(--bowl), 0 0 0 5px rgba(216,64,31,.85), 0 0 16px rgba(239,169,12,.45) !important;}
+  .pit.thud{animation:pitThud .34s ease-out;}
+  @keyframes legalPulse{
+    0%,100%{box-shadow:var(--bowl), 0 0 0 5px rgba(239,169,12,.16);}
+    50%{box-shadow:var(--bowl), 0 0 0 5px rgba(239,169,12,.42);}
+  }
+  @keyframes pitThud{0%{transform:scale(1);}35%{transform:scale(.965);}100%{transform:scale(1);}}
+
+  .seeds{position:absolute; inset:12%; pointer-events:none;}
+  /* tamarind-seed pieces: glossy, flattened, slightly irregular */
+  .seed{
+    position:absolute; width:24%; height:17.5%;
+    border-radius:48% 52% 46% 54% / 58% 50% 50% 42%;
+    background:radial-gradient(ellipse at 32% 28%, #C98450 0%, #93461D 34%, #5E260C 70%, #3B1706 100%);
+    box-shadow:0 1.5px 2px rgba(0,0,0,.6), inset 0 -1px 1px rgba(0,0,0,.35), inset .5px .8px .6px rgba(255,224,186,.4);
+    transform:translate(-50%,-50%) rotate(var(--r));
+  }
+  .seed.settle{animation:seedSettle .38s ease-out;}
+  @keyframes seedSettle{
+    0%{transform:translate(-50%,-50%) rotate(var(--r)) translateY(-26%) scale(.9);}
+    55%{transform:translate(-50%,-50%) rotate(var(--r)) translateY(7%) scale(1.03);}
+    100%{transform:translate(-50%,-50%) rotate(var(--r));}
+  }
+  .count{
+    font-family:'Fraunces',serif; font-size:13px; font-weight:800; line-height:1;
+    color:rgba(255,226,180,.72); text-shadow:0 -1px 0 rgba(0,0,0,.55);
+  }
+  .cell.legal .count{color:#FFD27A;}
+
+  /* ---------- pieces in motion ---------- */
+  #fly{position:absolute; left:0; top:0; width:0; height:0; z-index:40; pointer-events:none;}
+  .fly-seed{position:absolute; transform:translate(-50%,-50%);}
+  .hand{
+    position:absolute; transform:translate(-50%,-100%);
+    display:flex; align-items:center; gap:7px; white-space:nowrap;
+    padding:5px 12px 5px 8px; border-radius:999px;
+    background:var(--paper-deep); border:2px solid var(--maroon);
+    font-size:12.5px; font-weight:800; color:var(--maroon);
+    box-shadow:0 6px 14px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.45);
+    opacity:0; transition:opacity .25s ease;
+  }
+  .hand.moving{transition:opacity .25s ease, left var(--mv) cubic-bezier(.45,.05,.35,1), top var(--mv) cubic-bezier(.45,.05,.35,1);}
+  .hand.on{opacity:1;}
+  .hand::after{
+    content:''; position:absolute; left:calc(50% + var(--tip, 0px)); bottom:-7px; width:10px; height:10px; margin-left:-5px;
+    background:var(--paper-deep); border-right:2px solid var(--maroon); border-bottom:2px solid var(--maroon);
+    transform:rotate(45deg);
+  }
+  .hand-seeds{display:flex;}
+  .hand-seeds .seed{position:relative; width:11px; height:8px; margin-left:-3px; transform:rotate(var(--r));}
+  .hand-seeds .seed:first-child{margin-left:0;}
+  .pit-float{
+    position:absolute; transform:translate(-50%,-50%);
+    font-family:'Fraunces',serif; font-size:24px; font-weight:800; color:#FFE3A1;
+    text-shadow:0 2px 0 var(--maroon), 0 0 8px rgba(0,0,0,.45);
+    animation:floatUp 1.8s ease forwards;
+  }
+  @keyframes floatUp{0%{opacity:0; margin-top:6px;}15%{opacity:1; margin-top:0;}70%{opacity:1; margin-top:-16px;}100%{opacity:0; margin-top:-28px;}}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+  .btn{
+    flex:1; min-width:130px; padding:12px 14px; border-radius:2px; cursor:pointer;
+    font-family:'Manrope',sans-serif; font-weight:800; font-size:13.5px; letter-spacing:.5px; text-transform:uppercase;
+    border:2.5px solid var(--mahogany);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 1px 2px 4px rgba(0,0,0,.2);
+    transition:transform .1s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn.primary{
+    background:var(--terracotta); color:var(--paper);
+    font-family:'Fraunces',serif; font-size:16px; letter-spacing:1px;
+    text-shadow:0 2px 4px rgba(0,0,0,.3);
+  }
+  .btn.ghost{background:var(--paper); color:var(--maroon); background-image:linear-gradient(180deg, rgba(255,255,255,.3) 0%, transparent 100%);}
+
+  /* ---------- how to play ---------- */
+  .howto{
+    position:relative; margin-top:18px; padding:20px 22px;
+    background:var(--paper); border:3px solid var(--maroon); border-radius:2px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 4px 12px rgba(0,0,0,.12);
+  }
+  .howto::before{content:''; position:absolute; inset:6px; border:1px solid rgba(92,20,15,.18); pointer-events:none;}
+  .howto h2{font-family:'Fraunces',serif; font-size:19px; margin:0 0 8px; color:var(--maroon);}
+  .howto ul{margin:0; padding-left:18px; line-height:1.7; font-size:14px;}
+  .howto li{border-bottom:1.5px dashed rgba(92,20,15,.35); padding-bottom:6px; margin-bottom:6px;}
+  .howto li:last-child{border-bottom:none; margin:0; padding:0;}
+  .howto strong{color:var(--maroon);}
+
+  /* ---------- overlays (Vaikunthapali modal style) ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(43,27,18,.65); display:none;
+    align-items:center; justify-content:center; z-index:60; padding:20px;
+  }
+  .overlay.active{display:flex; animation:fadeIn .25s ease;}
+  .overlay.scroll{align-items:flex-start; overflow-y:auto;}
+  .modal{
+    position:relative; background:var(--paper); max-width:400px; width:100%; padding:26px;
+    border:3px solid var(--maroon); border-radius:2px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 8px 24px rgba(0,0,0,.35);
+    animation:modalSlideUp .35s cubic-bezier(.22,1,.36,1);
+  }
+  .modal::before{content:''; position:absolute; inset:6px; border:1px solid rgba(92,20,15,.18); pointer-events:none;}
+  .modal .place{font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--terracotta); font-weight:800;}
+  .modal h3{font-family:'Fraunces',serif; margin:6px 0 10px; font-size:24px; font-weight:800; color:var(--maroon);}
+  .modal p{font-size:14.5px; line-height:1.6; margin:0 0 16px;}
+  .guide{max-width:640px; padding:28px 28px 32px; margin:12px 0 32px;}
+  .guide-close{
+    position:absolute; top:16px; right:16px; width:36px; height:36px; border-radius:50%; z-index:1;
+    background:var(--paper-deep); border:2.5px solid var(--maroon); color:var(--maroon);
+    font-size:18px; font-weight:800; cursor:pointer;
+  }
+  .guide h1{font-family:'Fraunces',serif; font-size:26px; font-weight:800; color:var(--maroon); margin:6px 0 16px; padding-right:40px; line-height:1.15;}
+  .guide h2{font-family:'Fraunces',serif; font-size:17px; font-weight:800; color:var(--maroon); margin:22px 0 8px;}
+  .guide p{font-size:14px; line-height:1.7; margin:0 0 4px;}
+  .guide table{width:100%; border-collapse:collapse; margin-top:6px; font-size:13.5px;}
+  .guide th{text-align:left; font-size:11.5px; font-weight:800; letter-spacing:.3px; text-transform:uppercase; color:var(--maroon); padding:0 8px 7px 0; border-bottom:2px solid var(--maroon);}
+  .guide td{padding:8px 8px 8px 0; border-bottom:1px solid rgba(92,20,15,.2); vertical-align:top;}
+  .guide tr:last-child td{border-bottom:none;}
+  .guide td strong{color:var(--maroon);}
+  .guide-note{margin-top:20px; padding:13px 15px; background:var(--paper-deep); border:2px solid var(--maroon); font-size:13.5px; line-height:1.65;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes modalSlideUp{from{opacity:0; transform:translateY(24px) scale(.96);}to{opacity:1; transform:none;}}
+
+  @media (max-width:560px){
+    .app{padding:18px 12px 56px;}
+    .game-head h1{font-size:24px;}
+    .plaque{padding:8px 10px; gap:8px;}
+    .plaque .n{font-size:23px;}
+    .plaque .face{width:34px; height:34px;}
+    .plaque .token{width:24px; height:24px; margin:4px;}
+    .status .main{font-size:16.5px;}
+    .board-frame{padding:9px;}
+    .board-frame::before{inset:4px;}
+    .board-corner{display:none;}
+    .board{padding:10px 6px; border-radius:12px;}
+    .pits{gap:5px;}
+    .count{font-size:11.5px;}
+    .guide{padding:22px 18px 26px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .cell.legal .pit{animation:none; box-shadow:var(--bowl), 0 0 0 5px rgba(239,169,12,.35);}
+  }
+</style>
+</head>
+<body>
+<script>
+  // Before first paint, so the hub's card never flashes the site header.
+  if (new URLSearchParams(location.search).get('embed') === 'play') {
+    document.documentElement.classList.add('embedded');
+    parent.postMessage({ source: 'kreeda-embed', view: 'game' }, '*'); // the hub titles the card in the chosen language
+  }
+</script>
+<div class="app">
+  <div class="topbar">
+    <a class="wordmark" href="../../kreeda.html">
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#EFA90C" stroke="#5C140F" stroke-width="3"/><circle cx="20" cy="20" r="6.5" fill="#D8401F" stroke="#5C140F" stroke-width="2.4"/><circle cx="20" cy="6" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="20" cy="34" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="6" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/><circle cx="34" cy="20" r="3.4" fill="#0E5C58" stroke="#5C140F" stroke-width="2"/></svg>
+      KREEDA
+    </a>
+    <a class="backbtn" href="../../kreeda.html">&larr; All games</a>
+  </div>
+
+  <div class="side">
+  <div class="game-head">
+    <div>
+      <h1>Vaamana Guntalu</h1>
+      <div class="native-line"><span class="te">వామన గుంటలు</span> · Pallanguzhi · sow the seeds, harvest the fours</div>
+    </div>
+    <div class="head-right">
+      <div class="chip">vs Kreedu</div>
+      <button class="guide-btn" onclick="openGuide()" aria-label="Board guide" title="Board guide">?</button>
+    </div>
+  </div>
+
+  <div class="hud">
+    <div class="plaque you" id="plaque-0">
+      <span class="token" aria-hidden="true"></span>
+      <div><div class="who">You</div><div class="n"><span id="store-0">0</span><small>seeds</small></div></div>
+      <span class="gain-pop" id="gain-0"></span>
+    </div>
+    <div class="plaque kreedu" id="plaque-1">
+      <span class="face"><img src="kreedu-mascot.png" alt=""></span>
+      <div><div class="who">Kreedu</div><div class="n"><span id="store-1">0</span><small>seeds</small></div></div>
+      <span class="gain-pop" id="gain-1"></span>
+    </div>
+  </div>
+
+  <div class="status" id="status" role="status" aria-live="polite">
+    <div class="main" id="status-main">Your turn</div>
+    <div class="sub" id="status-sub">Your row is the bottom seven pits. Choose a glowing pit to sow — Kreedu plays the top row.</div>
+  </div>
+
+  </div>
+
+  <div class="board-frame">
+    <span class="board-corner tl"></span><span class="board-corner tr"></span>
+    <span class="board-corner bl"></span><span class="board-corner br"></span>
+    <div class="board" id="board">
+      <div class="row-label top">&larr; Kreedu's row</div>
+      <div class="pits top" id="row-top"></div>
+      <div class="groove"></div>
+      <div class="pits bot" id="row-bot"></div>
+      <div class="row-label bot">Your row &rarr;</div>
+    </div>
+  </div>
+
+  <div class="side side-bottom">
+  <div class="controls">
+    <button class="btn primary" onclick="newGame()">New round</button>
+    <button class="btn ghost" id="btn-pace" onclick="togglePace()">Pace: Slow</button>
+    <button class="btn ghost" onclick="openGuide()">Board guide</button>
+  </div>
+  </div>
+
+  <section class="howto">
+    <h2>How to play</h2>
+    <ul>
+      <li><strong>Objective:</strong> Collect more seeds than Kreedu.</li>
+      <li><strong>Sow:</strong> Tap a pit on your (bottom) row. Its seeds are lifted and dropped one at a time into each following pit — rightwards along your row, then leftwards along Kreedu's (counterclockwise).</li>
+      <li><strong>Keep going:</strong> If the last seed lands in a pit that already had seeds, pick that pit up and keep sowing.</li>
+      <li><strong>Four is a harvest:</strong> Any pit that reaches exactly four seeds during your sow is taken into your store.</li>
+      <li><strong>Opposite capture:</strong> If your last seed lands in an empty pit on your side, you take the opposite pit too.</li>
+      <li>The round ends when one side has no seeds left to sow. Leftover seeds on the board go to that side's owner.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="fly"><div class="hand" id="hand"><span class="hand-seeds" id="hand-seeds"></span><span id="hand-text"></span></div></div>
+
+<div class="overlay" id="end-modal">
+  <div class="modal">
+    <div class="place">Round over</div>
+    <h3 id="end-title">Round over</h3>
+    <p id="end-body"></p>
+    <button class="btn primary" style="width:100%" onclick="closeEnd(); newGame();">Play again</button>
+  </div>
+</div>
+
+<div class="overlay scroll" id="guide-overlay">
+  <div class="modal guide">
+    <button class="guide-close" onclick="closeGuide()" aria-label="Close board guide">&times;</button>
+    <div class="place">Board Guide · వామన గుంటలు</div>
+    <h1>The circle of sowing and capture</h1>
+
+    <p>The board is two rows of seven pits facing each other — your row and Kreedu's — and seeds move in one direction only: counterclockwise around the whole ring. There is no die and no chance move. Every seed you sow is a small, deliberate act of counting.</p>
+
+    <h2>The fourteen guntalu — the pits</h2>
+    <table>
+      <tr><th>Pits</th><th>Side</th><th>Meaning</th></tr>
+      <tr><td><strong>1 – 7</strong></td><td>You</td><td>The bottom row, yours to sow from</td></tr>
+      <tr><td><strong>8 – 14</strong></td><td>Kreedu</td><td>The top row, Kreedu's to sow from</td></tr>
+    </table>
+
+    <h2>How a turn unfolds</h2>
+    <table>
+      <tr><th>Step</th><th>Action</th><th>What happens</th></tr>
+      <tr><td>1</td><td><strong>Choose</strong></td><td>Tap any pit with seeds on your own row</td></tr>
+      <tr><td>2</td><td><strong>Lift</strong></td><td>Every seed in that pit is picked up into your hand</td></tr>
+      <tr><td>3</td><td><strong>Sow</strong></td><td>One seed drops into each pit going counterclockwise</td></tr>
+      <tr><td>4</td><td><strong>Chain</strong></td><td>If your last seed lands in a pit that already held seeds, lift it and keep sowing</td></tr>
+      <tr><td>5</td><td><strong>Harvest</strong></td><td>Any pit that reaches exactly four seeds mid-sow empties straight into your store</td></tr>
+      <tr><td>6</td><td><strong>Capture</strong></td><td>A last seed landing in your own empty pit also wins you the pit directly opposite</td></tr>
+    </table>
+
+    <h2>Rules played here</h2>
+    <table>
+      <tr><td>Each side begins with <strong>five seeds</strong> in every one of its seven pits — seventy seeds on the board.</td></tr>
+      <tr><td>A pit that reaches <strong>exactly four seeds</strong> during a sow is harvested on the spot, even mid-turn.</td></tr>
+      <tr><td>The round ends the moment a side has <strong>no seeds left to sow</strong>. Whatever remains on the board is swept into stores by ownership.</td></tr>
+      <tr><td>Whoever holds <strong>more seeds</strong> when play stops wins the round.</td></tr>
+    </table>
+
+    <div class="guide-note">Vaamana Guntalu is played under many regional names and rule sets across South India — starting seed counts, sowing direction, and capture conditions all vary by household and region. This board plays the common Telugu <strong>four-seed harvest</strong> version, sown counterclockwise from five starting seeds per pit.</div>
+  </div>
+</div>
+
+<script>
+/* ================= RULES (unchanged) ================= */
+const YOU = 0, KREEDU = 1;
+const START_SEEDS = 5;
+let pits, store, turn, busy, over;
+
+function owner(i){ return i < 7 ? YOU : KREEDU; }
+function opposite(i){ return 13 - i; }
+function hasMove(player){
+  const a = player === YOU ? 0 : 7;
+  for(let i=a;i<a+7;i++) if(pits[i]>0) return true;
+  return false;
+}
+function legalPits(player){
+  const a = player === YOU ? 0 : 7; const out = [];
+  for(let i=a;i<a+7;i++) if(pits[i]>0) out.push(i);
+  return out;
+}
+function snapshot(){ return { pits:pits.slice(), store:store.slice() }; }
+function simulate(start, player, state){
+  const p = state.pits.slice(); const st = state.store.slice();
+  let pit = start; let hand = p[pit];
+  if(hand<=0) return { pits:p, store:st };
+  p[pit]=0; let safety=0;
+  while(hand>0 && safety++<400){
+    pit=(pit+1)%14; hand--; p[pit]++;
+    if(p[pit]===4){ st[player]+=4; p[pit]=0; if(hand===0) break; continue; }
+    if(hand===0){
+      if(p[pit]>1){ hand=p[pit]; p[pit]=0; continue; }
+      if(p[pit]===1 && owner(pit)===player){
+        const opp=opposite(pit);
+        if(p[opp]>0){ st[player]+=p[pit]+p[opp]; p[pit]=0; p[opp]=0; }
+      }
+      break;
+    }
+  }
+  return { pits:p, store:st };
+}
+function chooseKreeduMove(){
+  const options = legalPits(KREEDU);
+  if(!options.length) return null;
+  const base = snapshot();
+  let best = options[0], bestScore = -Infinity;
+  for(const mv of options){
+    const after = simulate(mv, KREEDU, base);
+    let worst = Infinity; const replyPits = [];
+    for(let i=0;i<7;i++) if(after.pits[i]>0) replyPits.push(i);
+    if(!replyPits.length){ worst = after.store[KREEDU] - after.store[YOU]; }
+    else {
+      for(const r of replyPits){
+        const two = simulate(r, YOU, after);
+        const sc = two.store[KREEDU] - two.store[YOU];
+        if(sc<worst) worst=sc;
+      }
+    }
+    const side = after.pits.slice(7).reduce((a,b)=>a+b,0) - after.pits.slice(0,7).reduce((a,b)=>a+b,0);
+    const total = worst*12 + side;
+    if(total>bestScore || (total===bestScore && Math.random()<0.3)){ bestScore=total; best=mv; }
+  }
+  return best;
+}
+function sweepRemain(){
+  let you=0, kr=0;
+  for(let i=0;i<7;i++) you+=pits[i];
+  for(let i=7;i<14;i++) kr+=pits[i];
+  store[YOU]+=you; store[KREEDU]+=kr; pits.fill(0);
+}
+
+/* ================= PACE ================= */
+// Every step of a move is timed so the player can follow it: lift → carry → drop → settle.
+const PACES = {
+  slow:  { lift:1000, move:420, drop:480, settle:230, chain:1300, score:2000, think:1100 },
+  quick: { lift:520,  move:220, drop:280, settle:90,  chain:700,  score:1150, think:600 }
+};
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let paceKey = 'slow';
+try{ if(localStorage.getItem('kreeda-vg-pace')==='quick') paceKey='quick'; }catch(e){}
+if(REDUCED) paceKey = 'quick';
+let pace = PACES[paceKey];
+function togglePace(){
+  paceKey = paceKey==='slow' ? 'quick' : 'slow';
+  pace = PACES[paceKey];
+  try{ localStorage.setItem('kreeda-vg-pace', paceKey); }catch(e){}
+  syncPaceBtn();
+}
+function syncPaceBtn(){ document.getElementById('btn-pace').textContent = paceKey==='slow' ? 'Pace: Slow' : 'Pace: Quick'; }
+
+/* ================= BOARD ================= */
+const MAXVIS = 30;
+const pitEl = [], seedsEl = [], countEl = [], cellEl = [];
+const fly = document.getElementById('fly');
+const hand = document.getElementById('hand');
+
+function hash(n){
+  n = (n ^ 61) ^ (n >>> 16); n = n + (n << 3); n = n ^ (n >>> 4);
+  n = Math.imul(n, 0x27d4eb2d); n = n ^ (n >>> 15);
+  return (n >>> 0) / 4294967296;
+}
+// Stable resting place for the k-th seed of pit i (fractions of the bowl), so pieces never jump around.
+function seedPos(i, k){
+  const layer = Math.floor(k/10), kk = k % 10;
+  const a = kk*2.39996 + i*1.7 + layer*0.9;
+  const rad = (kk===0 ? 0.03 : 0.12*Math.sqrt(kk)) + (hash(i*131+k*7+1)-.5)*0.06;
+  return {
+    x: 0.5 + rad*Math.cos(a),
+    y: 0.5 + rad*Math.sin(a)*0.92 - layer*0.035,
+    r: Math.round(hash(i*977+k*31+3)*360),
+    z: layer*20 + Math.round((0.5 + rad*Math.sin(a))*10)
+  };
+}
+function makeSeed(r){
+  const s = document.createElement('span');
+  s.className = 'seed'; s.style.setProperty('--r', r + 'deg');
+  return s;
+}
+function buildBoard(){
+  const top = document.getElementById('row-top'), bot = document.getElementById('row-bot');
+  const order = [13,12,11,10,9,8,7, 0,1,2,3,4,5,6];
+  order.forEach((i, n)=>{
+    const cell = document.createElement('div'); cell.className = 'cell';
+    const pit = document.createElement('button'); pit.type = 'button'; pit.className = 'pit';
+    const seeds = document.createElement('div'); seeds.className = 'seeds';
+    const count = document.createElement('span'); count.className = 'count';
+    pit.appendChild(seeds); cell.appendChild(pit); cell.appendChild(count);
+    pit.addEventListener('click', ()=> onPit(i));
+    pit.addEventListener('animationend', e=>{ if(e.animationName==='pitThud') pit.classList.remove('thud'); });
+    (n < 7 ? top : bot).appendChild(cell);
+    pitEl[i] = pit; seedsEl[i] = seeds; countEl[i] = count; cellEl[i] = cell;
+  });
+}
+function syncPit(i, settleNew){
+  const box = seedsEl[i], want = Math.min(pits[i], MAXVIS);
+  while(box.children.length > want) box.lastChild.remove();
+  while(box.children.length < want){
+    const k = box.children.length, p = seedPos(i, k);
+    const s = makeSeed(p.r);
+    s.style.left = (p.x*100) + '%'; s.style.top = (p.y*100) + '%'; s.style.zIndex = p.z;
+    if(settleNew) s.classList.add('settle');
+    box.appendChild(s);
+  }
+  countEl[i].textContent = pits[i];
+  const side = owner(i)===YOU ? 'your' : "Kreedu's";
+  pitEl[i].setAttribute('aria-label', `Pit ${i+1} on ${side} row, ${pits[i]} seed${pits[i]===1?'':'s'}`);
+}
+function syncAll(){ for(let i=0;i<14;i++) syncPit(i); setScore(0, store[0]); setScore(1, store[1]); }
+function refreshLegal(){
+  const legal = (!busy && !over && turn===YOU) ? new Set(legalPits(YOU)) : new Set();
+  for(let i=0;i<14;i++){
+    const ok = legal.has(i);
+    cellEl[i].classList.toggle('legal', ok);
+    pitEl[i].disabled = !ok;
+    pitEl[i].title = ok ? `Sow this pit (${pits[i]} seed${pits[i]===1?'':'s'})` : '';
+  }
+  document.getElementById('plaque-0').classList.toggle('active', !over && turn===YOU);
+  document.getElementById('plaque-1').classList.toggle('active', !over && turn===KREEDU);
+}
+function setStatus(main, sub, kind){
+  const el = document.getElementById('status');
+  el.className = 'status' + (kind ? ' ' + kind : '');
+  document.getElementById('status-main').textContent = main;
+  document.getElementById('status-sub').textContent = sub || '';
+}
+function setScore(p, v){ document.getElementById('store-'+p).textContent = v; }
+function countUp(p, from, to){
+  const t0 = performance.now(), dur = 700;
+  (function tick(now){
+    const f = Math.min(1, (now - t0) / dur);
+    setScore(p, Math.round(from + (to - from) * (1 - Math.pow(1 - f, 3))));
+    if(f < 1) requestAnimationFrame(tick);
+  })(t0);
+  const plaque = document.getElementById('plaque-'+p), pop = document.getElementById('gain-'+p);
+  pop.textContent = '+' + (to - from);
+  pop.classList.remove('show'); plaque.classList.remove('gain');
+  void pop.offsetWidth;
+  pop.classList.add('show'); plaque.classList.add('gain');
+}
+
+/* ================= MOTION HELPERS ================= */
+const CANCEL = {};
+let gen = 0;
+function delay(ms){ return new Promise(r=>setTimeout(r, ms)); }
+async function pause(ms, g){ await delay(ms); if(g !== gen) throw CANCEL; }
+async function done(anims, g){ await Promise.all(anims.map(a=>a.finished)); if(g !== gen) throw CANCEL; }
+function geom(el){
+  const r = el.getBoundingClientRect();
+  return { left:r.left+scrollX, top:r.top+scrollY, w:r.width, h:r.height, x:r.left+scrollX+r.width/2, y:r.top+scrollY+r.height/2 };
+}
+function flySeed(x, y, w, r){
+  const s = makeSeed(r); s.classList.add('fly-seed');
+  s.style.left = x + 'px'; s.style.top = y + 'px';
+  s.style.width = w + 'px'; s.style.height = (w*0.73) + 'px';
+  fly.appendChild(s);
+  return s;
+}
+function seedTarget(i, k){
+  const g = geom(pitEl[i]), p = seedPos(i, k);
+  return { x:g.left + g.w*(0.12 + 0.76*p.x), y:g.top + g.w*(0.12 + 0.76*p.y), w:g.w*0.76*0.24, r:p.r };
+}
+function handPoint(i){ const g = geom(pitEl[i]); return { x:g.x, y:g.top - g.w*0.28 }; }
+function setHand(n){
+  const box = document.getElementById('hand-seeds'); box.innerHTML = '';
+  for(let k=0;k<Math.min(n,6);k++) box.appendChild(makeSeed(Math.round(hash(k*53+9)*80-40)));
+  document.getElementById('hand-text').textContent = n + ' in hand';
+}
+function placeHand(i, animate){
+  const p = handPoint(i);
+  hand.classList.toggle('moving', !!animate);
+  hand.style.setProperty('--mv', pace.move + 'ms');
+  // Keep the whole pill on screen over the end pits on narrow screens; the
+  // pointer underneath shifts back so it still marks the pit.
+  const half = hand.offsetWidth / 2 + 6;
+  const x = Math.min(Math.max(p.x, half), document.documentElement.clientWidth - half);
+  hand.style.setProperty('--tip', (p.x - x) + 'px');
+  hand.style.left = x + 'px'; hand.style.top = p.y + 'px';
+}
+function hideHand(){ hand.classList.remove('on'); }
+function floatText(i, text){
+  const g = geom(pitEl[i]);
+  const f = document.createElement('div'); f.className = 'pit-float'; f.textContent = text;
+  f.style.left = g.x + 'px'; f.style.top = g.y + 'px';
+  fly.appendChild(f); setTimeout(()=>f.remove(), 1900);
+}
+const who = p => p===YOU ? 'You' : 'Kreedu';
+const plural = (n, w) => `${n} ${w}${n===1?'':'s'}`;
+
+/* ================= SOWING, ONE SEED AT A TIME ================= */
+async function lift(i, g){
+  const n = pits[i];
+  setStatus(turn===YOU ? `Picking up ${plural(n,'seed')}…` : `Kreedu picks up ${plural(n,'seed')}…`,
+            `From pit ${i+1}. They will be dropped one by one into the next pits, counterclockwise.`,
+            turn===KREEDU ? 'kreedu' : '');
+  pitEl[i].classList.add('selected');
+  await pause(pace.lift*0.35, g);
+  placeHand(i, false); setHand(0); hand.classList.add('on');
+  const hp = handPoint(i);
+  const els = [...seedsEl[i].children];
+  const anims = els.map((el, idx)=>{
+    const r = el.getBoundingClientRect();
+    const s = flySeed(r.left+scrollX+r.width/2, r.top+scrollY+r.height/2, r.width, 0);
+    const dx = hp.x - (r.left+scrollX+r.width/2), dy = hp.y - 8 - (r.top+scrollY+r.height/2);
+    return s.animate([
+      { transform:`translate(-50%,-50%) rotate(${el.style.getPropertyValue('--r')})`, opacity:1 },
+      { transform:`translate(-50%,-50%) translate(${dx}px,${dy}px) scale(.85)`, opacity:.15 }
+    ], { duration:pace.lift*0.5, delay:idx*Math.min(70, 350/els.length), easing:'cubic-bezier(.3,.7,.4,1)', fill:'forwards' });
+  });
+  pits[i] = 0; syncPit(i);
+  try{ await done(anims, g); } finally { anims.forEach(a=>a.effect.target.remove()); }
+  setHand(n);
+  await pause(pace.lift*0.15, g);
+  pitEl[i].classList.remove('selected');
+}
+async function dropInto(i, handLeft, g){
+  placeHand(i, true);
+  await pause(pace.move, g);
+  const hp = handPoint(i);
+  const k = Math.min(pits[i], MAXVIS-1), t = seedTarget(i, k);
+  const s = flySeed(hp.x, hp.y - 4, t.w, 0);
+  const dx = t.x - hp.x, dy = t.y - (hp.y - 4);
+  setHand(handLeft);
+  const a = s.animate([
+    { transform:'translate(-50%,-50%) scale(1.12)', easing:'cubic-bezier(.55,0,.9,.45)' },
+    { offset:.72, transform:`translate(-50%,-50%) translate(${dx}px,${dy}px) scale(.98) rotate(${t.r*0.7}deg)`, easing:'ease-out' },
+    { offset:.86, transform:`translate(-50%,-50%) translate(${dx}px,${dy - t.w*0.4}px) scale(.94) rotate(${t.r*0.9}deg)`, easing:'ease-in' },
+    { transform:`translate(-50%,-50%) translate(${dx}px,${dy}px) scale(.96) rotate(${t.r}deg)` }
+  ], { duration:pace.drop, fill:'forwards' });
+  try{ await done([a], g); } finally { s.remove(); }
+  pits[i]++;
+  syncPit(i, true);
+  pitEl[i].classList.remove('thud'); void pitEl[i].offsetWidth; pitEl[i].classList.add('thud');
+  await pause(pace.settle, g);
+}
+// Seeds leave the pit(s) and travel to the scorer's plaque; the score then counts up visibly.
+async function collect(player, list, total, main, sub, g){
+  list.forEach(p=>pitEl[p].classList.add('harvest'));
+  floatText(list[0], '+' + total);
+  setStatus(main, `${sub} ${who(player)}: ${store[player]} → ${store[player] + total}`, 'score');
+  await pause(pace.score*0.4, g);
+  const dest = geom(document.getElementById('plaque-'+player));
+  const anims = [];
+  list.forEach(p=>{
+    [...seedsEl[p].children].forEach((el, idx)=>{
+      const r = el.getBoundingClientRect();
+      const x0 = r.left+scrollX+r.width/2, y0 = r.top+scrollY+r.height/2;
+      const s = flySeed(x0, y0, r.width, 0);
+      const dx = dest.x - x0, dy = dest.y - y0;
+      anims.push(s.animate([
+        { transform:'translate(-50%,-50%)', opacity:1 },
+        { offset:.45, transform:`translate(-50%,-50%) translate(${dx*0.35}px,${dy*0.35 - 40}px) scale(1.1)`, opacity:1 },
+        { transform:`translate(-50%,-50%) translate(${dx}px,${dy}px) scale(.7)`, opacity:0 }
+      ], { duration:750, delay:anims.length*90, easing:'cubic-bezier(.45,.05,.35,1)', fill:'forwards' }));
+    });
+    pits[p] = 0; syncPit(p);
+  });
+  try{ await done(anims, g); } finally { anims.forEach(a=>a.effect.target.remove()); }
+  const from = store[player]; store[player] += total;
+  countUp(player, from, store[player]);
+  await pause(pace.score*0.6, g);
+  list.forEach(p=>pitEl[p].classList.remove('harvest'));
+}
+async function animateSow(start, g){
+  let pit = start; let handN = pits[pit];
+  await lift(pit, g);
+  let safety = 0;
+  while(handN>0 && safety++ < 400){
+    pit = (pit+1)%14; handN--;
+    setStatus(turn===YOU ? 'Sowing…' : 'Kreedu is sowing…',
+              `One seed into each pit, counterclockwise — now pit ${pit+1}.`, turn===KREEDU ? 'kreedu' : '');
+    await dropInto(pit, handN, g);
+    if(pits[pit]===4){
+      await collect(turn, [pit], 4,
+        turn===YOU ? 'Harvested 4 seeds! +4' : 'Kreedu harvested 4 seeds +4',
+        `Pit ${pit+1} reached exactly four.`, g);
+      if(handN===0) break;
+      continue;
+    }
+    if(handN===0){
+      if(pits[pit]>1){
+        setStatus('Landed on an occupied pit', `Pit ${pit+1} already had seeds — lift all ${pits[pit]} and keep sowing.`, turn===KREEDU ? 'kreedu' : '');
+        await pause(pace.chain, g);
+        handN = pits[pit];
+        await lift(pit, g);
+        continue;
+      }
+      if(pits[pit]===1 && owner(pit)===turn){
+        const opp = opposite(pit);
+        if(pits[opp]>0){
+          const total = pits[pit] + pits[opp];
+          hideHand();
+          await collect(turn, [pit, opp], total,
+            turn===YOU ? `Captured ${total}! +${total}` : `Kreedu captured ${total} +${total}`,
+            `Last seed landed in an empty pit on ${turn===YOU ? 'your' : 'its'} side, so pit ${opp+1} opposite is taken too.`, g);
+        }
+      }
+      break;
+    }
+  }
+  hideHand();
+}
+
+/* ================= TURNS ================= */
+function newGame(){
+  gen++;
+  fly.querySelectorAll('.fly-seed, .pit-float').forEach(e=>e.remove());
+  hideHand();
+  pitEl.forEach(p=>p.classList.remove('selected','harvest','thud'));
+  pits = Array(14).fill(START_SEEDS);
+  store = [0, 0];
+  turn = YOU; busy = false; over = false;
+  syncAll(); refreshLegal();
+  setStatus('Your turn', "Your row is the bottom seven pits. Choose a glowing pit to sow — Kreedu plays the top row.");
+}
+function onPit(i){
+  if(busy || over || turn!==YOU) return;
+  if(owner(i)!==YOU || pits[i]===0) return;
+  runTurn(i);
+}
+async function runTurn(start){
+  const g = gen;
+  busy = true; refreshLegal();
+  try{ await animateSow(start, g); }
+  catch(e){ if(e===CANCEL) return; throw e; }
+  if(checkEnd()){ busy=false; return; }
+  turn = turn===YOU ? KREEDU : YOU;
+  if(!hasMove(turn)){ checkEnd(true); busy=false; return; }
+  busy = false; refreshLegal();
+  if(turn===KREEDU){
+    setStatus("Kreedu's turn", 'Kreedu is studying the top row…', 'kreedu');
+    let mv;
+    try{
+      await pause(pace.think, g);
+      mv = chooseKreeduMove();
+      if(mv==null) return;
+      pitEl[mv].classList.add('selected');
+      setStatus("Kreedu's turn", `Kreedu chooses pit ${mv+1} (${plural(pits[mv],'seed')}).`, 'kreedu');
+      await pause(pace.think*0.8, g);
+    }catch(e){ if(e===CANCEL) return; throw e; }
+    await runTurn(mv);
+  } else {
+    setStatus('Your turn', 'Choose a glowing pit on your row.');
+  }
+}
+function checkEnd(force){
+  if(over) return true;
+  const youEmpty = !hasMove(YOU); const krEmpty = !hasMove(KREEDU);
+  if(force || youEmpty || krEmpty){
+    over = true;
+    const before = store.slice();
+    sweepRemain();
+    for(let i=0;i<14;i++) syncPit(i);
+    [YOU, KREEDU].forEach(p=>{ if(store[p]!==before[p]) countUp(p, before[p], store[p]); else setScore(p, store[p]); });
+    hideHand(); refreshLegal();
+    const y=store[YOU], k=store[KREEDU];
+    let title, body, line;
+    if(y>k){ title='You win!'; body=`You collected ${y} seeds. Kreedu has ${k}. The pits are empty — well sown.`; line='You gathered more seeds. Rematch?'; }
+    else if(k>y){ title='Kreedu wins'; body=`Kreedu collected ${k} seeds. You have ${y}. The harvest went the other way this round.`; line='Kreedu got more seeds this time. Try another sowing?'; }
+    else { title='A split harvest'; body=`Both stores hold ${y} seeds.`; line='Even stores. One more round?'; }
+    setStatus(title, 'A side has no seeds left to sow — the seeds still on the board go to the side they sit on. ' + line, 'score');
+    const g = gen;
+    setTimeout(()=>{
+      if(g !== gen) return;
+      document.getElementById('end-title').textContent = title;
+      document.getElementById('end-body').textContent = body;
+      document.getElementById('end-modal').classList.add('active');
+    }, 1400);
+    return true;
+  }
+  return false;
+}
+function closeEnd(){ document.getElementById('end-modal').classList.remove('active'); }
+document.getElementById('end-modal').addEventListener('click', e=>{ if(e.target.id==='end-modal') closeEnd(); });
+function openGuide(){ document.getElementById('guide-overlay').classList.add('active'); }
+function closeGuide(){ document.getElementById('guide-overlay').classList.remove('active'); }
+document.getElementById('guide-overlay').addEventListener('click', e=>{ if(e.target.id==='guide-overlay') closeGuide(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeGuide(); closeEnd(); } });
+
+buildBoard();
+syncPaceBtn();
+newGame();
+</script>
+</body>
+</html>

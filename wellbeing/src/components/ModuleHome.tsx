@@ -8,10 +8,12 @@ interface ModuleHomeProps {
   plan: WeeklyPlan | null;
   onOpenSection: (section: Section) => void;
   onNavigate: (tab: ViewTab) => void;
-  onStartTodaySession: (dayIndex: number) => void;
+  onOpenToday: () => void;
+  onOpenMood: () => void;
 }
 
-const HUB_BG = '../../bg.png';
+// Physical Wellbeing's own scene (river ghat, mudgars, yoga mat), in the KREEDA root folder
+const HUB_BG = '../../physical-wellbeing1.png';
 
 const SECTION_META: Record<Section, { icon: React.ReactNode; eyebrow: string; accent: string }> = {
   yoga: {
@@ -31,33 +33,29 @@ const SECTION_META: Record<Section, { icon: React.ReactNode; eyebrow: string; ac
   },
 };
 
-export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onNavigate, onStartTodaySession }) => {
+export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onNavigate, onOpenToday, onOpenMood }) => {
   const todayIndex = (new Date().getDay() + 6) % 7;
   const todaySession = plan?.days.find(day => day.dayIndex === todayIndex);
   const canStartToday = !!todaySession && (todaySession.items.length > 0 || !!todaySession.standaloneDhyana);
 
-  const openToday = () => {
-    if (canStartToday) {
-      onStartTodaySession(todayIndex);
-      return;
-    }
-    onNavigate(plan ? 'PLAN_OVERVIEW' : 'PLAN_BUILDER');
-  };
+  // Today's Plan and Mood open in cards over this page
+  const openToday = onOpenToday;
 
   return (
     <div className="hub-hero min-h-screen">
       <img className="hub-bg" src={HUB_BG} alt="" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
-        <header className="flex items-center justify-between gap-3 mb-6">
+      <div className="hub-content relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
+        <header className="relative flex flex-wrap items-center justify-between gap-3 mb-6">
           <a href="../../kreeda-home.html" className="hub-pill hub-home-link" aria-label="Back to KREEDA home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
             Home
           </a>
 
-          <h1 className="font-fraunces text-2xl sm:text-4xl font-semibold tracking-[0.08em] text-[#1F3B2E]">EXERCISES</h1>
+          {/* centred over the header on wide screens; its own row under the buttons on phones */}
+          <h1 className="hub-glow absolute left-1/2 -translate-x-1/2 max-[760px]:static max-[760px]:translate-x-0 max-[760px]:order-last max-[760px]:w-full max-[760px]:text-center font-fraunces text-2xl sm:text-4xl font-semibold tracking-[0.08em] text-[#1F3B2E]">EXERCISES</h1>
 
-          <div className="flex items-center gap-2">
+          <div className="hub-controls">
             <button
               type="button"
               onClick={() => onNavigate(plan ? 'PLAN_OVERVIEW' : 'PLAN_BUILDER')}
@@ -71,8 +69,8 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
           </div>
         </header>
 
-        <section className="rounded-3xl border border-[#C7A467]/80 bg-[#FBF3E2]/95 shadow-[0_18px_45px_rgba(42,30,20,0.12)] overflow-hidden mb-6">
-          <div className="px-5 sm:px-8 py-5 text-center border-b border-[#C7A467]/50 bg-[#EADFC4]/70">
+        <section className="mt-8 rounded-3xl border border-[#C7A467]/80 bg-[#FBF3E2]/95 shadow-[0_18px_45px_rgba(42,30,20,0.12)] overflow-hidden mb-6">
+          <div className="px-5 sm:px-8 pt-8 pb-5 text-center border-b border-[#C7A467]/50 bg-[#EADFC4]/70">
             <p className="font-fraunces text-lg sm:text-xl italic text-[#1F3B2E]">“Move with steadiness; breathe with ease.”</p>
             <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#5C5142] mt-1">KREEDA daily reminder</p>
           </div>
@@ -95,7 +93,7 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
               </span>
             </button>
 
-            <button type="button" onClick={() => onNavigate('MOOD_LOG')} className="group bg-[#F6EFDE] hover:bg-white p-5 sm:p-7 text-left cursor-pointer transition-colors">
+            <button type="button" onClick={onOpenMood} className="group bg-[#F6EFDE] hover:bg-white p-5 sm:p-7 text-left cursor-pointer transition-colors">
               <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] font-bold text-[#1F3A5C] mb-2">
                 <Heart className="w-4 h-4" /> Mood
               </span>
@@ -113,8 +111,8 @@ export const ModuleHome: React.FC<ModuleHomeProps> = ({ plan, onOpenSection, onN
         <section aria-labelledby="practices-heading">
           <div className="flex items-end justify-between mb-3">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#A8402E]">Choose a practice</p>
-              <h2 id="practices-heading" className="font-fraunces text-2xl font-semibold text-[#1F3B2E]">Yoga · Vyayamam · Dhyana</h2>
+              <p className="hub-glow text-[10px] uppercase tracking-[0.2em] font-bold text-[#A8402E]">Choose a practice</p>
+              <h2 id="practices-heading" className="hub-glow font-fraunces text-2xl font-semibold text-[#1F3B2E]">Yoga · Vyayamam · Dhyana</h2>
             </div>
             <button type="button" onClick={() => onNavigate('PROGRESS')} className="hub-pill hidden sm:inline-flex">Progress</button>
           </div>

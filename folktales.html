@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KREEDA — Folktales</title>
+<script src="js/i18n.js"></script>
+<script>
+KREEDA_I18N.add({
+  en: {
+    'ft.title': 'Folktales', 'ft.greet': 'Come, sit with me, kanna. Which story shall I tell you today?',
+    'ft.pickAny': 'Pick one for me', 'ft.pickRandom': 'Pick one (random)', 'ft.library': 'Library',
+    'ft.count.one': '{n} story', 'ft.count': '{n} stories', 'ft.minutes': 'About {n} min listen', 'ft.listenTo': 'Listen to {title}',
+    'ft.dyk': 'Did you know?', 'ft.lesson': 'What the story teaches', 'ft.illustration': 'Illustration for {title}',
+    'ft.telling': 'Grandmother is telling this story', 'ft.listen': 'Listen', 'ft.pause': 'Pause', 'ft.resume': 'Resume',
+    'ft.again': 'Listen again', 'ft.speed': 'Speed {x}×', 'ft.voice': 'Voice',
+    'ft.n.stopped': 'Grandmother’s voice stopped unexpectedly. Press Resume to carry on, or keep reading below.',
+    'ft.n.nospeech': 'This browser can’t read aloud. You can still read the story here.',
+    'ft.n.novoice': 'No voice for this language is installed on this device, so the story is shown as text only.',
+  },
+  hi: {
+    'ft.title': 'लोककथाएँ', 'ft.greet': 'आओ कन्ना, मेरे पास बैठो। आज कौन-सी कहानी सुनाऊँ?',
+    'ft.pickAny': 'मेरे लिए एक चुनो', 'ft.pickRandom': 'कोई एक चुनें', 'ft.library': 'कहानियाँ',
+    'ft.count.one': '{n} कहानी', 'ft.count': '{n} कहानियाँ', 'ft.minutes': 'लगभग {n} मिनट', 'ft.listenTo': '{title} सुनें',
+    'ft.dyk': 'क्या आप जानते हैं?', 'ft.lesson': 'कहानी की सीख', 'ft.illustration': '{title} का चित्र',
+    'ft.telling': 'दादी यह कहानी सुना रही हैं', 'ft.listen': 'सुनें', 'ft.pause': 'रोकें', 'ft.resume': 'जारी रखें',
+    'ft.again': 'फिर से सुनें', 'ft.speed': 'गति {x}×', 'ft.voice': 'आवाज़',
+    'ft.n.stopped': 'दादी की आवाज़ अचानक रुक गई। आगे सुनने के लिए "जारी रखें" दबाएँ, या नीचे पढ़ते रहें।',
+    'ft.n.nospeech': 'यह ब्राउज़र पढ़कर नहीं सुना सकता। आप कहानी यहाँ पढ़ सकते हैं।',
+    'ft.n.novoice': 'इस भाषा की कोई आवाज़ इस डिवाइस पर नहीं है, इसलिए कहानी केवल लिखित रूप में है।',
+    'ft.cat.tenali-ramakrishna': 'तेनाली रामकृष्ण', 'ft.cat.vikram-bhetal': 'विक्रम बेताल', 'ft.cat.panchatantra': 'पंचतंत्र',
+    'ft.cat.paramanandayya-sishyulu': 'परमानंदय्या के शिष्य', 'ft.cat.freedom-fighter': 'स्वतंत्रता सेनानी', 'ft.cat.festival-stories': 'त्योहारों की कहानियाँ',
+    'ft.blurb.tenali-ramakrishna': 'विजयनगर दरबार की हाज़िरजवाबी।',
+    'ft.blurb.vikram-bhetal': 'धैर्यवान राजा, बेचैन बेताल, और हर कथा के अंत में एक पहेली।',
+    'ft.blurb.panchatantra': 'समझदारी से जीने की सीख देती पशु-कथाएँ।',
+    'ft.blurb.paramanandayya-sishyulu': 'एक सीधे-सादे गुरु और हर बात को शब्दशः मानने वाले उनके सात शिष्य।',
+    'ft.blurb.freedom-fighter': 'भारत के स्वतंत्रता संग्राम से साहस और सूझबूझ।',
+    'ft.blurb.festival-stories': 'हमारे त्योहारों के पीछे की कहानियाँ।',
+  },
+  te: {
+    'ft.title': 'జానపద కథలు', 'ft.greet': 'రా కన్నా, నా దగ్గర కూర్చో. ఈ రోజు ఏ కథ చెప్పమంటావు?',
+    'ft.pickAny': 'నా కోసం ఒకటి ఎంచుకో', 'ft.pickRandom': 'ఏదో ఒకటి ఎంచుకో', 'ft.library': 'కథలు',
+    'ft.count.one': '{n} కథ', 'ft.count': '{n} కథలు', 'ft.minutes': 'సుమారు {n} నిమిషాలు', 'ft.listenTo': '{title} వినండి',
+    'ft.dyk': 'మీకు తెలుసా?', 'ft.lesson': 'కథలోని నీతి', 'ft.illustration': '{title} చిత్రం',
+    'ft.telling': 'అమ్మమ్మ ఈ కథ చెబుతోంది', 'ft.listen': 'వినండి', 'ft.pause': 'ఆపండి', 'ft.resume': 'కొనసాగించండి',
+    'ft.again': 'మళ్ళీ వినండి', 'ft.speed': 'వేగం {x}×', 'ft.voice': 'గొంతు',
+    'ft.n.stopped': 'అమ్మమ్మ గొంతు అనుకోకుండా ఆగిపోయింది. "కొనసాగించండి" నొక్కండి, లేదా కింద చదువుతూ ఉండండి.',
+    'ft.n.nospeech': 'ఈ బ్రౌజర్ గట్టిగా చదివి వినిపించలేదు. మీరు కథను ఇక్కడే చదవవచ్చు.',
+    'ft.n.novoice': 'ఈ భాషకు గొంతు ఈ పరికరంలో లేదు, కాబట్టి కథ అక్షరాల్లో మాత్రమే చూపబడుతోంది.',
+    'ft.cat.tenali-ramakrishna': 'తెనాలి రామకృష్ణ', 'ft.cat.vikram-bhetal': 'విక్రమార్క బేతాళ', 'ft.cat.panchatantra': 'పంచతంత్రం',
+    'ft.cat.paramanandayya-sishyulu': 'పరమానందయ్య శిష్యులు', 'ft.cat.freedom-fighter': 'స్వాతంత్ర్య సమరయోధులు', 'ft.cat.festival-stories': 'పండుగ కథలు',
+    'ft.blurb.tenali-ramakrishna': 'విజయనగర ఆస్థానపు చమత్కారం.',
+    'ft.blurb.vikram-bhetal': 'ఓర్పుగల రాజు, అలుపెరగని బేతాళుడు, ప్రతి కథ చివర ఒక ప్రశ్న.',
+    'ft.blurb.panchatantra': 'తెలివిగా జీవించడం నేర్పే జంతు కథలు.',
+    'ft.blurb.paramanandayya-sishyulu': 'ఒక సాధువైన గురువు, మాటను అక్షరాలా పాటించే ఆయన ఏడుగురు శిష్యులు.',
+    'ft.blurb.freedom-fighter': 'భారత స్వాతంత్ర్య పోరాటంలోని ధైర్యం, సమయస్ఫూర్తి.',
+    'ft.blurb.festival-stories': 'మనం జరుపుకునే పండుగల వెనుక ఉన్న కథలు.',
+  },
+  ta: {
+    'ft.title': 'நாட்டுப்புறக் கதைகள்', 'ft.greet': 'வா கண்ணா, என் பக்கத்தில் உட்கார். இன்று எந்தக் கதை சொல்லட்டும்?',
+    'ft.pickAny': 'எனக்காக ஒன்றைத் தேர்ந்தெடு', 'ft.pickRandom': 'ஏதேனும் ஒன்றைத் தேர்ந்தெடு', 'ft.library': 'கதைகள்',
+    'ft.count.one': '{n} கதை', 'ft.count': '{n} கதைகள்', 'ft.minutes': 'சுமார் {n} நிமிடம்', 'ft.listenTo': '{title} கேளுங்கள்',
+    'ft.dyk': 'உங்களுக்குத் தெரியுமா?', 'ft.lesson': 'கதை சொல்லும் பாடம்', 'ft.illustration': '{title} ஓவியம்',
+    'ft.telling': 'பாட்டி இந்தக் கதையைச் சொல்கிறார்', 'ft.listen': 'கேளுங்கள்', 'ft.pause': 'இடைநிறுத்து', 'ft.resume': 'தொடர்',
+    'ft.again': 'மீண்டும் கேளுங்கள்', 'ft.speed': 'வேகம் {x}×', 'ft.voice': 'குரல்',
+    'ft.n.stopped': 'பாட்டியின் குரல் எதிர்பாராமல் நின்றுவிட்டது. தொடர "தொடர்" அழுத்துங்கள், அல்லது கீழே படித்துக்கொண்டே இருங்கள்.',
+    'ft.n.nospeech': 'இந்த உலாவியால் உரக்கப் படிக்க முடியாது. கதையை இங்கேயே படிக்கலாம்.',
+    'ft.n.novoice': 'இந்த மொழிக்கான குரல் இந்தச் சாதனத்தில் இல்லை, எனவே கதை எழுத்தில் மட்டும் காட்டப்படுகிறது.',
+    'ft.cat.tenali-ramakrishna': 'தெனாலி ராமகிருஷ்ணா', 'ft.cat.vikram-bhetal': 'விக்கிரமாதித்தன் வேதாளம்', 'ft.cat.panchatantra': 'பஞ்சதந்திரம்',
+    'ft.cat.paramanandayya-sishyulu': 'பரமானந்தய்யாவின் சீடர்கள்', 'ft.cat.freedom-fighter': 'சுதந்திரப் போராட்ட வீரர்கள்', 'ft.cat.festival-stories': 'பண்டிகைக் கதைகள்',
+    'ft.blurb.tenali-ramakrishna': 'விஜயநகர அரசவையின் சமயோசித அறிவு.',
+    'ft.blurb.vikram-bhetal': 'பொறுமையான அரசன், ஓயாத வேதாளம், ஒவ்வொரு கதையின் முடிவிலும் ஒரு புதிர்.',
+    'ft.blurb.panchatantra': 'அறிவுடன் வாழக் கற்றுத்தரும் விலங்குக் கதைகள்.',
+    'ft.blurb.paramanandayya-sishyulu': 'ஒரு சாந்தமான குருவும், சொன்னதை அப்படியே செய்யும் அவரது ஏழு சீடர்களும்.',
+    'ft.blurb.freedom-fighter': 'இந்திய விடுதலைப் போராட்டத்தின் துணிவும் சமயோசிதமும்.',
+    'ft.blurb.festival-stories': 'நாம் கொண்டாடும் பண்டிகைகளின் பின்னணிக் கதைகள்.',
+  },
+  ml: {
+    'ft.title': 'നാടോടിക്കഥകൾ', 'ft.greet': 'വാ കണ്ണാ, എന്റെ അടുത്തിരിക്ക്. ഇന്ന് ഏത് കഥ പറയണം?',
+    'ft.pickAny': 'എനിക്കായി ഒന്ന് തിരഞ്ഞെടുക്കൂ', 'ft.pickRandom': 'ഏതെങ്കിലും ഒന്ന് തിരഞ്ഞെടുക്കൂ', 'ft.library': 'കഥകൾ',
+    'ft.count.one': '{n} കഥ', 'ft.count': '{n} കഥകൾ', 'ft.minutes': 'ഏകദേശം {n} മിനിറ്റ്', 'ft.listenTo': '{title} കേൾക്കൂ',
+    'ft.dyk': 'നിങ്ങൾക്കറിയാമോ?', 'ft.lesson': 'കഥയിലെ ഗുണപാഠം', 'ft.illustration': '{title} ചിത്രം',
+    'ft.telling': 'മുത്തശ്ശി ഈ കഥ പറയുന്നു', 'ft.listen': 'കേൾക്കൂ', 'ft.pause': 'നിർത്തൂ', 'ft.resume': 'തുടരൂ',
+    'ft.again': 'വീണ്ടും കേൾക്കൂ', 'ft.speed': 'വേഗം {x}×', 'ft.voice': 'ശബ്ദം',
+    'ft.n.stopped': 'മുത്തശ്ശിയുടെ ശബ്ദം പെട്ടെന്ന് നിന്നുപോയി. തുടരാൻ "തുടരൂ" അമർത്തുക, അല്ലെങ്കിൽ താഴെ വായന തുടരുക.',
+    'ft.n.nospeech': 'ഈ ബ്രൗസറിന് ഉറക്കെ വായിക്കാനാവില്ല. കഥ ഇവിടെ വായിക്കാം.',
+    'ft.n.novoice': 'ഈ ഭാഷയ്ക്കുള്ള ശബ്ദം ഈ ഉപകരണത്തിലില്ല, അതിനാൽ കഥ എഴുത്തായി മാത്രം കാണിക്കുന്നു.',
+    'ft.cat.tenali-ramakrishna': 'തെനാലി രാമകൃഷ്ണൻ', 'ft.cat.vikram-bhetal': 'വിക്രമാദിത്യനും വേതാളവും', 'ft.cat.panchatantra': 'പഞ്ചതന്ത്രം',
+    'ft.cat.paramanandayya-sishyulu': 'പരമാനന്ദയ്യയുടെ ശിഷ്യന്മാർ', 'ft.cat.freedom-fighter': 'സ്വാതന്ത്ര്യ സമര സേനാനികൾ', 'ft.cat.festival-stories': 'ഉത്സവ കഥകൾ',
+    'ft.blurb.tenali-ramakrishna': 'വിജയനഗര രാജസദസ്സിലെ ബുദ്ധിചാതുര്യം.',
+    'ft.blurb.vikram-bhetal': 'ക്ഷമാശീലനായ രാജാവ്, അടങ്ങാത്ത വേതാളം, ഓരോ കഥയ്ക്കൊടുവിലും ഒരു കടങ്കഥ.',
+    'ft.blurb.panchatantra': 'വിവേകത്തോടെ ജീവിക്കാൻ പഠിപ്പിക്കുന്ന മൃഗകഥകൾ.',
+    'ft.blurb.paramanandayya-sishyulu': 'ഒരു സൗമ്യനായ ഗുരുവും, പറഞ്ഞത് അക്ഷരംപ്രതി ചെയ്യുന്ന ഏഴ് ശിഷ്യന്മാരും.',
+    'ft.blurb.freedom-fighter': 'ഇന്ത്യൻ സ്വാതന്ത്ര്യസമരത്തിലെ ധൈര്യവും ബുദ്ധിസാമർഥ്യവും.',
+    'ft.blurb.festival-stories': 'നാം ആഘോഷിക്കുന്ന ഉത്സവങ്ങൾക്ക് പിന്നിലെ കഥകൾ.',
+  },
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Sora:wght@400;500;600;700&family=Tiro+Telugu&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#2A241E;
+    --ink-soft:#5C5142;
+    --navy:#1F3A5C;
+    --gold-deep:#C4881F;
+    --brick:#A8402E;
+    --evergreen:#1F3B2E;
+    --rose:#C0524A;
+    --plum:#4A3558;
+    --gold:#C7A467;
+    --cream-card:#F6EFDE;
+    --cream:#FBF3E2;
+    --page-bg:#F1E8D2;
+    --highlight:#F3DDA8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- shared header controls ---------- */
+  .header-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .pill-lang{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 14px;
+    border-radius:999px;
+    border:1px solid rgba(42,36,30,0.16);
+    background:rgba(251,243,226,0.9);
+    color:var(--ink);
+    font-family:'Sora', sans-serif;
+    font-size:13px;
+    font-weight:500;
+    text-decoration:none;
+    cursor:pointer;
+    transition:border-color .18s ease, background .18s ease;
+  }
+  .pill-lang:hover{ border-color:var(--gold); background:#FFFBF0; }
+  .pill-lang:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .pill-lang svg{ width:1em; height:1em; opacity:.7; }
+  .pill-lang .chev{ width:.7em; height:.7em; opacity:.55; }
+
+  .avatar{
+    appearance:none; -webkit-appearance:none;
+    width:40px; height:40px;
+    border-radius:50%;
+    background:var(--evergreen);
+    border:1px solid var(--gold);
+    color:var(--cream);
+    font-family:'Sora', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:filter .18s ease;
+  }
+  .avatar:hover{ filter:brightness(1.15); }
+  .avatar:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .btn-primary{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 20px;
+    border-radius:999px;
+    border:1px solid var(--gold);
+    background:var(--evergreen); color:var(--cream);
+    font-family:'Sora',sans-serif; font-size:13.5px; font-weight:600;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(31,59,46,0.22);
+    transition:transform .18s ease, filter .18s ease, box-shadow .18s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); filter:brightness(1.12); box-shadow:0 10px 24px rgba(31,59,46,0.28); }
+  .btn-primary:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .btn-primary svg{ width:1.1em; height:1.1em; }
+
+  /* ---------- Grandmother placeholder ----------
+     Her artwork is being made by the team. Drop it in as
+     Grandmother.png (next to this page) fills the Categories placeholder. */
+  .grandmother-mascot{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .grandmother-mascot img{ width:100%; height:100%; object-fit:contain; display:block; }
+  .grandmother-mascot .gm-placeholder{ display:none; }
+  .grandmother-mascot.no-img{
+    background:
+      radial-gradient(rgba(196,136,31,0.18) 1px, transparent 1.4px) 0 0 / 12px 12px,
+      color-mix(in srgb, var(--gold) 16%, var(--cream));
+    border:1px dashed rgba(196,136,31,0.6);
+  }
+  .grandmother-mascot.no-img .gm-placeholder{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--gold-deep);
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    text-align:center;
+  }
+  .gm-placeholder svg{ width:44%; max-width:96px; height:auto; }
+
+  /* ================= CATEGORIES VIEW (pinned illustration, as on Games) ================= */
+  .hero.view.active{
+    position:relative;
+    display:block;
+    width:100vw;
+    height:100vh;
+    margin:0 auto;
+    line-height:0;
+    overflow:hidden;
+  }
+  .hero .bg{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
+  .hero-content{
+    position:absolute;
+    inset:0;
+    line-height:normal;
+    container-type:size;
+  }
+  .hero .header-controls{ position:absolute; top:4.8%; right:2.5%; }
+  .hero .home-link{ position:absolute; top:4.8%; left:2.5%; }
+  .hero .pill-lang{ font-size:clamp(10px, 0.8cqw, 13px); }
+  .hero .avatar{ width:clamp(26px, 2.4cqw, 40px); height:clamp(26px, 2.4cqw, 40px); font-size:clamp(10px, 0.85cqw, 14px); }
+
+  .header-block{
+      /* the title strip spans the full width and would sit on top of the Home and language buttons;
+         it isn't interactive, so clicks pass through it */
+      pointer-events: none;
+    position:absolute;
+    left:50%; top:7%;
+    transform:translateX(-50%);
+    text-align:center;
+  }
+  .masthead{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:clamp(20px, 3.2cqw, 52px);
+    letter-spacing:0.01em;
+    color:var(--evergreen);
+    margin:0;
+  }
+  #view-categories .masthead{ color:#040404; }
+
+  .narrator{
+    position:absolute;
+    left:3.5%; bottom:12%;
+    width:14%;
+    display:flex; flex-direction:column; align-items:center;
+    gap:clamp(4px, 0.8cqw, 14px);
+  }
+  .narrator .grandmother-mascot{
+    width:100%;
+    background:#fff;
+    aspect-ratio:1;
+    box-shadow:0 clamp(2px,0.5cqw,10px) clamp(6px,1.4cqw,26px) rgba(42,30,20,0.18);
+  }
+  .speech{
+    position:relative;
+    background:var(--cream-card);
+    border:1px solid var(--gold);
+    border-radius:clamp(8px, 0.9cqw, 14px);
+    padding:clamp(5px,0.7cqw,12px) clamp(6px,0.9cqw,14px);
+    font-family:'Fraunces', Georgia, serif;
+    font-style:italic;
+    font-size:clamp(8px, 0.82cqw, 14px);
+    line-height:1.4;
+    color:var(--ink);
+    text-align:center;
+    box-shadow:0 4px 14px rgba(42,30,20,0.12);
+  }
+  .speech::after{
+    content:"";
+    position:absolute; left:50%; bottom:-7px;
+    width:12px; height:12px;
+    background:var(--cream-card);
+    border-right:1px solid var(--gold);
+    border-bottom:1px solid var(--gold);
+    transform:translateX(-50%) rotate(45deg);
+  }
+
+  .cards-block{
+    position:absolute;
+    left:55%; top:18%;
+    transform:translateX(-50%);
+    width:62%;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    column-gap:2.4cqw;
+    row-gap:2cqw;
+  }
+  .cat-card{
+    appearance:none; -webkit-appearance:none;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    padding:0;
+    text-align:center;
+    font:inherit; color:inherit;
+    background:var(--cream-card);
+    border-radius:clamp(6px, 0.9cqw, 16px);
+    border:clamp(1px, 0.14cqw, 2.5px) solid var(--accent);
+    box-shadow:0 clamp(2px,0.5cqw,10px) clamp(6px,1.4cqw,26px) rgba(42,30,20,0.22);
+    cursor:pointer;
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+  .cat-card:hover{
+    transform:translateY(clamp(-8px,-0.45cqw,-3px));
+    box-shadow:0 clamp(4px,0.9cqw,16px) clamp(10px,2.2cqw,38px) rgba(42,30,20,0.28);
+  }
+  .cat-card:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .cat-card .illustration{
+    width:100%;
+    aspect-ratio:5/2;
+    border-radius:clamp(5px,0.8cqw,14px) clamp(5px,0.8cqw,14px) 0 0;
+    overflow:hidden;
+    background:color-mix(in srgb, var(--accent) 14%, var(--cream));
+  }
+  .cat-card .illustration img{ width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block; }
+  .cat-card .card-body{
+    flex:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:clamp(4px,0.7cqw,14px) clamp(4px,0.8cqw,14px) clamp(5px,0.9cqw,16px);
+  }
+  .card-eyebrow{
+    font-size:clamp(5.5px, 0.56cqw, 10px);
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 clamp(2px,0.25cqw,5px);
+  }
+  .cat-card h2{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:clamp(9px, 1.25cqw, 22px);
+    line-height:1.12;
+    margin:0;
+    color:var(--ink);
+    text-wrap:balance;
+  }
+  .pick-wrap{
+    display:flex; justify-content:center;
+    margin-top:clamp(8px, 1.8cqw, 30px);
+  }
+  .hero .pick-wrap .btn-primary{
+    font-size:clamp(10px, 0.85cqw, 14px);
+    padding:clamp(6px,0.65cqw,11px) clamp(12px,1.3cqw,22px);
+  }
+
+  /* ================= STORY CARD (library + reader over the categories) ================= */
+  body.sheet-open{ overflow:hidden; }
+  .sheet-overlay{
+    position:fixed; inset:0; z-index:50;
+    display:none; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(42,36,30,0.45);
+  }
+  .sheet-overlay.active{ display:flex; }
+  .sheet{
+    --accent:var(--evergreen);
+    position:relative;
+    width:100%; max-width:820px;
+    max-height:min(88vh, 900px);
+    display:flex; flex-direction:column;
+    background:var(--page-bg);
+    border-radius:18px;
+    border:1px solid var(--gold);
+    border-top:4px solid var(--accent);
+    box-shadow:0 20px 50px rgba(42,30,20,0.3);
+  }
+  .sheet:focus{ outline:none; }
+  /* the reader gets the full-size card */
+  .sheet.reading{
+    max-width:1180px;
+    height:calc(100vh - 40px);
+    height:calc(100dvh - 40px);
+    max-height:none;
+  }
+  .sheet-head{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px 12px 22px;
+    border-bottom:1px dashed rgba(199,164,103,0.7);
+  }
+  .sheet-back{ color:var(--evergreen); font-weight:600; }
+  .sheet-back[hidden]{ display:none; }
+  .sheet-kicker{
+    margin:0;
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .sheet-close{
+    appearance:none; -webkit-appearance:none;
+    margin-left:auto; flex-shrink:0;
+    width:34px; height:34px; border-radius:50%;
+    background:none; border:1px solid rgba(42,36,30,0.16);
+    color:var(--ink-soft); font-size:14px;
+    cursor:pointer;
+  }
+  .sheet-close:hover{ border-color:var(--gold); color:var(--ink); }
+  .sheet-close:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .sheet-body{
+    flex:1; min-height:0;
+    overflow-y:auto;
+    padding:20px 24px 28px;
+  }
+
+  .lib-head{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .lib-head .eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 6px;
+  }
+  .lib-head h1{ font-family:'Fraunces',serif; font-size:38px; font-weight:600; color:var(--evergreen); margin:0 0 6px; }
+  .lib-head .blurb{ margin:0; color:var(--ink-soft); font-size:14px; }
+
+  .story-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .story-row{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 16px 12px 12px;
+    background:var(--cream-card);
+    border-radius:14px;
+    border:1px solid rgba(199,164,103,0.55);
+    box-shadow:0 4px 14px rgba(42,30,20,0.08);
+    transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  }
+  .story-row:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(42,30,20,0.14); border-color:var(--accent); }
+  .row-main{
+    appearance:none; -webkit-appearance:none;
+    flex:1; min-width:0;
+    display:flex; align-items:center; gap:14px;
+    background:none; border:none; padding:0;
+    font:inherit; color:inherit; text-align:left;
+    cursor:pointer;
+  }
+  .row-main:focus-visible{ outline:2px solid var(--gold); outline-offset:4px; border-radius:8px; }
+  .row-thumb{
+    width:64px; height:64px; flex-shrink:0;
+    border-radius:10px; overflow:hidden;
+    background:color-mix(in srgb, var(--accent) 14%, var(--cream));
+  }
+  .row-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .row-text{ min-width:0; }
+  .row-num{ font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--accent); }
+  .row-title{ font-family:'Fraunces',serif; font-size:19px; font-weight:600; color:var(--ink); margin:2px 0; }
+  .row-meta{ font-size:12.5px; color:var(--ink-soft); }
+  .row-play{
+    appearance:none; -webkit-appearance:none;
+    width:44px; height:44px; flex-shrink:0;
+    border-radius:50%; border:none;
+    background:var(--evergreen); color:var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:transform .18s ease, filter .18s ease;
+  }
+  .row-play svg{ width:40%; height:40%; margin-left:2px; }
+  .row-play:hover{ transform:scale(1.08); filter:brightness(1.15); }
+  .row-play:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- reader ---------- */
+  .reader{
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) 300px;
+    gap:24px;
+    align-items:start;
+  }
+  .panel{
+    background:var(--cream-card);
+    border-radius:16px;
+    border:1px solid rgba(199,164,103,0.55);
+    box-shadow:0 8px 24px rgba(42,30,20,0.12);
+  }
+  .story-panel{ padding:30px 36px 36px; }
+  .story-panel .eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 8px; text-align:center;
+  }
+  .story-panel h1{
+    font-family:'Fraunces',serif; font-weight:600; font-size:34px; line-height:1.15;
+    color:var(--evergreen); text-align:center; margin:0 0 20px; text-wrap:balance;
+  }
+  .story-illustration{
+    display:flex; justify-content:center;
+    margin:0 0 26px;
+    padding:14px;
+    border-radius:12px;
+    background:color-mix(in srgb, var(--accent) 10%, var(--cream));
+  }
+  .story-illustration img{ max-width:100%; max-height:380px; border-radius:8px; display:block; }
+  .story-text p{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:18px; line-height:1.75;
+    color:var(--ink);
+    margin:0 0 1em;
+  }
+  .story-text .s{
+    border-radius:4px;
+    cursor:pointer;
+    transition:background-color .25s ease;
+    box-decoration-break:clone; -webkit-box-decoration-break:clone;
+  }
+  .story-text .s:hover{ background:rgba(243,221,168,0.45); }
+  .story-text .s.current{ background:var(--highlight); }
+  .story-note{
+    margin:6px 0 18px; padding:12px 16px;
+    border-left:3px solid var(--gold);
+    background:rgba(199,164,103,0.12);
+    border-radius:0 10px 10px 0;
+  }
+  .story-note p{ font-size:15.5px; margin:0; }
+  .story-note .label, .story-lesson .label{
+    display:block; margin-bottom:4px;
+    font-family:'Sora',sans-serif; font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gold-deep);
+  }
+  .story-lesson{
+    margin-top:26px; padding:18px 22px;
+    text-align:center;
+    border-top:1px solid rgba(199,164,103,0.6);
+    border-bottom:1px solid rgba(199,164,103,0.6);
+  }
+  .story-lesson p{ font-style:italic; font-size:18px; margin:0; }
+
+  .narration-panel{
+    position:sticky; top:20px;
+    padding:18px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .narration-panel .grandmother-mascot{
+    width:100%;
+    aspect-ratio:1;
+    transition:box-shadow .4s ease;
+  }
+  /* frozen frame of the narrating GIF, shown over it whenever she isn't speaking */
+  .narration-panel .grandmother-mascot .gm-still{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .narration-panel .grandmother-mascot.is-speaking{
+    box-shadow:0 0 0 3px var(--gold), 0 0 0 8px rgba(199,164,103,0.25);
+    animation:gm-breathe 2.4s ease-in-out infinite;
+  }
+  @keyframes gm-breathe{
+    0%,100%{ box-shadow:0 0 0 3px var(--gold), 0 0 0 6px rgba(199,164,103,0.22); }
+    50%    { box-shadow:0 0 0 3px var(--gold), 0 0 0 12px rgba(199,164,103,0.10); }
+  }
+  .narr-caption{
+    margin:0; text-align:center;
+    font-family:'Fraunces',serif; font-style:italic; font-size:14px; color:var(--ink-soft);
+  }
+  .narr-btn{
+    appearance:none; -webkit-appearance:none;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:12px 16px;
+    border-radius:999px;
+    font-family:'Sora',sans-serif; font-size:14px; font-weight:600;
+    cursor:pointer;
+    transition:transform .18s ease, filter .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .narr-btn svg{ width:1.05em; height:1.05em; }
+  .narr-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .narr-btn.play{
+    border:1px solid var(--gold);
+    background:var(--evergreen); color:var(--cream);
+    box-shadow:0 6px 18px rgba(31,59,46,0.22);
+  }
+  .narr-btn.play:hover{ transform:translateY(-1px); filter:brightness(1.12); }
+  .narr-btn.speed{
+    border:1px solid rgba(42,36,30,0.16);
+    background:var(--cream); color:var(--ink);
+  }
+  .narr-btn.speed:hover{ border-color:var(--gold); background:#FFFBF0; }
+  .narr-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; filter:none; }
+  .narr-notice{
+    margin:0; padding:10px 12px;
+    border-radius:10px;
+    background:rgba(168,64,46,0.08);
+    border:1px solid rgba(168,64,46,0.25);
+    font-size:12.5px; line-height:1.5; color:var(--brick);
+  }
+  .narr-notice[hidden]{ display:none; }
+  .narr-voice{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin:0; font-size:11.5px; color:var(--ink-soft);
+  }
+  .narr-voice[hidden]{ display:none; }
+  .narr-voice select{
+    max-width:180px;
+    padding:4px 8px;
+    border-radius:8px;
+    border:1px solid rgba(42,36,30,0.16);
+    background:var(--cream);
+    font-family:'Sora',sans-serif; font-size:11.5px; color:var(--ink);
+    cursor:pointer;
+  }
+  .narr-voice select:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  @media (prefers-reduced-motion:reduce){
+    .cat-card, .story-row{ transition:none; }
+    .narration-panel .grandmother-mascot.is-speaking{ animation:none; }
+  }
+
+  /* ---------- narrow screens ---------- */
+  @media (max-width:900px){
+    .reader{ grid-template-columns:1fr; }
+    /* controls ride along at the top while the story scrolls */
+    .narration-panel{
+      position:sticky; top:8px; z-index:5;
+      order:-1;
+      display:grid;
+      grid-template-columns:72px 1fr 1fr;
+      grid-template-areas:"gm play speed" "voice voice voice" "notice notice notice";
+      column-gap:10px; row-gap:0;
+      align-items:center;
+      padding:10px;
+    }
+    .narration-panel .grandmother-mascot{ grid-area:gm; width:72px; aspect-ratio:1; }
+    .narration-panel .grandmother-mascot .gm-placeholder span{ display:none; }
+    .narr-btn.play{ grid-area:play; }
+    .narr-btn.speed{ grid-area:speed; }
+    .narr-notice{ grid-area:notice; margin-top:10px; }
+    .narr-caption{ display:none; }
+    .narr-voice{ grid-area:voice; justify-content:flex-start; margin-top:10px; }
+    .story-panel{ padding:24px 20px 28px; }
+    .story-panel h1{ font-size:28px; }
+    .story-text p{ font-size:17px; }
+  }
+  @media (max-width:760px){
+    .sheet-overlay{ padding:8px; }
+    .sheet{ max-height:calc(100dvh - 16px); }
+    .sheet.reading{ height:calc(100vh - 16px); height:calc(100dvh - 16px); }
+    .sheet-head{ padding:10px 10px 10px 14px; }
+    .sheet-body{ padding:14px 12px 20px; }
+    .hero.view.active{ width:100%; }
+    .hero .bg{ width:100%; max-width:none; max-height:none; height:28vh; min-height:150px; object-fit:cover; object-position:center 35%; }
+    .hero-content{ position:static; container-type:normal; display:flex; flex-direction:column; }
+    .hero .header-controls{ position:static; justify-content:flex-end; padding:14px 16px 0; }
+    .hero .home-link{ top:calc(max(28vh, 150px) + 14px); left:16px; }
+    .hero .pill-lang{ font-size:13px; }
+    .hero .avatar{ width:36px; height:36px; font-size:14px; }
+    .header-block{ position:static; transform:none; padding:6px 16px 4px; }
+    .masthead{ font-size:34px; }
+    .narrator{
+      position:static; width:auto;
+      flex-direction:row-reverse; justify-content:center; align-items:center;
+      padding:8px 16px 0; gap:12px;
+    }
+    .narrator .grandmother-mascot{ width:84px; flex-shrink:0; }
+    .narrator .grandmother-mascot .gm-placeholder span{ display:none; }
+    .speech{ font-size:14px; max-width:240px; }
+    .speech::after{ left:auto; right:-7px; bottom:50%; transform:translateY(50%) rotate(-45deg); }
+    .cards-block{ position:static; transform:none; width:100%; max-width:520px; margin:18px auto 0; padding:0 16px 40px; }
+    .grid{ grid-template-columns:1fr 1fr; gap:14px; }
+    .cat-card{ border-radius:14px; border-width:2px; }
+    .cat-card:hover{ transform:translateY(-4px); }
+    .cat-card .illustration{ border-radius:12px 12px 0 0; aspect-ratio:16/10; }
+    .cat-card .card-body{ padding:10px 10px 14px; }
+    .card-eyebrow{ font-size:10px; margin-bottom:3px; }
+    .cat-card h2{ font-size:17px; }
+    .pick-wrap{ margin-top:22px; }
+    .hero .pick-wrap .btn-primary{ font-size:14px; padding:11px 22px; }
+    .lib-head h1{ font-size:30px; }
+    .row-thumb{ width:52px; height:52px; }
+    .row-title{ font-size:17px; }
+  }
+</style>
+</head>
+<body>
+
+<template id="grandmother-tpl">
+  <div class="grandmother-mascot">
+    <img src="Grandmother.png" alt="Grandmother, the storyteller">
+    <div class="gm-placeholder" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="22" r="10"/><path d="M14 56c0-10 8-18 18-18s18 8 18 18"/></svg>
+      <span>Grandmother</span>
+    </div>
+  </div>
+</template>
+
+<!-- ============ CATEGORIES VIEW ============ -->
+<div class="view hero active" id="view-categories">
+  <img class="bg" src="folk tales1.png" alt="">
+
+  <div class="hero-content">
+
+    <a class="pill-lang home-link" href="kreeda-home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span data-i18n="common.home">Home</span>
+    </a>
+
+    <div class="header-controls">
+      <button class="pill-lang" type="button" data-lang-picker>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9Z"/></svg>
+        <span class="lang-current">English</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="avatar" type="button" aria-label="Account" data-i18n-attr="aria-label:common.account">A</button>
+    </div>
+
+    <div class="header-block">
+      <h1 class="masthead" data-i18n="ft.title">Folktales</h1>
+    </div>
+
+    <div class="narrator">
+      <div class="speech" data-i18n="ft.greet">Come, sit with me, kanna. Which story shall I tell you today?</div>
+      <div class="grandmother-mascot">
+        <img src="Grandmother.png" alt="Grandmother, the storyteller">
+      </div>
+    </div>
+
+    <div class="cards-block">
+      <div class="grid" id="cat-grid"></div>
+      <div class="pick-wrap">
+        <button class="btn-primary" type="button" id="pick-any">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>
+          <span data-i18n="ft.pickAny">Pick one for me</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ STORY CARD (library + reader open over the categories) ============ -->
+<div class="sheet-overlay" id="sheet-overlay">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-kicker" tabindex="-1">
+    <div class="sheet-head">
+      <a class="pill-lang sheet-back" id="reader-crumb" href="#/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span id="reader-crumb-name">—</span>
+      </a>
+      <p class="sheet-kicker" id="sheet-kicker" data-i18n="ft.title">Folktales</p>
+      <button class="sheet-close" type="button" id="sheet-close" aria-label="Close" data-i18n-attr="aria-label:common.close">✕</button>
+    </div>
+
+    <div class="sheet-body" id="sheet-body">
+      <!-- LIBRARY -->
+      <div class="view" id="view-library">
+        <div class="lib-head">
+          <div>
+            <p class="eyebrow" id="lib-eyebrow">—</p>
+            <h1 data-i18n="ft.library">Library</h1>
+            <p class="blurb" id="lib-blurb"></p>
+          </div>
+          <button class="btn-primary" type="button" id="pick-in-cat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+            <span data-i18n="ft.pickRandom">Pick one (random)</span>
+          </button>
+        </div>
+
+        <ul class="story-list" id="story-list"></ul>
+      </div>
+
+      <!-- READER -->
+      <div class="view" id="view-reader">
+        <div class="reader">
+          <article class="panel story-panel" id="story-panel"></article>
+
+          <aside class="panel narration-panel" aria-label="Narration">
+            <div class="grandmother-mascot narrating">
+              <img src="grandmother_smooth.gif" alt="Grandmother, telling the story">
+            </div>
+            <p class="narr-caption" data-i18n="ft.telling">Grandmother is telling this story</p>
+            <button class="narr-btn play" type="button" id="btn-play"></button>
+            <button class="narr-btn speed" type="button" id="btn-speed"></button>
+            <p class="narr-notice" id="narr-notice" hidden></p>
+            <label class="narr-voice" id="narr-voice" hidden><span data-i18n="ft.voice">Voice</span>
+              <select id="voice-select"></select>
+            </label>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="folktales/stories.js"></script>
+<script src="folktales/audio.js"></script>
+<script>
+/* ---------------- categories (spec §8.2, in order) ---------------- */
+const CATEGORIES = [
+  { slug:'tenali-ramakrishna',      name:'Tenali Ramakrishna',      accent:'var(--brick)',     blurb:'The quick wit of the Vijayanagara court.' },
+  { slug:'vikram-bhetal',           name:'Vikram Bhetal',           accent:'var(--plum)',      blurb:'A patient king, a restless ghost, and a riddle at the end of every tale.' },
+  { slug:'panchatantra',            name:'Panchatantra',            accent:'var(--navy)',      blurb:'Animal fables on living wisely.' },
+  { slug:'paramanandayya-sishyulu', name:'Paramanandayya Sishyulu', accent:'var(--gold-deep)', blurb:'A gentle guru and his seven very literal disciples.' },
+  { slug:'freedom-fighter',         name:'Freedom Fighter',         accent:'var(--evergreen)', blurb:'Courage and quick thinking from India’s freedom struggle.' },
+  { slug:'festival-stories',        name:'Festival Stories',        accent:'var(--rose)',      blurb:'The stories behind the festivals we celebrate.' },
+];
+const catBySlug = Object.fromEntries(CATEGORIES.map(c => [c.slug, c]));
+const T = (key, vars) => KREEDA_I18N.t(key, vars);
+// a collection's name and blurb in the chosen language (the English ones above are the fallback)
+const catName = cat => { const k = 'ft.cat.' + cat.slug, v = T(k); return v === k ? cat.name : v; };
+const catBlurb = cat => { const k = 'ft.blurb.' + cat.slug, v = T(k); return v === k ? cat.blurb : v; };
+const LANG = 'en'; // the stories themselves are English-only for now; the interface follows KREEDA_I18N
+
+const storiesOf = slug => (window.FOLKTALES && window.FOLKTALES[slug]) || [];
+const textOf = story => story.text[LANG] || Object.values(story.text)[0];
+const wordCount = t => [...t.paragraphs, t.note || '', t.lesson || ''].join(' ').split(/\s+/).filter(Boolean).length;
+const minutesOf = story => Math.max(1, Math.round(wordCount(textOf(story)) / 130));
+
+/* ---------------- icons ---------------- */
+const ICON = {
+  play:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>',
+  again: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>',
+  speed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14l4-4"/><path d="M3.3 16a9 9 0 1 1 17.4 0"/></svg>',
+};
+
+/* ---------------- Grandmother placeholder ---------------- */
+document.querySelectorAll('[data-grandmother]').forEach(slot => {
+  const node = document.getElementById('grandmother-tpl').content.firstElementChild.cloneNode(true);
+  const img = node.querySelector('img');
+  img.addEventListener('error', () => { node.classList.add('no-img'); img.remove(); });
+  slot.replaceWith(node);
+});
+const readerGrandmother = document.querySelector('.narration-panel .grandmother-mascot');
+
+/* Grandmother only moves while she's actually telling the story. A GIF can't be
+   paused, so when she stops we copy its current frame onto a canvas laid over it
+   and hide the moving image; when she starts again the canvas comes off. */
+const gmGif = readerGrandmother.querySelector('img');
+const gmStill = document.createElement('canvas');
+gmStill.className = 'gm-still';
+gmStill.setAttribute('aria-hidden', 'true');
+function setGrandmotherMoving(moving){
+  if (moving) { gmStill.remove(); gmGif.style.visibility = ''; return; }
+  if (!gmGif.complete || !gmGif.naturalWidth) return; // not loaded yet — the load handler below freezes it
+  gmStill.width = gmGif.naturalWidth;
+  gmStill.height = gmGif.naturalHeight;
+  gmStill.getContext('2d').drawImage(gmGif, 0, 0);
+  readerGrandmother.appendChild(gmStill);
+  gmGif.style.visibility = 'hidden';
+}
+// before the first "Listen" she waits, still
+gmGif.addEventListener('load', () => setGrandmotherMoving(narrator.state === 'playing'));
+
+/* ---------------- Categories view ---------------- */
+const catGrid = document.getElementById('cat-grid');
+function renderCategories(){
+catGrid.innerHTML = '';
+CATEGORIES.forEach(cat => {
+  const stories = storiesOf(cat.slug);
+  const cover = stories.find(s => s.image);
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'cat-card';
+  card.style.setProperty('--accent', cat.accent);
+  card.innerHTML = `
+    <div class="illustration">${cover ? `<img src="${cover.image}" alt="">` : ''}</div>
+    <div class="card-body">
+      <p class="card-eyebrow">${T(stories.length === 1 ? 'ft.count.one' : 'ft.count', { n: stories.length })}</p>
+      <h2></h2>
+    </div>`;
+  card.querySelector('h2').textContent = catName(cat);
+  card.addEventListener('click', () => { location.hash = `#/c/${cat.slug}`; });
+  catGrid.appendChild(card);
+});
+}
+renderCategories();
+KREEDA_I18N.onChange(() => { renderCategories(); narrator.render(); });
+
+const randomOf = arr => arr[Math.floor(Math.random() * arr.length)];
+let lastPicked = null;
+function pickFrom(pool){
+  if (!pool.length) return;
+  const choices = pool.length > 1 ? pool.filter(s => s.id !== lastPicked) : pool;
+  const story = randomOf(choices);
+  lastPicked = story.id;
+  autoplayNext = true;
+  location.hash = `#/s/${story.id}`;
+}
+document.getElementById('pick-any').addEventListener('click', () => {
+  // spec §8.2: picks across all categories
+  pickFrom(CATEGORIES.flatMap(c => storiesOf(c.slug)));
+});
+
+/* ---------------- Library view ---------------- */
+let currentCat = null;
+function renderLibrary(slug){
+  const cat = catBySlug[slug];
+  currentCat = cat;
+  const view = document.getElementById('view-library');
+  view.style.setProperty('--accent', cat.accent);
+  document.getElementById('lib-eyebrow').textContent = catName(cat);
+  document.getElementById('lib-blurb').textContent = catBlurb(cat);
+
+  const list = document.getElementById('story-list');
+  list.innerHTML = '';
+  storiesOf(slug).forEach((story, i) => {
+    const t = textOf(story);
+    const li = document.createElement('li');
+    li.className = 'story-row';
+    li.innerHTML = `
+      <button class="row-main" type="button">
+        <div class="row-thumb">${story.image ? `<img src="${story.image}" alt="">` : ''}</div>
+        <div class="row-text">
+          <div class="row-num">${String(i + 1).padStart(2, '0')}</div>
+          <div class="row-title"></div>
+          <div class="row-meta">${T('ft.minutes', { n: minutesOf(story) })}</div>
+        </div>
+      </button>
+      <button class="row-play" type="button">${ICON.play}</button>`;
+    li.querySelector('.row-title').textContent = t.title;
+    li.querySelector('.row-play').setAttribute('aria-label', T('ft.listenTo', { title: t.title }));
+    li.querySelector('.row-main').addEventListener('click', () => { location.hash = `#/s/${story.id}`; });
+    li.querySelector('.row-play').addEventListener('click', () => { autoplayNext = true; location.hash = `#/s/${story.id}`; });
+    list.appendChild(li);
+  });
+  document.title = `${catName(cat)} — ${T('ft.title')}`;
+}
+document.getElementById('pick-in-cat').addEventListener('click', () => {
+  if (currentCat) pickFrom(storiesOf(currentCat.slug));
+});
+
+/* ---------------- Reader view ---------------- */
+const segmenter = 'Segmenter' in Intl ? new Intl.Segmenter('en', { granularity:'sentence' }) : null;
+const splitSentences = text => segmenter
+  ? [...segmenter.segment(text)].map(s => s.segment.trim()).filter(Boolean)
+  : (text.match(/[^.!?]+[.!?]+[”’"')]*|[^.!?]+$/g) || [text]).map(s => s.trim()).filter(Boolean);
+
+function renderReader(id){
+  const [slug] = id.split('/');
+  const cat = catBySlug[slug];
+  const story = storiesOf(slug).find(s => s.id === id);
+  if (!cat || !story) { location.hash = '#/'; return; }
+  const t = textOf(story);
+
+  document.getElementById('view-reader').style.setProperty('--accent', cat.accent);
+  document.getElementById('reader-crumb-name').textContent = catName(cat);
+  document.getElementById('reader-crumb').href = `#/c/${slug}`;
+
+  // narration chunks: title, then each sentence, then the note and lesson
+  const chunks = [];
+  const sentenceSpans = (text, gapAfter) => splitSentences(text).map((s, i, all) => {
+    chunks.push({ text:s, gap: i === all.length - 1 ? gapAfter : 260 });
+    return `<span class="s" data-i="${chunks.length - 1}">${escapeHTML(s)}</span>`;
+  }).join(' ');
+
+  const panel = document.getElementById('story-panel');
+  let html = `<p class="eyebrow">${escapeHTML(catName(cat))}</p>`;
+  html += `<h1>${sentenceSpans(t.title, 900)}</h1>`;
+  if (story.image) html += `<div class="story-illustration"><img src="${story.image}" alt="${escapeHTML(T('ft.illustration', { title: t.title }))}"></div>`;
+  html += '<div class="story-text">';
+  t.paragraphs.forEach(p => { html += `<p>${sentenceSpans(p, 650)}</p>`; });
+  if (t.note) html += `<div class="story-note"><span class="label">${T('ft.dyk')}</span><p>${sentenceSpans(t.note, 650)}</p></div>`;
+  if (t.lesson) {
+    chunks.push({ text:'And the lesson of this story…', gap:500, silent:true });
+    html += `<div class="story-lesson"><span class="label">${T('ft.lesson')}</span><p>${sentenceSpans(t.lesson, 0)}</p></div>`;
+  }
+  html += '</div>';
+  panel.innerHTML = html;
+
+  panel.querySelectorAll('.s').forEach(el => {
+    el.addEventListener('click', () => narrator.playFrom(+el.dataset.i));
+  });
+
+  narrator.load(chunks);
+  document.title = `${t.title} — ${T('ft.title')}`;
+}
+
+function escapeHTML(s){
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+/* ---------------- Narration (Web Speech API, spec §8.5) ----------------
+   Spoken one sentence at a time: Chrome silently stops long utterances after
+   ~15s, and speechSynthesis.pause() is unreliable across browsers. Chunking
+   lets pause/resume and speed changes restart cleanly at the current sentence,
+   and gives the short breaths between sentences that make it sound unhurried. */
+const SPEEDS = [0.75, 1, 1.25, 1.5]; // the voice's own rate at 1×; pitch is left at the voice's default
+const LANG_CODES = { en:'en-IN', hi:'hi-IN', te:'te-IN', ta:'ta-IN', kn:'kn-IN', ml:'ml-IN' };
+const WARM_VOICES = ['neerja','veena','heera','isha','kajal','ananya','aashi','swara','lekha','kalpana','shruti','pallavi','sapna','sobhana','vani'];
+const MALE_VOICES = ['rishi','ravi','prabhat','madhur','hemant','mohan','valluvar','gagan','midhun','aarav','kunal','rehaan','arjun'];
+const FALLBACK_EN_FEMALE = ['samantha','karen','moira','tessa','serena','fiona','female','zira','aria','jenny','sonia','libby'];
+let autoplayNext = false;
+
+/* Pre-recorded Sarvam narration (folktales/narrate.mjs), keyed by sentence text.
+   A story plays from these clips only when every one of its sentences has one, so
+   Grandmother never switches voice mid-story; otherwise the browser voice below is used. */
+const RECORDED = (window.FOLKTALES_AUDIO && window.FOLKTALES_AUDIO.files) || {};
+
+const narrator = {
+  audio: new Audio(), nextAudio: new Audio(), audioMode: false, audioIndex: -1,
+  supported: 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window,
+  chunks: [], index: 0, state: 'idle', speedIdx: 1, token: 0, voice: null, utterance: null, timer: null,
+  dog: null, badVoices: new Set(), chosenName: null,
+
+  // every usable voice for this language, best first
+  rankVoices(){
+    if (!this.supported) return [];
+    const voices = speechSynthesis.getVoices();
+    const code = LANG_CODES[LANG].toLowerCase();
+    const has = (v, names) => names.some(n => v.name.toLowerCase().includes(n));
+    const score = v => (has(v, WARM_VOICES) ? 4 : 0)
+      + (/natural|online|enhanced|premium/i.test(v.name) ? 2 : 0)
+      - (has(v, MALE_VOICES) ? 6 : 0);
+    let pool = voices.filter(v => v.lang.replace('_', '-').toLowerCase().startsWith(code));
+    // always an Indian voice when one exists — score() already puts female ones
+    // (Veena, Neerja, …) ahead of male ones like Rishi. Only if the device has no
+    // Indian voice at all does it fall back to another English voice below.
+    if (!pool.length && LANG === 'en') {
+      pool = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+      const warm = pool.filter(v => has(v, FALLBACK_EN_FEMALE));
+      if (warm.length) pool = warm;
+    }
+    return pool.sort((a, b) => score(b) - score(a));
+  },
+
+  pickVoice(){
+    const ranked = this.rankVoices();
+    const chosen = this.chosenName && ranked.find(v => v.name === this.chosenName && !this.badVoices.has(v.name));
+    return chosen || ranked.find(v => !this.badVoices.has(v.name)) || null;
+  },
+
+  // a voice object from before a voiceschanged event can go dead in Chrome — always speak with the live one
+  liveVoice(){
+    return speechSynthesis.getVoices().find(v => v.name === this.voice.name) || this.voice;
+  },
+
+  // Chrome on macOS lists some voices (often the "Enhanced" downloads) that then never start
+  // speaking and never report an error. If a sentence hasn't started within a few seconds,
+  // drop that voice and carry on with the next best one.
+  skipBrokenVoice(i){
+    const broken = this.voice.name;
+    this.badVoices.add(broken);
+    if (this.chosenName === broken) this.chosenName = null;
+    this.cancelSpeech();
+    this.voice = this.pickVoice();
+    if (!this.voice) {
+      this.state = 'paused';
+      this.render();
+      this.showNotice(`“${prettyVoice(broken)}” didn’t speak in this browser, and no other voice is available. You can still read the story here.`);
+      return;
+    }
+    this.state = 'playing';
+    this.render();
+    this.showNotice(`“${prettyVoice(broken)}” didn’t speak in this browser, so Grandmother is using “${prettyVoice(this.voice.name)}” instead.`);
+    const token = this.token;
+    this.timer = setTimeout(() => this.speak(i, token), 120);
+  },
+
+  load(chunks){
+    this.stop();
+    this.chunks = chunks;
+    this.index = 0;
+    this.state = 'idle';
+    this.voice = this.pickVoice();
+    this.audioMode = chunks.length > 0 && chunks.every(c => RECORDED[c.text]);
+    this.audioIndex = -1;
+    this.render();
+    if (autoplayNext) { autoplayNext = false; this.play(); }
+  },
+
+  play(){
+    // recorded clips can pick up mid-sentence; the browser voice restarts the sentence
+    if (this.audioMode && this.state === 'paused' && this.audioIndex === this.index && this.audio.currentTime > 0 && !this.audio.ended) {
+      this.state = 'playing';
+      this.render();
+      this.playClip(this.index, this.token, true);
+      return;
+    }
+    this.playFrom(this.state === 'done' ? 0 : this.index);
+  },
+
+  playFrom(i){
+    if (!this.audioMode && (!this.supported || !this.voice)) { this.render(); return; }
+    this.cancelSpeech();
+    this.index = i;
+    this.state = 'playing';
+    const token = this.token;
+    this.render();
+    // Chrome sometimes drops a speak() issued in the same tick as cancel()
+    this.timer = setTimeout(() => this.speak(i, token), 80);
+  },
+
+  speak(i, token){
+    if (token !== this.token) return;
+    if (i >= this.chunks.length) { this.state = 'done'; this.index = 0; this.highlight(-1); this.render(); return; }
+    const chunk = this.chunks[i];
+    this.index = i;
+    this.highlight(chunk.silent ? -1 : i);
+    if (this.audioMode) { this.playClip(i, token, false); return; }
+    const voice = this.liveVoice();
+    const u = new SpeechSynthesisUtterance(chunk.text);
+    u.voice = voice;
+    u.lang = voice.lang;
+    u.rate = SPEEDS[this.speedIdx];
+    let finished = false;
+    const next = () => {
+      if (finished || token !== this.token) return;
+      finished = true;
+      clearTimeout(this.dog);
+      this.timer = setTimeout(() => this.speak(i + 1, token), chunk.gap / SPEEDS[this.speedIdx]);
+    };
+    clearTimeout(this.dog);
+    this.dog = setTimeout(() => { if (token === this.token) this.skipBrokenVoice(i); }, 3000);
+    u.onstart = () => {
+      if (token !== this.token) return;
+      clearTimeout(this.dog);
+      // Chrome occasionally never fires onend; don't let that stall the story
+      const expectedMs = chunk.text.length * 90 / u.rate + 4000;
+      this.dog = setTimeout(next, expectedMs);
+    };
+    u.onend = next;
+    u.onerror = e => {
+      if (token !== this.token || e.error === 'interrupted' || e.error === 'canceled') return;
+      clearTimeout(this.dog);
+      if (['synthesis-failed', 'synthesis-unavailable', 'voice-unavailable', 'language-unavailable'].includes(e.error)) {
+        this.skipBrokenVoice(i);
+        return;
+      }
+      this.state = 'paused';
+      this.showNotice(T('ft.n.stopped'));
+      this.render();
+    };
+    this.utterance = u; // keep a reference so Chrome doesn't garbage-collect it mid-sentence
+    speechSynthesis.speak(u);
+  },
+
+  playClip(i, token, resume){
+    const a = this.audio;
+    const chunk = this.chunks[i];
+    const advance = delay => { this.timer = setTimeout(() => this.speak(i + 1, token), delay); };
+    if (!resume) { a.src = RECORDED[chunk.text]; this.audioIndex = i; }
+    a.playbackRate = SPEEDS[this.speedIdx];
+    a.onended = () => { if (token === this.token) advance(chunk.gap / SPEEDS[this.speedIdx]); };
+    a.onerror = () => { if (token === this.token) advance(200); }; // a missing clip shouldn't stop the story
+    a.play().catch(err => {
+      if (token !== this.token || err.name === 'AbortError') return;
+      if (err.name === 'NotAllowedError') { // autoplay blocked — wait for a tap on Listen
+        this.state = 'paused';
+        this.render();
+      } else advance(200);
+    });
+    const upcoming = this.chunks[i + 1];
+    if (upcoming) { this.nextAudio.src = RECORDED[upcoming.text]; this.nextAudio.preload = 'auto'; }
+  },
+
+  pause(){
+    this.cancelSpeech();
+    this.state = 'paused';
+    this.render();
+  },
+
+  stop(){
+    this.cancelSpeech();
+    this.state = 'idle';
+    this.highlight(-1);
+  },
+
+  cancelSpeech(){
+    this.token++;
+    clearTimeout(this.timer);
+    clearTimeout(this.dog);
+    this.audio.pause();
+    if (this.supported) speechSynthesis.cancel();
+  },
+
+  cycleSpeed(){
+    this.speedIdx = (this.speedIdx + 1) % SPEEDS.length;
+    if (this.audioMode) { this.audio.playbackRate = SPEEDS[this.speedIdx]; this.render(); return; }
+    if (this.state === 'playing') this.playFrom(this.index); // restart the current sentence at the new pace
+    else this.render();
+  },
+
+  highlight(i){
+    document.querySelectorAll('.story-text .s.current, .story-panel h1 .s.current').forEach(el => el.classList.remove('current'));
+    if (i < 0) return;
+    const el = document.querySelector(`#story-panel .s[data-i="${i}"]`);
+    if (!el) return;
+    el.classList.add('current');
+    // follow the narration inside the card's scrolling body
+    const box = document.getElementById('sheet-body').getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    if (r.top < box.top + 90 || r.bottom > box.bottom - 40) el.scrollIntoView({ block:'center', behavior:'smooth' });
+  },
+
+  renderVoicePicker(){
+    const wrap = document.getElementById('narr-voice');
+    const ranked = this.rankVoices().filter(v => !this.badVoices.has(v.name));
+    if (this.audioMode || !ranked.length || !this.voice) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    const sel = document.getElementById('voice-select');
+    sel.innerHTML = '';
+    ranked.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v.name;
+      o.textContent = prettyVoice(v.name, true);
+      o.selected = v.name === this.voice.name;
+      sel.appendChild(o);
+    });
+  },
+
+  chooseVoice(name){
+    this.chosenName = name;
+    this.voice = this.pickVoice();
+    this.showNotice('');
+    if (this.state === 'playing') this.playFrom(this.index);
+    else this.render();
+  },
+
+  showNotice(msg){
+    const n = document.getElementById('narr-notice');
+    n.textContent = msg;
+    n.hidden = !msg;
+  },
+
+  render(){
+    const play = document.getElementById('btn-play');
+    const speed = document.getElementById('btn-speed');
+    const canSpeak = this.audioMode || (this.supported && !!this.voice);
+    const labels = {
+      idle:    [ICON.play,  T('ft.listen')],
+      playing: [ICON.pause, T('ft.pause')],
+      paused:  [ICON.play,  T('ft.resume')],
+      done:    [ICON.again, T('ft.again')],
+    };
+    const [icon, label] = labels[this.state];
+    play.innerHTML = `${icon}<span>${label}</span>`;
+    play.disabled = !canSpeak;
+    speed.innerHTML = `${ICON.speed}<span>${T('ft.speed', { x: SPEEDS[this.speedIdx] })}</span>`;
+    speed.disabled = !canSpeak;
+    readerGrandmother.classList.toggle('is-speaking', this.state === 'playing');
+    setGrandmotherMoving(this.state === 'playing');
+
+    // spec §8.5: no voice for this language → text only, with a short notice
+    if (this.audioMode) { if (this.state !== 'paused') this.showNotice(''); }
+    else if (!this.supported) this.showNotice(T('ft.n.nospeech'));
+    else if (!this.voice) this.showNotice(T('ft.n.novoice'));
+    else if (this.state !== 'paused') this.showNotice('');
+
+    this.renderVoicePicker();
+  },
+};
+
+document.getElementById('btn-play').addEventListener('click', () => {
+  narrator.state === 'playing' ? narrator.pause() : narrator.play();
+});
+document.getElementById('btn-speed').addEventListener('click', () => narrator.cycleSpeed());
+document.getElementById('voice-select').addEventListener('change', e => narrator.chooseVoice(e.target.value));
+
+function prettyVoice(name, withLang){
+  const short = name.replace(/^(Microsoft|Google)\s+/, '').replace(/\s+Online.*$/, '');
+  if (!withLang) return short;
+  const v = speechSynthesis.getVoices().find(x => x.name === name);
+  return v && !/-IN$/i.test(v.lang.replace('_', '-')) ? `${short} (${v.lang})` : short;
+}
+
+if (narrator.supported) {
+  // voices load asynchronously in Chrome; re-pick once they arrive
+  speechSynthesis.addEventListener('voiceschanged', () => {
+    // re-pick whenever the list changes (e.g. a voice was just downloaded), but never mid-sentence
+    if (narrator.state === 'playing') return;
+    narrator.voice = narrator.pickVoice();
+    if (document.getElementById('view-reader').classList.contains('active')) narrator.render();
+  });
+  window.addEventListener('pagehide', () => speechSynthesis.cancel());
+}
+window.addEventListener('pagehide', () => narrator.audio.pause());
+
+/* ---------------- routing: #/  ·  #/c/<category>  ·  #/s/<category>/<story> ----------------
+   The categories page always stays put; a library or story opens in the card over it,
+   so the browser's Back button steps story → library → closed. */
+const sheetOverlay = document.getElementById('sheet-overlay');
+const sheet = document.getElementById('sheet');
+let sheetReturnFocus = null;
+
+function openSheet(viewId, slug){
+  if (!sheetOverlay.classList.contains('active')) {
+    sheetReturnFocus = document.activeElement;
+    sheetOverlay.classList.add('active');
+    document.body.classList.add('sheet-open');
+  }
+  const cat = catBySlug[slug];
+  const reading = viewId === 'view-reader';
+  sheet.style.setProperty('--accent', cat.accent);
+  sheet.classList.toggle('reading', reading);
+  document.getElementById('reader-crumb').hidden = !reading;
+  document.querySelectorAll('#sheet-body .view').forEach(v => v.classList.toggle('active', v.id === viewId));
+  document.getElementById('sheet-body').scrollTop = 0;
+  sheet.focus();
+}
+function hideSheet(){
+  if (!sheetOverlay.classList.contains('active')) return;
+  sheetOverlay.classList.remove('active');
+  document.body.classList.remove('sheet-open');
+  if (sheetReturnFocus) sheetReturnFocus.focus();
+}
+// closing goes back to the categories address, which route() turns into hideSheet()
+const closeSheet = () => { location.hash = '#/'; };
+document.getElementById('sheet-close').addEventListener('click', closeSheet);
+sheetOverlay.addEventListener('click', e => { if (e.target === sheetOverlay) closeSheet(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && sheetOverlay.classList.contains('active')) closeSheet();
+});
+
+function route(){
+  const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+  if (parts[0] !== 's') narrator.stop();
+  if (parts[0] === 'c' && catBySlug[parts[1]]) {
+    renderLibrary(parts[1]);
+    openSheet('view-library', parts[1]);
+  } else if (parts[0] === 's' && parts.length >= 3 && catBySlug[parts[1]]) {
+    renderReader(`${parts[1]}/${parts.slice(2).join('/')}`);
+    openSheet('view-reader', parts[1]);
+  } else {
+    document.title = `KREEDA — ${T('ft.title')}`;
+    hideSheet();
+  }
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
