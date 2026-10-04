@@ -7,7 +7,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 export default defineConfig(() => {
   return {
     // Relative asset paths so the built dist/ is portable — it's linked to
-    // from kreeda.html (chadarangam/dist/index.html), which may be opened
+    // from kreeda.html (games/chaturangam/dist/index.html), which may be opened
     // via file:// or served from a nested path, not always from the domain root.
     base: './',
     plugins: [

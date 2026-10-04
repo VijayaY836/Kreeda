@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-  <script src="assets/world-atlas.js"></script>
+  <script src="js/world-atlas.js"></script>
   <script src="js/vaikunthapali-map.js"></script>
   <script src="js/puli-meka-map.js"></script>
   <script src="js/daadi-aata-map.js"></script>
@@ -150,7 +150,7 @@
     }
 
     /* ================= GAMES VIEW =================
-     The illustration (games1.png) covers the whole screen behind everything.
+     The illustration (assets/images/games-bg.png) covers the whole screen behind everything.
      The content sits in a centred box with the picture's own proportions
      (1672×941), as large as fits the screen, so the layout inside can keep
      using cqw/cqh (1% of that box) and scale the 2x3 grid with it. */
@@ -1399,7 +1399,7 @@
 
   <!-- ============ GAMES VIEW ============ -->
   <div class="view hero active" id="view-home">
-    <img class="bg" src="games1.png" alt="">
+    <img class="bg" src="assets/images/games-bg.png" alt="">
 
     <div class="hero-content">
 
@@ -1438,7 +1438,7 @@
 
   <!-- ============ GAME SCREEN ============ -->
   <div class="view hero" id="view-detail">
-    <img class="bg" src="games1.png" alt="">
+    <img class="bg" src="assets/images/games-bg.png" alt="">
 
     <div class="hero-content">
 
@@ -1526,7 +1526,7 @@
         <button class="backbtn" type="button" onclick="goDetail()">&larr; Back to game info</button>
       </div>
       <div class="play-shell panel">
-        <div class="mascot"><img src="kreedu-mascot.png" alt="Kreedu, the KREEDA mascot"></div>
+        <div class="mascot"><img src="assets/images/kreedu-mascot.png" alt="Kreedu, the KREEDA mascot"></div>
         <h2 id="play-title">Loading board…</h2>
         <p id="play-sub">This is where the actual game board renders. Structural placeholder for now.</p>
       </div>
@@ -1563,7 +1563,7 @@
     const games = [
       {
         id: 'vaikunthapali', name: 'Vaikunthapali', native: 'వైకుంఠపాళి · also Gyan Chauper, Moksha Patam',
-        icon: 'ladder', image: 'games/vaikunthapali-card.png', accent: 'var(--navy)',
+        icon: 'ladder', image: 'assets/images/games/vaikunthapali.png', accent: 'var(--navy)',
         hasSoloMode: true,
         mapSub: 'Traced its own path out of India — tap to follow it.',
         path: true,
@@ -1575,7 +1575,7 @@
       },
       {
         id: 'puli-meka', name: 'Puli Meka Aata', native: 'పులి మేక ఆట · Aadu Puli Aatam, Bagh-Chal',
-        icon: 'tiger', image: 'games/puli-meka.png', accent: 'var(--brick)',
+        icon: 'tiger', image: 'assets/images/games/puli-meka.png', accent: 'var(--brick)',
         hasSoloMode: false,
         mapSub: 'A hunt that crossed the Himalayas.',
         path: true,
@@ -1586,7 +1586,7 @@
       },
       {
         id: 'ashta-chamma', name: 'Ashta Chamma', native: 'అష్ట చెమ్మ · Chowka Bara, Daayam, Vimanam',
-        icon: 'dice', image: 'games/ashta-chamma.jpg', accent: 'var(--gold-deep)',
+        icon: 'dice', image: 'assets/images/games/ashta-chamma.jpg', accent: 'var(--gold-deep)',
         hasSoloMode: false,
         mapSub: 'One game, a dozen regional names — before it ever left India.',
         path: true,
@@ -1599,7 +1599,7 @@
       },
       {
         id: 'vamana-guntalu', name: 'Vaamana Guntalu', native: 'వామన గుంటలు · Pallanguzhi',
-        icon: 'seeds', image: 'games/vaamana-guntalu.jpg', accent: 'var(--evergreen)',
+        icon: 'seeds', image: 'assets/images/games/vaamana-guntalu.jpg', accent: 'var(--evergreen)',
         hasSoloMode: false,
         mapSub: 'Seeds that sailed the Indian Ocean.',
         path: true,
@@ -1612,7 +1612,7 @@
       },
       {
         id: 'chaturangam', name: 'Chaturangam', native: 'చతురంగం · Chadarangam, Shatranj',
-        icon: 'chess', image: 'games/chaturangam.jpg', accent: 'var(--plum)',
+        icon: 'chess', image: 'assets/images/games/chaturangam.jpg', accent: 'var(--plum)',
         hasSoloMode: false,
         mapSub: 'Four divisions of an army, reborn on every continent.',
         path: true,
@@ -1625,7 +1625,7 @@
       },
       {
         id: 'daadi-aata', name: 'Daadi Aata', native: 'దాడి ఆట · Navakankari, Nine Men\'s Morris',
-        icon: 'mill', image: 'games/daadi-aata.jpg', accent: 'var(--rose)',
+        icon: 'mill', image: 'assets/images/games/daadi-aata.jpg', accent: 'var(--rose)',
         hasSoloMode: false,
         mapSub: 'No single birthplace — just pins where it has quietly lived for millennia.',
         path: false,
@@ -1718,8 +1718,8 @@
       },
       'chaturangam': {
         blurb: 'The four divisions of an ancient Indian army on an 8×8 board, and the ancestor of chess. Trap the opposing Raja to win.',
-        tutorialEmbed: 'chadarangam/dist/index.html?embed=pieces',
-        playEmbed: 'chadarangam/dist/index.html?embed=play',
+        tutorialEmbed: 'games/chaturangam/dist/index.html?embed=pieces',
+        playEmbed: 'games/chaturangam/dist/index.html?embed=play',
         tutorial: [],
         rules: [
           { h: 'Pieces', items: ['<strong>Raja</strong> (king): one step in any direction.', '<strong>Mantri</strong> (minister): one step diagonally.', '<strong>Gaja</strong> (elephant): jumps exactly two squares diagonally, leaping over anything in between.', '<strong>Ashva</strong> (horse): moves like a chess knight.', '<strong>Ratha</strong> (chariot): any distance in a straight line.', '<strong>Padati</strong> (foot soldier): one step forward, captures one step diagonally forward.'] },
@@ -2090,7 +2090,7 @@
       <div class="tut-num">${tutStep + 1}</div>
       <div><h4>${st.t}</h4><p>${st.d}</p></div>
     </div>
-    ${st.tip ? `<div class="tut-tip"><img src="kreedu-mascot.png" alt=""><span><strong>${T('games.tip')}</strong> ${st.tip}</span></div>` : ''}`;
+    ${st.tip ? `<div class="tut-tip"><img src="assets/images/kreedu-mascot.png" alt=""><span><strong>${T('games.tip')}</strong> ${st.tip}</span></div>` : ''}`;
       document.getElementById('modal-foot').innerHTML = `
     <div class="tut-dots" aria-hidden="true">${steps.map((_, i) => `<span class="${i === tutStep ? 'on' : ''}"></span>`).join('')}</div>
     <div class="tut-nav">

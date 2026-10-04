@@ -54,7 +54,8 @@ The module includes a deterministic weekly plan builder, safety and contraindica
 The story library contains illustrated tales from Panchatantra, Tenali Ramakrishna, Vikram-Betal, Paramanandayya's disciples, freedom-fighter stories and festivals. Stories can be read in the browser and narrated sentence by sentence using the Web Speech API.
 
 ## How it works
-![KREEDA system architecture](system-architecture.jpeg)
+![KREEDA system architecture](docs/system-architecture.jpeg)
+
 ```mermaid
 flowchart LR
     Hub[Static KREEDA hub] --> Games[Heritage games]
@@ -83,14 +84,14 @@ python3 -m http.server 8000
 
 Open <http://localhost:8000/kreeda-home.html>.
 
-Build the React modules once before using their hub cards:
+The built modules are committed, so the hub works right away. To rebuild a module after changing it:
 
 ```bash
-cd chadarangam
+cd games/chaturangam
 npm install
 npm run build
 
-cd ../wellbeing
+cd ../../wellbeing
 npm install
 npm run build
 ```
@@ -98,7 +99,7 @@ npm run build
 ### Develop Chaturangam
 
 ```bash
-cd chadarangam
+cd games/chaturangam
 npm install
 npm run dev
 ```
@@ -127,16 +128,25 @@ node folktales/build-stories.mjs
 
 ```text
 Kreeda/
-  kreeda-home.html          Main hub: Games, Wellbeing and Folktales
-  kreeda.html               Games catalogue and maps
-  folktales.html            Folktale library and reader
-  chadarangam/              React Chaturangam module and chess engine
-  wellbeing/                React Yoga, Vyayam and Dhyana module
-  games/                    Individual game modules and assets
-  folktales/                Story sources, generated data and build scripts
-  assets/                   Shared media and world-map data
-  js/                       Shared map and legacy game scripts
+├── kreeda-home.html        Main hub: Games, Wellbeing and Folktales
+├── kreeda.html             Games catalogue, maps and tutorials
+├── folktales.html          Folktale library and reader
+├── assets/
+│   └── images/             Hub backgrounds, cards, mascot and game artwork
+├── js/                     Shared scripts: i18n, game maps, world-atlas data
+├── games/
+│   ├── chaturangam/        React + TypeScript chess-family game and engine
+│   ├── vaikunthapali/      React + TypeScript snakes-and-ladders
+│   ├── puli-meka/          React + TypeScript hunt game
+│   ├── daadi-aata/         React + TypeScript mill game
+│   ├── ashta-chamma/       React + TypeScript race game
+│   └── vamana-guntalu/     Standalone HTML pit-and-counter game
+├── wellbeing/              React + TypeScript Yoga, Vyayam and Dhyana module
+├── folktales/              Story sources, generated data and build scripts
+└── docs/                   Architecture diagram and project documentation
 ```
+
+Each React module builds into its own `dist/` folder, which is committed so the hub works straight from a fresh clone. After changing a module, run `npm run build` in it and commit the updated `dist/`.
 
 ## Useful commands
 
@@ -145,8 +155,8 @@ Kreeda/
 python3 -m http.server 8000
 
 # React module checks and builds
-cd chadarangam && npm run lint && npm run build
-cd ../wellbeing && npm run lint && npm run build
+cd games/chaturangam && npm run lint && npm run build
+cd ../../wellbeing && npm run lint && npm run build
 
 # Rebuild generated story data
 node folktales/build-stories.mjs

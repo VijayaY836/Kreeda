@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, soundEna
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => { window.location.href = '../../kreeda.html'; }}
+            onClick={() => { window.location.href = '../../../kreeda.html'; }}
             className="flex items-center gap-1 px-3 py-1.5 bg-[#F6ECD2] hover:bg-white border-2 border-[#5C140F] text-[#5C140F] text-xs font-bold cursor-pointer"
           >
             ← All Games
